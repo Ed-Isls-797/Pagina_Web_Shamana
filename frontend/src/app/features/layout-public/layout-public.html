@@ -1,0 +1,30 @@
+<div class="d-flex flex-column min-vh-100 bg-dark text-light">
+
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-black border-bottom border-secondary">
+    <div class="container">
+      <a class="navbar-brand fw-bold text-info" routerLink="/">
+        Shamana
+      </a>
+
+      <div class="ms-auto">
+        <a class="nav-link d-inline text-light me-3" routerLink="/">Inicio</a>
+        <a class="nav-link d-inline text-light me-3" routerLink="/login">Login</a>
+        <a class="btn btn-outline-info btn-sm" routerLink="/register">
+          Registrarse
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- CONTENIDO DINÁMICO -->
+  <main class="flex-fill">
+   <router-outlet>  </router-outlet>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-black text-center text-secondary py-3 mt-auto border-top border-secondary">
+    <small>© 2026 Shamana Night Club | Todos los derechos reservados</small>
+  </footer>
+
+</div>

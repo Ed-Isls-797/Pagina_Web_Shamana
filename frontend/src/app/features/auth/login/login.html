@@ -1,0 +1,50 @@
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+
+  <div class="card bg-dark text-light shadow-lg border border-secondary" style="width: 400px;">
+    
+    <div class="card-body p-4">
+      
+      <h3 class="text-center text-info mb-4 fw-bold">
+        Acceso Shamana
+      </h3>
+
+      <form (ngSubmit)="onLogin()">
+
+        <div class="mb-3">
+          <label class="form-label">Usuario</label>
+          <input 
+            type="text"
+            class="form-control bg-black text-light border-secondary"
+            [(ngModel)]="username"
+            name="username"
+            required>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Contraseña</label>
+          <input 
+            type="password"
+            class="form-control bg-black text-light border-secondary"
+            [(ngModel)]="password"
+            name="password"
+            required>
+        </div>
+
+        <div class="d-grid mt-4">
+          <button class="btn btn-info fw-bold">
+            Ingresar
+          </button>
+        </div>
+
+      </form>
+
+      <div class="text-center mt-3">
+        <small class="text-secondary">
+          Usa "cliente" o "admin" como usuario
+        </small>
+      </div>
+
+    </div>
+  </div>
+
+</div>

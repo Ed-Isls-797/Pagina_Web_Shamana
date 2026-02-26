@@ -1,0 +1,47 @@
+import { Routes } from '@angular/router';
+import { LayoutPublic } from './features/layout-public/layout-public';
+import { Home } from './features/home/home';
+import { Login } from './features/auth/login/login';
+import { Register } from './features/auth/register/register';
+import { LayoutClient } from './features/client/layout-client/layout-client';
+import { Dashboard as ClientDashboard } from './features/client/dashboard/dashboard';
+import { LayoutAdmin } from './features/admin/layout-admin/layout-admin';
+import { Dashboard as AdminDashboard } from './features/admin/dashboard/dashboard';
+import { Reservations } from './features/client/reservations/reservations';
+import { Messages } from './features/client/messages/messages';
+import { Payments } from './features/client/payments/payments';
+
+export const routes: Routes = [
+  {
+    path: '',
+    component: LayoutPublic,
+    children: [
+      { path: '', component: Home },
+      { path: 'login', component: Login },
+      { path: 'register', component: Register },
+    ],
+  },
+
+  {
+    path: 'client',
+    component: LayoutClient,
+    children: [
+      { path: 'dashboard', component: ClientDashboard },
+      { path: 'reservations', component: Reservations },
+      { path: 'messages', component: Messages },
+      { path: 'payments', component: Payments },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+    ],
+  },
+
+  {
+    path: 'admin',
+    component: LayoutAdmin,
+    children: [
+      { path: 'dashboard', component: AdminDashboard },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+    ],
+  },
+
+  { path: '**', redirectTo: '' },
+];

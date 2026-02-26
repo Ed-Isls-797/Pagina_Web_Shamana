@@ -1,0 +1,51 @@
+<div class="container-fluid">
+  <div class="row min-vh-100">
+
+    <!-- SIDEBAR -->
+    <div class="col-md-3 col-lg-2 bg-black text-light p-4 border-end border-secondary">
+
+      <h4 class="text-info fw-bold mb-4">Cliente</h4>
+
+      <ul class="nav flex-column">
+
+        <li class="nav-item mb-2">
+          <a class="nav-link text-light" routerLink="/client/dashboard">
+            Dashboard
+          </a>
+        </li>
+
+        <li class="nav-item mb-2">
+          <a class="nav-link text-light" routerLink="/client/reservations">
+            Reservaciones
+          </a>
+        </li>
+
+        <li class="nav-item mb-2">
+          <a class="nav-link text-light" routerLink="/client/messages">
+            Mensajes
+          </a>
+        </li>
+
+        <li class="nav-item mb-2">
+          <a class="nav-link text-light" routerLink="/client/payments">
+            Comprobantes
+          </a>
+        </li>
+
+        <li class="nav-item mt-4">
+          <a class="btn btn-outline-info w-100" routerLink="/">
+            Cerrar sesión
+          </a>
+        </li>
+
+      </ul>
+
+    </div>
+
+    <!-- CONTENIDO -->
+    <div class="col-md-9 col-lg-10 bg-dark text-light p-4">
+      <router-outlet></router-outlet>
+    </div>
+
+  </div>
+</div>

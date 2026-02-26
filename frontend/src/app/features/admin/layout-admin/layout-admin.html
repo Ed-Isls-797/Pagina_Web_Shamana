@@ -1,0 +1,57 @@
+<div class="container-fluid">
+  <div class="row min-vh-100">
+
+    <!-- SIDEBAR ADMIN -->
+    <div class="col-md-2 bg-dark border-end border-secondary text-light p-3">
+
+      <h5 class="text-warning fw-bold mb-4">Administrador</h5>
+
+      <ul class="nav flex-column">
+
+        <li class="nav-item mb-2">
+          <a class="nav-link text-light" routerLink="/admin/dashboard">
+            Dashboard
+          </a>
+        </li>
+
+        <li class="nav-item mb-2">
+          <a class="nav-link text-light" routerLink="/admin/reservations">
+            Reservaciones
+          </a>
+        </li>
+
+        <li class="nav-item mb-2">
+          <a class="nav-link text-light" routerLink="/admin/messages">
+            Mensajes
+          </a>
+        </li>
+
+        <li class="nav-item mb-2">
+          <a class="nav-link text-light" routerLink="/admin/notifications">
+            Notificaciones
+          </a>
+        </li>
+
+        <li class="nav-item mb-4">
+          <a class="nav-link text-light" routerLink="/admin/content">
+            Gestión de Contenido
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="btn btn-outline-warning w-100" routerLink="/">
+            Cerrar sesión
+          </a>
+        </li>
+
+      </ul>
+
+    </div>
+
+    <!-- CONTENIDO -->
+    <div class="col-md-10 bg-light text-dark p-4">
+      <router-outlet></router-outlet>
+    </div>
+
+  </div>
+</div>
