@@ -1,0 +1,88 @@
+<div class="container mt-4">
+
+<h2 class="mb-4">Gestión de eventos</h2>
+
+<div class="card mb-4">
+
+<div class="card-body">
+
+<form (ngSubmit)="agregarEvento()">
+
+<div class="mb-3">
+
+<input
+type="text"
+class="form-control"
+placeholder="Título del evento"
+[(ngModel)]="titulo"
+name="titulo">
+
+</div>
+
+<div class="mb-3">
+
+<input
+type="text"
+class="form-control"
+placeholder="URL de imagen"
+[(ngModel)]="imagen"
+name="imagen">
+
+</div>
+
+<div class="mb-3">
+
+<textarea
+class="form-control"
+rows="3"
+placeholder="Descripción"
+[(ngModel)]="descripcion"
+name="descripcion">
+</textarea>
+
+</div>
+
+<button
+class="btn btn-success">
+
+Publicar evento
+
+</button>
+
+</form>
+
+</div>
+
+</div>
+
+<div class="row">
+
+<div
+class="col-md-4 mb-3"
+*ngFor="let evento of eventos">
+
+<div class="card">
+
+<img
+[src]="evento.imagen"
+class="card-img-top">
+
+<div class="card-body">
+
+<h5 class="card-title">
+{{evento.titulo}}
+</h5>
+
+<p class="card-text">
+{{evento.descripcion}}
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>

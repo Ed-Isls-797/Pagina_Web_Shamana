@@ -1,1 +1,59 @@
-<p>payments works!</p>
+<div class="container-fluid">
+
+  <h2 class="text-info fw-bold mb-4">
+    Comprobantes de Pago
+  </h2>
+
+  <!-- SUBIR ARCHIVO -->
+
+  <div class="card bg-dark border-secondary mb-4">
+    <div class="card-body">
+
+      <label class="form-label text-light">
+        Subir comprobante
+      </label>
+
+      <input 
+        type="file"
+        class="form-control bg-black text-light border-secondary mb-3">
+
+      <button class="btn btn-info">
+        Subir comprobante
+      </button>
+
+    </div>
+  </div>
+
+  <!-- HISTORIAL -->
+
+  <div class="card bg-dark border-secondary">
+    <div class="card-body">
+
+      <table class="table table-dark table-striped">
+
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Monto</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          @for (receipt of receipts; track $index) {
+
+            <tr>
+              <td>{{ receipt.date }}</td>
+              <td>$ {{ receipt.amount }}</td>
+            </tr>
+
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+  </div>
+
+</div>

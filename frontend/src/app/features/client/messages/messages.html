@@ -1,1 +1,56 @@
-<p>messages works!</p>
+<div class="container-fluid">
+
+  <h2 class="text-info fw-bold mb-4">
+    Mensajes con Administración
+  </h2>
+
+  <!-- HISTORIAL -->
+  <div class="card bg-dark border-secondary mb-4">
+    <div class="card-body">
+
+      @for (msg of messages; track $index) {
+
+        <div class="mb-3">
+
+          <strong 
+            [class.text-warning]="msg.sender === 'Admin'"
+            [class.text-info]="msg.sender === 'Cliente'">
+
+            {{ msg.sender }}
+
+          </strong>
+
+          <p class="mb-0 text-light">
+            {{ msg.text }}
+          </p>
+
+        </div>
+
+      }
+
+    </div>
+  </div>
+
+  <!-- ENVIAR MENSAJE -->
+
+  <div class="card bg-dark border-secondary">
+    <div class="card-body">
+
+      <label class="form-label text-light">
+        Escribir mensaje
+      </label>
+
+      <textarea
+        class="form-control bg-black text-light border-secondary mb-3"
+        rows="3"
+        [(ngModel)]="newMessage">
+      </textarea>
+
+      <button class="btn btn-info">
+        Enviar
+      </button>
+
+    </div>
+  </div>
+
+</div>

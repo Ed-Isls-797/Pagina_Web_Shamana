@@ -1,0 +1,61 @@
+<div class="container mt-4">
+
+<h2 class="mb-4">Crear Notificación</h2>
+
+<div class="card mb-4">
+
+<div class="card-body">
+
+<form (ngSubmit)="crearNotificacion()">
+
+<div class="mb-3">
+
+<input
+type="text"
+class="form-control"
+placeholder="Título"
+[(ngModel)]="titulo"
+name="titulo">
+
+</div>
+
+<div class="mb-3">
+
+<textarea
+class="form-control"
+rows="3"
+placeholder="Mensaje"
+[(ngModel)]="mensaje"
+name="mensaje">
+</textarea>
+
+</div>
+
+<button
+class="btn btn-primary">
+
+Publicar
+
+</button>
+
+</form>
+
+</div>
+
+</div>
+
+<h3>Notificaciones</h3>
+
+<div
+class="alert alert-info"
+*ngFor="let noti of notificaciones">
+
+<strong>{{noti.titulo}}</strong>
+
+<p class="mb-0">
+{{noti.mensaje}}
+</p>
+
+</div>
+
+</div>

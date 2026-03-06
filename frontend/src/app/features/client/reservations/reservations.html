@@ -1,1 +1,58 @@
-<p>reservations works!</p>
+<div class="container-fluid">
+
+  <h2 class="text-info fw-bold mb-4">
+    Mis Reservaciones
+  </h2>
+
+  <!-- BOTÓN NUEVA RESERVACIÓN -->
+  <div class="mb-3">
+    <button class="btn btn-info">
+      Nueva reservación
+    </button>
+  </div>
+
+  <!-- TABLA -->
+  <div class="card bg-dark border-secondary">
+    <div class="card-body">
+
+      <table class="table table-dark table-striped align-middle">
+
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Personas</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          @for (res of reservations; track $index) {
+
+            <tr>
+              <td>{{ res.date }}</td>
+              <td>{{ res.people }}</td>
+              <td>
+
+                <span 
+                  class="badge"
+                  [class.bg-success]="res.status === 'Confirmada'"
+                  [class.bg-warning]="res.status === 'Pendiente'">
+
+                  {{ res.status }}
+
+                </span>
+
+              </td>
+            </tr>
+
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+  </div>
+
+</div>

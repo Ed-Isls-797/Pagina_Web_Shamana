@@ -10,6 +10,10 @@ import { Dashboard as AdminDashboard } from './features/admin/dashboard/dashboar
 import { Reservations } from './features/client/reservations/reservations';
 import { Messages } from './features/client/messages/messages';
 import { Payments } from './features/client/payments/payments';
+import { AdminReservaciones } from './features/admin/admin-reservaciones/admin-reservaciones';
+import { AdminMensajes } from './features/admin/admin-mensajes/admin-mensajes';
+import { AdminNotificaciones } from './features/admin/admin-notificaciones/admin-notificaciones';
+import { AdminContenido } from './features/admin/admin-contenido/admin-contenido';
 
 export const routes: Routes = [
   {
@@ -39,6 +43,10 @@ export const routes: Routes = [
     component: LayoutAdmin,
     children: [
       { path: 'dashboard', component: AdminDashboard },
+       { path: 'reservations', component: AdminReservaciones },
+      { path: 'messages', component: AdminMensajes },
+      { path: 'notificaciones', component: AdminNotificaciones },
+       { path: 'contenido', component: AdminContenido },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },
