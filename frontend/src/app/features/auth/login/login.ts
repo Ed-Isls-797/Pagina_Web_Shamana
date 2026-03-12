@@ -19,15 +19,21 @@ export class Login {
   constructor(private router: Router) {}
 
   onLogin() {
+    
+    // VALIDACIÓN NUEVA: Si están vacíos, lanzamos el modal y cortamos la función
+    if (this.username.trim() === '' || this.password.trim() === '') {
+      this.modalMessage = '¡Ey! Antes de continuar debes llenar tu usuario y contraseña.';
+      this.showModal = true; 
+      return; 
+    }
 
+    // LÓGICA ORIGINAL DEL TEAM
     if (this.username.toLowerCase() === 'cliente') {
       this.router.navigate(['/client/dashboard']);
     }
-
     else if (this.username.toLowerCase() === 'admin') {
       this.router.navigate(['/admin/dashboard']);
     }
-
     else {
       this.modalMessage = 'Usuario no reconocido. Usa "cliente" o "admin"';
       this.showModal = true;

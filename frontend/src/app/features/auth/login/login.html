@@ -16,8 +16,7 @@
             type="text"
             class="form-control bg-black text-light border-secondary"
             [(ngModel)]="username"
-            name="username"
-            required>
+            name="username"> 
         </div>
 
         <div class="mb-3">
@@ -26,8 +25,7 @@
             type="password"
             class="form-control bg-black text-light border-secondary"
             [(ngModel)]="password"
-            name="password"
-            required>
+            name="password"> 
         </div>
 
         <div class="d-grid mt-4">
@@ -47,7 +45,6 @@
     </div>
   </div>
 
-  <!-- Modal de alerta -->
   <div class="modal fade show" tabindex="-1" style="display: block; background: rgba(0,0,0,0.5);" *ngIf="showModal">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content bg-dark text-light">
