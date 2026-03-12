@@ -1,85 +1,123 @@
-<section class="vh-100 d-flex align-items-center text-center text-white position-relative"
-style="
+<style>
+    /* Aquí está la magia del neón y el parpadeo directo en tu HTML */
+    .texto-neon {
+        color: #ffffff;
+        text-shadow:
+            0 0 5px #fff,
+            0 0 10px #fff,
+            0 0 20px #bc13fe,
+            0 0 40px #bc13fe,
+            0 0 80px #bc13fe,
+            0 0 90px #bc13fe,
+            0 0 100px #bc13fe,
+            0 0 150px #bc13fe;
+        animation: parpadeo-neon 2s infinite alternate;
+    }
+
+    @keyframes parpadeo-neon {
+
+        0%,
+        18%,
+        22%,
+        25%,
+        53%,
+        57%,
+        100% {
+            text-shadow:
+                0 0 5px #fff,
+                0 0 10px #fff,
+                0 0 20px #bc13fe,
+                0 0 40px #bc13fe,
+                0 0 80px #bc13fe;
+        }
+
+        20%,
+        24%,
+        55% {
+            text-shadow: none;            
+            color: rgba(255, 255, 255, 0.4);
+        }
+    }
+</style>
+
+<section class="vh-100 d-flex align-items-center text-center text-white position-relative" style="
 background-image:url('https://www.neonmonki.com/cdn/shop/files/NEONMONKI_-_Express_Neonlampe.jpg?v=1691390186&width=3000');
 background-size:cover;
 background-position:center;
 ">
 
-<div class="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-75"></div>
+    <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-75"></div>
 
-<div class="container position-relative">
+    <div class="container position-relative">
 
-<h1 class="display-1 fw-bold">
-VIVE LA NOCHE
-</h1>
+        <h1 class="display-1 fw-bold texto-neon">
+            VIVE LA NOCHE
+        </h1>
 
-<p class="lead">
-Donde el sonido y la energía colisionan
-</p>
+        <p class="lead">
+            Donde el sonido y la energía colisionan
+        </p>
 
-</div>
+    </div>
 
 </section>
+
 <section class="bg-black text-white py-5">
 
-<div class="container">
+    <div class="container">
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
 
-<div>
-<h2 class="fw-bold">
-Próximos <span class="text-info">Eventos</span>
-</h2>
-<p class="text-secondary">
-No te pierdas las mejores noches del mes.
-</p>
-</div>
+            <div>
+                <h2 class="fw-bold">
+                    Próximos <span class="text-info">Eventos</span>
+                </h2>
+                <p class="text-secondary">
+                    No te pierdas las mejores noches del mes.
+                </p>
+            </div>
 
-<a class="text-decoration-none text-info">
-Ver todos →
-</a>
+            <a class="text-decoration-none text-info">
+                Ver todos →
+            </a>
 
-</div>
+        </div>
 
-<div class="row g-4">
+        <div class="row g-4">
 
-<div class="col-md-4" *ngFor="let evento of eventos">
+            <div class="col-md-4" *ngFor="let evento of eventos">
 
-<div class="card bg-dark border-0 text-white rounded-4 overflow-hidden">
+                <div class="card bg-dark border-0 text-white rounded-4 overflow-hidden">
 
-<img
-[src]="evento.imagen"
-class="card-img"
-style="height:420px; object-fit:cover;"
->
+                    <img [src]="evento.imagen" class="card-img" style="height:420px; object-fit:cover;">
 
-<div class="card-img-overlay d-flex flex-column justify-content-end"
-style="background: linear-gradient(transparent, rgba(0,0,0,0.8));">
+                    <div class="card-img-overlay d-flex flex-column justify-content-end"
+                        style="background: linear-gradient(transparent, rgba(0,0,0,0.8));">
 
-<p class="small text-info">
- {{evento.fecha}}
-</p>
+                        <p class="small text-info">
+                            {{evento.fecha}}
+                        </p>
 
-<h4 class="fw-bold">
-{{evento.titulo}}
-</h4>
+                        <h4 class="fw-bold">
+                            {{evento.titulo}}
+                        </h4>
 
-<p class="small text-light">
- {{evento.artista}}
-</p>
+                        <p class="small text-light">
+                            {{evento.artista}}
+                        </p>
 
-<button class="btn btn-outline-light mt-2">
-Hacer Reserva
-</button>
+                        <button class="btn btn-outline-light mt-2">
+                            Hacer Reserva
+                        </button>
 
-</div>
+                    </div>
 
-</div>
+                </div>
 
-</div>
+            </div>
 
-</div>
+        </div>
 
-</div>
+    </div>
 
 </section>
