@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet, RouterLink } from '@angular/router';
 import { NgIf } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-layout-admin',
@@ -10,6 +11,8 @@ import { NgIf } from '@angular/common';
 })
 export class LayoutAdmin {
   showLogoutModal: boolean = false;
+
+  constructor(private router: Router) {}
 
   openLogoutModal() {
     this.showLogoutModal = true;
@@ -21,6 +24,10 @@ export class LayoutAdmin {
 
   confirmLogout() {
     this.showLogoutModal = false;
-    window.location.href = '/';
+    this.router.navigate(['/auth/login']); 
+  }
+
+  cerrarSesion() {
+    this.router.navigate(['/auth/login']); 
   }
 }
