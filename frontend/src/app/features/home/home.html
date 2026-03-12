@@ -1,45 +1,85 @@
-<div class="container py-5 text-center">
-  <h1 class="display-4 text-info fw-bold">Bienvenido a Shamana</h1>
-  <p class="lead">Donde la noche nunca termina.</p>
+<section class="vh-100 d-flex align-items-center text-center text-white position-relative"
+style="
+background-image:url('https://www.neonmonki.com/cdn/shop/files/NEONMONKI_-_Express_Neonlampe.jpg?v=1691390186&width=3000');
+background-size:cover;
+background-position:center;
+">
 
-  <a routerLink="/login" class="btn btn-info btn-lg mt-3">
-    Reservar ahora
-  </a>
-</div>
-<div class="container mt-5">
+<div class="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-75"></div>
 
-<h2 class="mb-4 text-center">
-Próximos Eventos
-</h2>
+<div class="container position-relative">
 
-<div class="row">
+<h1 class="display-1 fw-bold">
+VIVE LA NOCHE
+</h1>
 
-<div
-class="col-md-4 mb-4"
-*ngFor="let evento of eventos">
-
-<div class="card h-100">
-
-<img
-[src]="evento.imagen"
-class="card-img-top">
-
-<div class="card-body">
-
-<h5 class="card-title">
-{{evento.titulo}}
-</h5>
-
-<p class="card-text">
-{{evento.descripcion}}
+<p class="lead">
+Donde el sonido y la energía colisionan
 </p>
 
 </div>
 
+</section>
+<section class="bg-black text-white py-5">
+
+<div class="container">
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+<div>
+<h2 class="fw-bold">
+Próximos <span class="text-info">Eventos</span>
+</h2>
+<p class="text-secondary">
+No te pierdas las mejores noches del mes.
+</p>
 </div>
+
+<a class="text-decoration-none text-info">
+Ver todos →
+</a>
+
+</div>
+
+<div class="row g-4">
+
+<div class="col-md-4" *ngFor="let evento of eventos">
+
+<div class="card bg-dark border-0 text-white rounded-4 overflow-hidden">
+
+<img
+[src]="evento.imagen"
+class="card-img"
+style="height:420px; object-fit:cover;"
+>
+
+<div class="card-img-overlay d-flex flex-column justify-content-end"
+style="background: linear-gradient(transparent, rgba(0,0,0,0.8));">
+
+<p class="small text-info">
+ {{evento.fecha}}
+</p>
+
+<h4 class="fw-bold">
+{{evento.titulo}}
+</h4>
+
+<p class="small text-light">
+ {{evento.artista}}
+</p>
+
+<button class="btn btn-outline-light mt-2">
+Hacer Reserva
+</button>
 
 </div>
 
 </div>
 
 </div>
+
+</div>
+
+</div>
+
+</section>
