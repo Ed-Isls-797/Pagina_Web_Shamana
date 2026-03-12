@@ -1,70 +1,58 @@
-<div class="container-fluid">
-  <div class="row min-vh-100">
+<div class="container-fluid px-0">
 
-    <!-- SIDEBAR ADMIN -->
-    <div class="col-md-2 bg-dark border-end border-secondary text-light p-3">
+  <div
+    class="d-md-none bg-dark text-light p-3 d-flex justify-content-between align-items-center border-bottom border-secondary">
+    <h5 class="text-warning fw-bold m-0">Administrador</h5>
+    <button class="btn btn-outline-warning d-flex align-items-center justify-content-center" (click)="toggleMenu()"
+      style="width: 45px; height: 45px;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" viewBox="0 0 16 16">
+        <path fill-rule="evenodd"
+          d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z" />
+      </svg>
+    </button>
+  </div>
 
-      <h5 class="text-warning fw-bold mb-4">Administrador</h5>
+  <div class="row g-0 min-vh-100">
+
+    <div class="col-md-2 bg-dark border-end border-secondary text-light p-3 d-md-block" [class.d-none]="!isMenuOpen">
+
+      <h5 class="text-warning fw-bold mb-4 d-none d-md-block">Administrador</h5>
 
       <ul class="nav flex-column">
-
         <li class="nav-item mb-2">
-          <a class="nav-link text-light" routerLink="/admin/dashboard">
-            Dashboard
-          </a>
+          <a class="nav-link text-light" routerLink="/admin/dashboard" (click)="closeMenu()">Dashboard</a>
         </li>
-
         <li class="nav-item mb-2">
-          <a class="nav-link text-light" routerLink="/admin/reservations">
-            Reservaciones
-          </a>
+          <a class="nav-link text-light" routerLink="/admin/reservations" (click)="closeMenu()">Reservaciones</a>
         </li>
-
         <li class="nav-item mb-2">
-          <a class="nav-link text-light" routerLink="/admin/messages">
-            Mensajes
-          </a>
+          <a class="nav-link text-light" routerLink="/admin/messages" (click)="closeMenu()">Mensajes</a>
         </li>
-
         <li class="nav-item mb-2">
-          <a class="nav-link text-light" routerLink="/admin/notificaciones">
-            Notificaciones
-          </a>
+          <a class="nav-link text-light" routerLink="/admin/notificaciones" (click)="closeMenu()">Notificaciones</a>
         </li>
-
         <li class="nav-item mb-4">
-          <a class="nav-link text-light" routerLink="/admin/contenido">
-            Gestión de Contenido
-          </a>
+          <a class="nav-link text-light" routerLink="/admin/contenido" (click)="closeMenu()">Gestión de Contenido</a>
         </li>
-
         <li class="nav-item">
-          <!--<button class="btn btn-outline-warning w-100" (click)="openLogoutModal()">
-            Cerrar sesión
-          </button>
-        --><button class="btn btn-outline-warning w-100" (click)="openLogoutModal()">
-            Cerrar sesión
-          </button>
+          <button class="btn btn-outline-warning w-100" (click)="openLogoutModal(); closeMenu()">Cerrar sesión</button>
         </li>
-
       </ul>
 
     </div>
 
-    <!-- CONTENIDO -->
-    <div class="col-md-10 bg-light text-dark p-4">
+    <div class="col-md-10 bg-black text-light p-4">
       <router-outlet></router-outlet>
     </div>
 
   </div>
 </div>
 
-<!-- Modal de confirmación de cierre de sesión -->
 <div class="modal fade show" tabindex="-1" style="display: block; background: rgba(0,0,0,0.5);" *ngIf="showLogoutModal">
   <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content bg-dark text-light">
+    <div class="modal-content bg-dark text-light border border-warning">
       <div class="modal-header border-0">
-        <h5 class="modal-title text-warning">¿Cerrar sesión?</h5>
+        <h5 class="modal-title text-warning fw-bold">¿Cerrar sesión?</h5>
         <button type="button" class="btn-close btn-close-white" (click)="closeLogoutModal()"></button>
       </div>
       <div class="modal-body">
@@ -72,7 +60,7 @@
       </div>
       <div class="modal-footer border-0">
         <button type="button" class="btn btn-secondary" (click)="closeLogoutModal()">Cancelar</button>
-        <button type="button" class="btn btn-warning" (click)="confirmLogout()">Cerrar sesión</button>
+        <button type="button" class="btn btn-warning text-dark fw-bold" (click)="confirmLogout()">Cerrar sesión</button>
       </div>
     </div>
   </div>

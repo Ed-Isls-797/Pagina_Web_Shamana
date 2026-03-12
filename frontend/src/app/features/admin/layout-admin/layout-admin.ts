@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 })
 export class LayoutAdmin {
   showLogoutModal: boolean = false;
+  isMenuOpen: boolean = false; 
 
   constructor(private router: Router) {}
 
@@ -27,7 +28,11 @@ export class LayoutAdmin {
     this.router.navigate(['/auth/login']); 
   }
 
-  cerrarSesion() {
-    this.router.navigate(['/auth/login']); 
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
+
+  closeMenu() {
+    this.isMenuOpen = false;
   }
 }

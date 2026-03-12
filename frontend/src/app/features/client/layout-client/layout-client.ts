@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet, RouterLink } from '@angular/router';
 import { NgIf } from '@angular/common';
+import { Router } from '@angular/router'; 
 
 @Component({
   selector: 'app-layout-client',
@@ -10,6 +11,9 @@ import { NgIf } from '@angular/common';
 })
 export class LayoutClient {
   showLogoutModal: boolean = false;
+  isMenuOpen: boolean = false; 
+
+  constructor(private router: Router) {}
 
   openLogoutModal() {
     this.showLogoutModal = true;
@@ -21,6 +25,14 @@ export class LayoutClient {
 
   confirmLogout() {
     this.showLogoutModal = false;
-    window.location.href = '/';
+    this.router.navigate(['/auth/login']); 
+  }
+
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
+
+  closeMenu() {
+    this.isMenuOpen = false;
   }
 }
