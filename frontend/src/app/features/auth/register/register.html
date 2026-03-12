@@ -31,3 +31,20 @@
     </div>
   </div>
 </div>
+
+<div class="modal fade show" tabindex="-1" style="display: block; background: rgba(0,0,0,0.5);" *ngIf="showRegisterModal">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-dark text-light">
+      <div class="modal-header border-0">
+        <h5 class="modal-title text-info">¡Registro exitoso!</h5>
+        <button type="button" class="btn-close btn-close-white" (click)="closeRegisterModal()"></button>
+      </div>
+      <div class="modal-body">
+        <p>Tu cuenta ha sido creada correctamente.</p>
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-info" (click)="closeRegisterModal()">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>

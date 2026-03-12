@@ -1,17 +1,20 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, NgIf],
   templateUrl: './login.html'
 })
 export class Login {
 
   username: string = '';
   password: string = '';
+  showModal: boolean = false;
+  modalMessage: string = '';
 
   constructor(private router: Router) {}
 
@@ -26,7 +29,12 @@ export class Login {
     }
 
     else {
-      alert('Usuario no reconocido. Usa "cliente" o "admin"');
+      this.modalMessage = 'Usuario no reconocido. Usa "cliente" o "admin"';
+      this.showModal = true;
     }
+  }
+
+  closeModal() {
+    this.showModal = false;
   }
 }

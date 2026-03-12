@@ -17,10 +17,28 @@
         type="file"
         class="form-control bg-black text-light border-secondary mb-3">
 
-      <button class="btn btn-info">
+      <button class="btn btn-info" (click)="openUploadModal()">
         Subir comprobante
       </button>
 
+    </div>
+  </div>
+
+  <!-- Modal para subir comprobante -->
+  <div class="modal fade show" tabindex="-1" style="display: block; background: rgba(0,0,0,0.5);" *ngIf="showUploadModal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content bg-dark text-light">
+        <div class="modal-header border-0">
+          <h5 class="modal-title text-info">Comprobante subido</h5>
+          <button type="button" class="btn-close btn-close-white" (click)="closeUploadModal()"></button>
+        </div>
+        <div class="modal-body">
+          <p>Tu comprobante ha sido enviado correctamente.</p>
+        </div>
+        <div class="modal-footer border-0">
+          <button type="button" class="btn btn-info" (click)="closeUploadModal()">Aceptar</button>
+        </div>
+      </div>
     </div>
   </div>
 

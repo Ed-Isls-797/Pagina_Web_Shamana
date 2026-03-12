@@ -39,9 +39,9 @@
         </li>
 
         <li class="nav-item">
-          <a class="btn btn-outline-warning w-100" routerLink="/">
+          <button class="btn btn-outline-warning w-100" (click)="openLogoutModal()">
             Cerrar sesión
-          </a>
+          </button>
         </li>
 
       </ul>
@@ -53,5 +53,24 @@
       <router-outlet></router-outlet>
     </div>
 
+  </div>
+</div>
+
+<!-- Modal de confirmación de cierre de sesión -->
+<div class="modal fade show" tabindex="-1" style="display: block; background: rgba(0,0,0,0.5);" *ngIf="showLogoutModal">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-dark text-light">
+      <div class="modal-header border-0">
+        <h5 class="modal-title text-warning">¿Cerrar sesión?</h5>
+        <button type="button" class="btn-close btn-close-white" (click)="closeLogoutModal()"></button>
+      </div>
+      <div class="modal-body">
+        <p>¿Estás seguro que deseas cerrar sesión?</p>
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-secondary" (click)="closeLogoutModal()">Cancelar</button>
+        <button type="button" class="btn btn-warning" (click)="confirmLogout()">Cerrar sesión</button>
+      </div>
+    </div>
   </div>
 </div>
