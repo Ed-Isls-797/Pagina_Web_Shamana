@@ -43,10 +43,10 @@ export const routes: Routes = [
     component: LayoutAdmin,
     children: [
       { path: 'dashboard', component: AdminDashboard },
-       { path: 'reservations', component: AdminReservaciones },
+      { path: 'reservations', component: AdminReservaciones },
       { path: 'messages', component: AdminMensajes },
       { path: 'notificaciones', component: AdminNotificaciones },
-       { path: 'contenido', component: AdminContenido },
+      { path: 'contenido', component: AdminContenido },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },

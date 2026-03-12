@@ -1,48 +1,44 @@
-<div class="container-fluid">
-  <div class="row min-vh-100">
+<div class="container-fluid px-0">
 
-    <!-- SIDEBAR -->
-    <div class="col-md-3 col-lg-2 bg-black text-light p-4 border-end border-secondary">
+  <div
+    class="d-md-none bg-black text-light p-3 d-flex justify-content-between align-items-center border-bottom border-secondary">
+    <h4 class="text-info fw-bold m-0">Cliente</h4>
+    <button class="btn btn-outline-info d-flex align-items-center justify-content-center" (click)="toggleMenu()"
+      style="width: 45px; height: 45px;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" viewBox="0 0 16 16">
+        <path fill-rule="evenodd"
+          d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z" />
+      </svg>
+    </button>
+  </div>
 
-      <h4 class="text-info fw-bold mb-4">Cliente</h4>
+  <div class="row g-0 min-vh-100">
+
+    <div class="col-md-3 col-lg-2 bg-black text-light p-4 border-end border-secondary d-md-block"
+      [class.d-none]="!isMenuOpen">
+
+      <h4 class="text-info fw-bold mb-4 d-none d-md-block">Cliente</h4>
 
       <ul class="nav flex-column">
-
         <li class="nav-item mb-2">
-          <a class="nav-link text-light" routerLink="/client/dashboard">
-            Dashboard
-          </a>
+          <a class="nav-link text-light" routerLink="/client/dashboard" (click)="closeMenu()">Dashboard</a>
         </li>
-
         <li class="nav-item mb-2">
-          <a class="nav-link text-light" routerLink="/client/reservations">
-            Reservaciones
-          </a>
+          <a class="nav-link text-light" routerLink="/client/reservations" (click)="closeMenu()">Reservaciones</a>
         </li>
-
         <li class="nav-item mb-2">
-          <a class="nav-link text-light" routerLink="/client/messages">
-            Mensajes
-          </a>
+          <a class="nav-link text-light" routerLink="/client/messages" (click)="closeMenu()">Mensajes</a>
         </li>
-
         <li class="nav-item mb-2">
-          <a class="nav-link text-light" routerLink="/client/payments">
-            Comprobantes
-          </a>
+          <a class="nav-link text-light" routerLink="/client/payments" (click)="closeMenu()">Comprobantes</a>
         </li>
-
         <li class="nav-item mt-4">
-          <button class="btn btn-outline-info w-100" (click)="openLogoutModal()">
-            Cerrar sesión
-          </button>
+          <button class="btn btn-outline-info w-100" (click)="openLogoutModal(); closeMenu()">Cerrar sesión</button>
         </li>
-
       </ul>
 
     </div>
 
-    <!-- CONTENIDO -->
     <div class="col-md-9 col-lg-10 bg-dark text-light p-4">
       <router-outlet></router-outlet>
     </div>
