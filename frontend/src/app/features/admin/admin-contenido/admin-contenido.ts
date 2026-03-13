@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { EventosService } from '../../../services/eventos';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'admin-contenido',
@@ -24,8 +25,20 @@ export class AdminContenido {
   eventoAEliminar: any = null;
   eventos: any[] = [];
 
-  constructor(private eventosService: EventosService) {
+ // constructor(private eventosService: EventosService) {
+    //this.eventos = this.eventosService.obtenerEventos();
+  //}
+
+constructor(private eventosService: EventosService, private route: ActivatedRoute) {
     this.eventos = this.eventosService.obtenerEventos();
+  }
+
+  ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      if (params['accion'] === 'nuevo') {
+        this.abrirModalNuevo();
+      }
+    });
   }
 
   abrirModalNuevo() {
