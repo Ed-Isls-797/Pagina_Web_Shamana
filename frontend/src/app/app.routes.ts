@@ -14,6 +14,7 @@ import { AdminReservaciones } from './features/admin/admin-reservaciones/admin-r
 import { AdminMensajes } from './features/admin/admin-mensajes/admin-mensajes';
 import { AdminNotificaciones } from './features/admin/admin-notificaciones/admin-notificaciones';
 import { AdminContenido } from './features/admin/admin-contenido/admin-contenido';
+import { AdminConfiguracion } from './features/admin/admin-configuracion/admin-configuracion';
 
 export const routes: Routes = [
   {
@@ -48,6 +49,7 @@ export const routes: Routes = [
       { path: 'notificaciones', component: AdminNotificaciones },
       { path: 'contenido', component: AdminContenido },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: 'configuracion', component: AdminConfiguracion },
     ],
   },
 
