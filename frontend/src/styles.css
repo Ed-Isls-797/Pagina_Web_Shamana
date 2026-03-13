@@ -1,1 +1,20 @@
 /* You can add global styles to this file, and also import other style files */
+/* =========================================
+    NEÓN PARA MENÚS (ADMIN Y CLIENTE)
+   ========================================= */
+
+/* NEÓN AMARILLO PARA EL ADMIN */
+a.nav-link.activo-admin {
+    color: #ffc107 !important;
+    text-shadow: 0 0 8px #ffc107, 0 0 15px #ffc107, 0 0 25px #ffc107 !important;
+    font-weight: 900 !important;
+    background-color: transparent !important;
+}
+
+/* NEÓN AZUL PARA EL CLIENTE */
+a.nav-link.activo-cliente {
+    color: #0dcaf0 !important;
+    text-shadow: 0 0 8px #0dcaf0, 0 0 15px #0dcaf0, 0 0 25px #0dcaf0 !important;
+    font-weight: 900 !important;
+    background-color: transparent !important;
+}

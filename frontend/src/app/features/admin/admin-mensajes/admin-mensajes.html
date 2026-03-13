@@ -1,54 +1,86 @@
-<div class="container mt-4">
+<div class="p-4 bg-black text-light" style="min-height: 100vh;">
 
-<h2 class="mb-4">Mensajes con clientes</h2>
+    <div class="mb-4">
+        <h2 class="fw-bold">Mensajes de Clientes</h2>
+        <p class="text-secondary">Acepta o rechaza solicitudes de comunicación</p>
+    </div>
 
-<div class="card">
+    <div class="row g-4">
 
-<div class="card-body">
+        <div class="col-lg-5">
+            <div class="card bg-black border border-secondary rounded-4 overflow-hidden">
+                <div class="card-header bg-black border-bottom border-secondary py-3">
+                    <h5 class="mb-0 fw-bold">Solicitudes</h5>
+                </div>
 
-<div
-class="border rounded p-3 mb-3"
-style="height:300px; overflow-y:auto;">
+                <div class="list-group list-group-flush" style="max-height: 600px; overflow-y: auto;">
+                    <button *ngFor="let sol of solicitudes"
+                        class="list-group-item list-group-item-action bg-black text-light border-bottom border-secondary p-3 text-start"
+                        [ngClass]="{'border-start border-4 border-warning bg-dark': mensajeSeleccionado?.id === sol.id}"
+                        (click)="seleccionarMensaje(sol)" style="cursor: pointer;">
 
-<div
-class="mb-2"
-*ngFor="let mensaje of mensajes">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="fw-bold">{{sol.cliente}}</span>
+                            <div class="d-flex align-items-center">
+                                <small class="text-secondary me-2">{{sol.tiempo}}</small>
+                                <span class="badge rounded-pill border" [ngClass]="{
+                        'border-warning text-warning': sol.estado === 'Pendiente', 
+                        'border-success text-success': sol.estado === 'Aceptado',
+                        'border-danger text-danger': sol.estado === 'Rechazado'
+                        }">
+                                    {{sol.estado}}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="text-warning small mb-1">{{sol.asunto}}</div>
+                        <div class="text-secondary small text-truncate" style="max-width: 100%;">{{sol.mensaje}}</div>
+                    </button>
+                </div>
+            </div>
+        </div>
 
-<strong>{{mensaje.usuario}}:</strong>
+        <div class="col-lg-7">
+            <div class="card bg-black border border-secondary rounded-4 h-100" *ngIf="mensajeSeleccionado">
 
-<span class="ms-2">
-{{mensaje.texto}}
-</span>
+                <div
+                    class="card-header bg-black border-bottom border-secondary p-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+                    <div>
+                        <h5 class="mb-0 fw-bold">{{mensajeSeleccionado.cliente}}</h5>
+                        <small class="text-secondary">{{mensajeSeleccionado.email}}</small>
+                    </div>
 
-</div>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-outline-success rounded-pill px-3 d-flex align-items-center"
+                            (click)="aceptarSolicitud()" [disabled]="mensajeSeleccionado.estado === 'Aceptado'">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="me-2" viewBox="0 0 16 16">
+                                <path
+                                    d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
+                            </svg> Aceptar
+                        </button>
+                        <button class="btn btn-outline-danger rounded-pill px-3 d-flex align-items-center"
+                            (click)="rechazarSolicitud()" [disabled]="mensajeSeleccionado.estado === 'Rechazado'">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="me-2" viewBox="0 0 16 16">
+                                <path
+                                    d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                            </svg> Rechazar
+                        </button>
+                    </div>
+                </div>
 
-</div>
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-4">{{mensajeSeleccionado.asunto}}</h5>
 
-<form (ngSubmit)="enviarMensaje()">
+                    <div class="p-4 rounded-4 border border-secondary" style="background-color: #1a1a1a;">
+                        <p class="mb-3 text-light">{{mensajeSeleccionado.mensaje}}</p>
+                        <small class="text-secondary">{{mensajeSeleccionado.tiempo}}</small>
+                    </div>
+                </div>
 
-<div class="input-group">
+            </div>
 
-<input
-type="text"
-class="form-control"
-placeholder="Responder..."
-[(ngModel)]="nuevoMensaje"
-name="mensaje">
+        </div>
 
-<button
-class="btn btn-primary"
-type="submit">
-
-Enviar
-
-</button>
-
-</div>
-
-</form>
-
-</div>
-
-</div>
-
+    </div>
 </div>
