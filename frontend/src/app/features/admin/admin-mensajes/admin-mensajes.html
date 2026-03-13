@@ -22,7 +22,7 @@
                         <div class="d-flex justify-content-between align-items-center mb-1">
                             <span class="fw-bold">{{sol.cliente}}</span>
                             <div class="d-flex align-items-center">
-                                <small class="text-secondary me-2">{{sol.tiempo}}</small>
+                                <small class="text-secondary me-2">{{sol.conversacion[0].tiempo}}</small>
                                 <span class="badge rounded-pill border" [ngClass]="{
                         'border-warning text-warning': sol.estado === 'Pendiente', 
                         'border-success text-success': sol.estado === 'Aceptado',
@@ -33,14 +33,17 @@
                             </div>
                         </div>
                         <div class="text-warning small mb-1">{{sol.asunto}}</div>
-                        <div class="text-secondary small text-truncate" style="max-width: 100%;">{{sol.mensaje}}</div>
+                        <div class="text-secondary small text-truncate" style="max-width: 100%;">
+                            {{sol.conversacion[sol.conversacion.length - 1].texto}}
+                        </div>
                     </button>
                 </div>
             </div>
         </div>
 
         <div class="col-lg-7">
-            <div class="card bg-black border border-secondary rounded-4 h-100" *ngIf="mensajeSeleccionado">
+            <div class="card bg-black border border-secondary rounded-4 h-100 d-flex flex-column"
+                *ngIf="mensajeSeleccionado">
 
                 <div
                     class="card-header bg-black border-bottom border-secondary p-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
@@ -51,7 +54,7 @@
 
                     <div class="d-flex gap-2">
                         <button class="btn btn-outline-success rounded-pill px-3 d-flex align-items-center"
-                            (click)="aceptarSolicitud()" [disabled]="mensajeSeleccionado.estado === 'Aceptado'">
+                            (click)="aceptarSolicitud()" *ngIf="mensajeSeleccionado.estado === 'Pendiente'">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="me-2" viewBox="0 0 16 16">
                                 <path
@@ -59,7 +62,7 @@
                             </svg> Aceptar
                         </button>
                         <button class="btn btn-outline-danger rounded-pill px-3 d-flex align-items-center"
-                            (click)="rechazarSolicitud()" [disabled]="mensajeSeleccionado.estado === 'Rechazado'">
+                            (click)="rechazarSolicitud()" *ngIf="mensajeSeleccionado.estado === 'Pendiente'">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="me-2" viewBox="0 0 16 16">
                                 <path
@@ -69,17 +72,47 @@
                     </div>
                 </div>
 
-                <div class="card-body p-4">
-                    <h5 class="fw-bold mb-4">{{mensajeSeleccionado.asunto}}</h5>
+                <div class="card-body p-4 flex-grow-1" style="overflow-y: auto; max-height: 450px;">
+                    <h6 class="text-warning fw-bold mb-4 border-bottom border-secondary pb-2">Asunto:
+                        {{mensajeSeleccionado.asunto}}</h6>
 
-                    <div class="p-4 rounded-4 border border-secondary" style="background-color: #1a1a1a;">
-                        <p class="mb-3 text-light">{{mensajeSeleccionado.mensaje}}</p>
-                        <small class="text-secondary">{{mensajeSeleccionado.tiempo}}</small>
+                    <div class="d-flex flex-column gap-3">
+                        <div *ngFor="let msg of mensajeSeleccionado.conversacion" class="d-flex"
+                            [ngClass]="msg.emisor === 'admin' ? 'justify-content-end' : 'justify-content-start'">
+
+                            <div class="p-3 rounded-4"
+                                [ngClass]="msg.emisor === 'admin' ? 'bg-warning text-dark' : 'border border-secondary text-light'"
+                                [style.background-color]="msg.emisor === 'admin' ? '#ffc107' : '#1a1a1a'"
+                                style="max-width: 80%;">
+                                <p class="mb-1" [ngClass]="msg.emisor === 'admin' ? 'fw-medium' : ''">{{msg.texto}}</p>
+                                <div class="text-end mt-1">
+                                    <small
+                                        [ngClass]="msg.emisor === 'admin' ? 'text-dark opacity-75' : 'text-secondary'"
+                                        style="font-size: 0.7rem;">
+                                        {{msg.tiempo}}
+                                    </small>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="card-footer bg-black border-top border-secondary p-3"
+                    *ngIf="mensajeSeleccionado.estado === 'Aceptado'">
+                    <div class="input-group">
+                        <input type="text" class="form-control bg-dark text-light border-secondary"
+                            placeholder="Escribe tu respuesta..." [(ngModel)]="respuestaAdmin"
+                            (keyup.enter)="enviarRespuesta()">
+                        <button class="btn btn-warning d-flex align-items-center justify-content-center fw-bold px-4"
+                            (click)="enviarRespuesta()">
+                            Enviar
+                        </button>
                     </div>
                 </div>
 
             </div>
-
         </div>
 
     </div>
