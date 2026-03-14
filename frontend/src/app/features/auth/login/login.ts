@@ -1,46 +1,123 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { NgIf } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, NgIf],
-  templateUrl: './login.html'
+  imports: [CommonModule, FormsModule],
+  templateUrl: './login.html',
+  styles: [`
+    .fondo-login {
+      background: url('https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&q=80&w=1920') no-repeat center center;
+      background-size: cover;
+      position: relative;
+    }
+    .capa-oscura {
+      position: absolute; top:0; left:0; right:0; bottom:0;
+      background: rgba(0,0,0,0.75);
+    }
+    
+    .neon-purple {
+      background-color: #bc13fe !important;
+      color: white !important;
+      box-shadow: 0 4px 20px rgba(188, 19, 254, 0.6) !important;
+      border: none !important;
+    }
+    .text-neon { color: #bc13fe !important; }
+    
+    .role-toggle {
+      background-color: #111;
+      border-radius: 12px;
+      padding: 5px;
+      border: 1px solid #333;
+    }
+    .role-btn {
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .input-dark-group .input-group-text {
+      background-color: #111;
+      border: 1px solid #333;
+      border-right: none;
+      color: #6c757d;
+    }
+    .input-dark-group .form-control {
+      background-color: #111;
+      border: 1px solid #333;
+      border-left: none;
+      color: white;
+    }
+    .input-dark-group .form-control:focus {
+      border-color: #bc13fe;
+      box-shadow: none;
+    }
+    .input-dark-group:focus-within .input-group-text,
+    .input-dark-group:focus-within .form-control {
+      border-color: #bc13fe;
+      border-top: 1px solid #bc13fe;
+      border-bottom: 1px solid #bc13fe;
+    }
+    .input-dark-group:focus-within .input-group-text { border-left: 1px solid #bc13fe; }
+    .input-dark-group:focus-within .form-control { border-right: 1px solid #bc13fe; }
+
+    .toast-error {
+      position: fixed;
+      top: 30px;
+      right: 30px;
+      z-index: 9999999;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-20px);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .toast-error.show-toast {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+  `]
 })
 export class Login {
+  rolSeleccionado: 'cliente' | 'admin' = 'cliente';
+  correo = '';
+  password = '';
 
-  username: string = '';
-  password: string = '';
-  showModal: boolean = false;
-  modalMessage: string = '';
+  toastVisible = false;
+  toastMensaje = '';
+  toastTimeout: any;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) { }
 
-  onLogin() {
-    
-    // VALIDACIÓN NUEVA: Si están vacíos, lanzamos el modal y cortamos la función
-    if (this.username.trim() === '' || this.password.trim() === '') {
-      this.modalMessage = '¡Ey! Antes de continuar debes llenar tu usuario y contraseña.';
-      this.showModal = true; 
-      return; 
+  setRol(rol: 'cliente' | 'admin') {
+    this.rolSeleccionado = rol;
+  }
+
+  mostrarError(mensaje: string) {
+    this.toastMensaje = mensaje;
+    this.toastVisible = true;
+    if (this.toastTimeout) clearTimeout(this.toastTimeout);
+    this.toastTimeout = setTimeout(() => {
+      this.toastVisible = false;
+    }, 3000);
+  }
+
+  entrar() {
+    if (!this.correo || !this.password) {
+      this.mostrarError("Tienes que llenar todos los datos para entrar.");
+      return;
     }
 
-    // LÓGICA ORIGINAL DEL TEAM
-    if (this.username.toLowerCase() === 'cliente') {
+    if (this.rolSeleccionado === 'cliente') {
       this.router.navigate(['/client/dashboard']);
-    }
-    else if (this.username.toLowerCase() === 'admin') {
+    } else {
       this.router.navigate(['/admin/dashboard']);
-    }
-    else {
-      this.modalMessage = 'Usuario no reconocido. Usa "cliente" o "admin"';
-      this.showModal = true;
     }
   }
 
-  closeModal() {
-    this.showModal = false;
+  irARegistro() {
+    this.router.navigate(['/register']); 
   }
 }
