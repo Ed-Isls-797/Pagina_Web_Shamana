@@ -57,7 +57,6 @@
                             (click)="togglePublicacion(evento)">
                             {{ evento.estado === 'Publicado' ? 'Despublicar' : 'Publicar' }}
                         </button>
-
                         <button class="btn btn-outline-secondary rounded-3 text-light border-secondary" title="Editar"
                             (click)="abrirModalEditar(evento)">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
@@ -66,7 +65,6 @@
                                     d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
                             </svg>
                         </button>
-
                         <button class="btn btn-outline-secondary rounded-3 text-light border-secondary hover-danger"
                             (click)="abrirModalEliminar(evento)" title="Eliminar">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
@@ -130,11 +128,35 @@
                 </div>
 
                 <div class="mb-4">
-                    <label class="form-label text-secondary small mb-1">URL de la Imagen</label>
-                    <input type="text" class="form-control bg-transparent text-light border-secondary"
-                        placeholder="https://..." [(ngModel)]="imagen">
-                </div>
+                    <label class="form-label text-secondary small mb-1">Imagen del Evento</label>
 
+                    <div class="position-relative border border-secondary rounded-3 p-3 text-center"
+                        style="border-style: dashed !important; background-color: rgba(255,255,255,0.02); cursor: pointer;"
+                        [ngClass]="{'border-warning': imagen}">
+
+                        <input type="file" accept="image/*" class="position-absolute top-0 start-0 w-100 h-100"
+                            style="opacity: 0; cursor: pointer; z-index: 2;" (change)="onFileSelected($event)">
+
+                        <div *ngIf="!imagen" class="text-secondary py-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
+                                class="mb-2" viewBox="0 0 16 16">
+                                <path
+                                    d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
+                                <path
+                                    d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z" />
+                            </svg>
+                            <p class="mb-0 small fw-bold text-light">Haz clic para subir imagen</p>
+                            <small style="font-size: 0.7rem;">Soporta JPG, PNG desde PC o Celular</small>
+                        </div>
+
+                        <div *ngIf="imagen" class="position-relative" style="z-index: 1;">
+                            <img [src]="imagen" class="img-fluid rounded-3 shadow-sm"
+                                style="max-height: 140px; object-fit: cover; width: 100%;">
+                            <p class="text-warning small mb-0 mt-2 fw-bold">Imagen lista (Clic para cambiar)</p>
+                        </div>
+
+                    </div>
+                </div>
                 <div *ngIf="!modoEdicion">
                     <div class="d-flex gap-2">
                         <button type="button" class="btn btn-outline-secondary w-100"
@@ -147,7 +169,7 @@
                         Publicar Evento
                     </button>
                     <p class="text-danger small text-center mt-2 mb-0" *ngIf="!formularioCompleto">
-                        *Llena todos los campos para poder publicar.
+                        *Llena todos los campos y sube una imagen para publicar.
                     </p>
                 </div>
 

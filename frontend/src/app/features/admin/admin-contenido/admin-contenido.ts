@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { EventosService } from '../../../services/eventos';
 import { ActivatedRoute } from '@angular/router';
+import { EventosService } from '../../../services/eventos';
 
 @Component({
   selector: 'admin-contenido',
@@ -10,7 +10,7 @@ import { ActivatedRoute } from '@angular/router';
   imports: [CommonModule, FormsModule],
   templateUrl: './admin-contenido.html'
 })
-export class AdminContenido {
+export class AdminContenido implements OnInit {
 
   titulo = '';
   dj = '';
@@ -25,11 +25,7 @@ export class AdminContenido {
   eventoAEliminar: any = null;
   eventos: any[] = [];
 
- // constructor(private eventosService: EventosService) {
-    //this.eventos = this.eventosService.obtenerEventos();
-  //}
-
-constructor(private eventosService: EventosService, private route: ActivatedRoute) {
+  constructor(private eventosService: EventosService, private route: ActivatedRoute) {
     this.eventos = this.eventosService.obtenerEventos();
   }
 
@@ -70,11 +66,23 @@ constructor(private eventosService: EventosService, private route: ActivatedRout
     this.limpiarFormulario();
   }
 
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.imagen = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
   get formularioCompleto(): boolean {
     return this.titulo.trim() !== '' &&
       this.dj.trim() !== '' &&
       this.fecha.trim() !== '' &&
-      this.hora.trim() !== '';
+      this.hora.trim() !== '' &&
+      this.imagen.trim() !== '';
   }
 
   guardarEvento(comoBorrador: boolean) {
@@ -85,7 +93,6 @@ constructor(private eventosService: EventosService, private route: ActivatedRout
       this.eventoEnEdicion.dj = this.dj;
       this.eventoEnEdicion.fecha = `${this.fecha} - ${this.hora}`;
       if (this.imagen) this.eventoEnEdicion.imagen = this.imagen;
-
     } else {
       const nuevoEvento = {
         id: Date.now(),
@@ -109,6 +116,7 @@ constructor(private eventosService: EventosService, private route: ActivatedRout
     this.hora = '';
     this.imagen = '';
   }
+
   togglePublicacion(evento: any) {
     evento.estado = evento.estado === 'Publicado' ? 'Borrador' : 'Publicado';
   }
