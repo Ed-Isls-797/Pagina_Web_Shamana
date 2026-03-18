@@ -121,7 +121,7 @@ export class Login {
       this.mostrarError("La contraseña debe tener al menos 8 caracteres.");
       return;
     }
-
+//rodo sabe cosas ayuda
     if (this.rolSeleccionado === 'cliente') {
       this.router.navigate(['/client/dashboard']);
     } else {

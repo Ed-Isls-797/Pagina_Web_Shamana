@@ -17,6 +17,8 @@ import { AdminContenido } from './features/admin/admin-contenido/admin-contenido
 import { AdminConfiguracion } from './features/admin/admin-configuracion/admin-configuracion';
 
 export const routes: Routes = [
+
+  // 🌐 PÚBLICO
   {
     path: '',
     component: LayoutPublic,
@@ -28,17 +30,26 @@ export const routes: Routes = [
   },
 
   {
-    path: 'client',
-    component: LayoutClient,
-    children: [
-      { path: 'dashboard', component: ClientDashboard },
-      { path: 'reservations', component: Reservations },
-      { path: 'messages', component: Messages },
-      { path: 'payments', component: Payments },
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-    ],
-  },
+  path: 'client',
+  component: LayoutClient,
+  children: [
+    { path: 'dashboard', component: ClientDashboard },
+    { path: 'reservations', component: Reservations },
+    { path: 'messages', component: Messages },
+    { path: 'payments', component: Payments },
 
+    // ✅ CORRECTO
+    { 
+      path: 'nueva-reservacion',
+      loadComponent: () => import('./features/client/nueva-reservacion/nueva-reservacion')
+        .then(m => m.NuevaReservacion)
+    },
+
+    { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+  ],
+},
+
+  // 🔐 ADMIN
   {
     path: 'admin',
     component: LayoutAdmin,
@@ -48,10 +59,12 @@ export const routes: Routes = [
       { path: 'messages', component: AdminMensajes },
       { path: 'notificaciones', component: AdminNotificaciones },
       { path: 'contenido', component: AdminContenido },
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'configuracion', component: AdminConfiguracion },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },
 
+  // ⚠️ RUTA POR DEFECTO
   { path: '**', redirectTo: '' },
+
 ];
