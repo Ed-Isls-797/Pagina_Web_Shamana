@@ -1,81 +1,99 @@
-import { Component, OnInit } from '@angular/core'; // <-- Asegúrate de importar OnInit
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ReservationService } from '../../../services/reservation.service';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-nueva-reservacion',
   standalone: true,
-  imports: [FormsModule, CommonModule],
-  templateUrl: './nueva-reservacion.html'
+  imports: [CommonModule, FormsModule],
+  templateUrl: './nueva-reservacion.html',
+  styles: [`
+    .fondo-modal {
+      background: rgba(0,0,0,0.85);
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 1050;
+      backdrop-filter: blur(5px);
+    }
+    .card-neon-cyan {
+      background-color: #0d0d0d;
+      border: 1px solid #222;
+      border-radius: 16px;
+      width: 100%; max-width: 420px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.9);
+    }
+    
+    .input-with-icon { position: relative; }
+    .input-with-icon svg {
+      position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #6c757d; z-index: 10;
+      pointer-events: none; 
+    }
+    
+    .input-dark {
+      background-color: #111; border: 1px solid #333; color: white;
+      border-radius: 10px; padding: 0.8rem 1rem 0.8rem 45px; transition: all 0.3s;
+      appearance: none; 
+      cursor: pointer;
+    }
+    .input-dark:focus {
+      border-color: #0dcaf0; box-shadow: 0 0 12px rgba(13, 202, 240, 0.2);
+      outline: none; background-color: #111; color: white;
+    }
+    .input-dark option {
+      background-color: #111;
+      color: white;
+      padding: 10px;
+    }
+
+    .btn-cyan {
+      background-color: #0dcaf0; color: #000; font-weight: 700; border: none;
+      border-radius: 10px; padding: 0.8rem; transition: all 0.3s;
+    }
+    .btn-cyan:hover {
+      box-shadow: 0 0 20px rgba(13, 202, 240, 0.5); transform: translateY(-1px);
+    }
+    .btn-cancel {
+      background-color: transparent; color: #6c757d; border: 1px solid #333;
+      border-radius: 10px; padding: 0.8rem; transition: all 0.3s;
+    }
+    .btn-cancel:hover { border-color: #6c757d; color: white; }
+  `]
 })
-export class NuevaReservacion implements OnInit { // <-- Agrega implements OnInit
+export class NuevaReservacion {
+
+  fechasDisponibles: string[] = [
+    'viernes, 23 de octubre de 2026',
+    'sábado, 24 de octubre de 2026',
+    'viernes, 30 de octubre de 2026',
+    'viernes, 6 de noviembre de 2026'
+  ];
 
   reserva = {
-    nombre: '',
-    date: '',
-    people: 1,
-    zona: 'General',
-    status: 'Pendiente'
+    nombre: 'Cliente VIP', 
+    date: '', 
+    people: null as number | null,
+    status: 'Pendiente',
+    comprobante: null 
   };
-
-  // Aquí guardaremos las fechas calculadas
-  fechasDisponibles: { valor: string, texto: string }[] = [];
 
   constructor(
     private reservationService: ReservationService,
-    public router: Router
+    private router: Router
   ) {}
 
-  ngOnInit() {
-    this.generarFechas();
-  }
-
-  // 🔥 MAGIA: Genera los próximos Jueves, Viernes y Sábados
-  generarFechas() {
-    let fechaActual = new Date();
-    
-    // Revisamos los próximos 30 días
-    for (let i = 0; i < 30; i++) {
-      const diaSemana = fechaActual.getDay();
-      
-      // 4 = Jueves, 5 = Viernes, 6 = Sábado
-      if (diaSemana === 4 || diaSemana === 5 || diaSemana === 6) {
-        const valor = fechaActual.toISOString().split('T')[0]; // Formato: YYYY-MM-DD
-        
-        // Lo ponemos bonito para el cliente (Ej: "Jueves, 20 de marzo")
-        const opciones: Intl.DateTimeFormatOptions = { weekday: 'long', day: 'numeric', month: 'long' };
-        let texto = fechaActual.toLocaleDateString('es-MX', opciones);
-        texto = texto.charAt(0).toUpperCase() + texto.slice(1); // Mayúscula inicial
-
-        this.fechasDisponibles.push({ valor, texto });
-      }
-      
-      // Avanzamos al día siguiente
-      fechaActual.setDate(fechaActual.getDate() + 1);
-    }
-
-    // Seleccionamos la primera fecha disponible por defecto
-    if (this.fechasDisponibles.length > 0) {
-      this.reserva.date = this.fechasDisponibles[0].valor;
-    }
-  }
-
   guardarReserva() {
-    if (!this.reserva.nombre || !this.reserva.date) {
-      alert('Por favor, ingresa tu nombre.');
+    if (!this.reserva.date || !this.reserva.people) {
+      alert('Por favor, selecciona la fecha y el número de personas.');
       return;
     }
 
-    // Como ya solo pueden elegir días válidos, quitamos la validación de error anterior
-    const reservaFinal = {
-      ...this.reserva,
-      fecha: this.reserva.date 
-    };
+    this.reservationService.addReservation(this.reserva);
+    this.router.navigate(['/client/dashboard']); 
+  }
 
-    this.reservationService.addReservation(reservaFinal);
-    alert('¡Reservación creada con éxito!');
-    this.router.navigate(['/client/reservations']); 
+  cancelar() {
+    this.router.navigate(['/client/dashboard']); 
   }
 }
