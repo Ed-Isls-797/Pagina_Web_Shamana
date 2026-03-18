@@ -10,9 +10,6 @@ import { ReservationService } from '../../../services/reservation.service';
   imports: [CommonModule, FormsModule],
   templateUrl: './nueva-reservacion.html',
   styles: [`
-    /* ============================================== */
-    /* ESTILOS VIP CLIENTE (AZUL CYAN NEÓN)           */
-    /* ============================================== */
     .fondo-modal {
       background: rgba(0,0,0,0.85);
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -31,28 +28,25 @@ import { ReservationService } from '../../../services/reservation.service';
     .input-with-icon { position: relative; }
     .input-with-icon svg {
       position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #6c757d; z-index: 10;
-      pointer-events: none; /* Para que el clic pase a través del ícono */
+      pointer-events: none; 
     }
     
-    /* Estilos compartidos para el Select e Input */
     .input-dark {
       background-color: #111; border: 1px solid #333; color: white;
       border-radius: 10px; padding: 0.8rem 1rem 0.8rem 45px; transition: all 0.3s;
-      appearance: none; /* Quita la flechita por defecto en algunos navegadores para un look más limpio */
+      appearance: none; 
       cursor: pointer;
     }
     .input-dark:focus {
       border-color: #0dcaf0; box-shadow: 0 0 12px rgba(13, 202, 240, 0.2);
       outline: none; background-color: #111; color: white;
     }
-    /* El fondo oscuro de la lista desplegable */
     .input-dark option {
       background-color: #111;
       color: white;
       padding: 10px;
     }
 
-    /* Botones */
     .btn-cyan {
       background-color: #0dcaf0; color: #000; font-weight: 700; border: none;
       border-radius: 10px; padding: 0.8rem; transition: all 0.3s;
@@ -69,7 +63,6 @@ import { ReservationService } from '../../../services/reservation.service';
 })
 export class NuevaReservacion {
 
-  // 🔥 LISTA DE FECHAS DISPONIBLES (Igualita a la de tu foto)
   fechasDisponibles: string[] = [
     'viernes, 23 de octubre de 2026',
     'sábado, 24 de octubre de 2026',
@@ -78,7 +71,7 @@ export class NuevaReservacion {
   ];
 
   reserva = {
-    nombre: 'Cliente VIP', // Después se tomará del usuario logueado
+    nombre: 'Cliente VIP', 
     date: '', 
     people: null as number | null,
     status: 'Pendiente',

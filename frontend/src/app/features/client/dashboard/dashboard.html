@@ -63,7 +63,7 @@
     <div class="card-body p-0">
       <ul class="list-group list-group-flush rounded-bottom-4">
         
-        @for (activity of recentActivity; track activity.id) {
+@for (activity of recentActivity; track activity.id) {
           <li class="list-group-item bg-transparent text-light border-secondary p-4 d-flex align-items-start gap-3 hover-bg">
             
             <div class="mt-1" [ngClass]="{
@@ -81,7 +81,6 @@
             
           </li>
         }
-        
         @empty {
           <li class="list-group-item bg-transparent text-secondary border-0 p-4 text-center">
             No hay actividad reciente para mostrar.
