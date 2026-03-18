@@ -1,3 +1,4 @@
+// Archivo: src/app/services/reservation.service.ts
 import { Injectable } from '@angular/core';
 
 @Injectable({
@@ -20,12 +21,10 @@ export class ReservationService {
   updateReservations(reservations: any[]) {
     localStorage.setItem(this.key, JSON.stringify(reservations));
   }
+
   updateReservationStatus(id: number, nuevoEstado: string) {
-  const reservations = this.getReservations();
-
-  reservations[id].status = nuevoEstado;
-
-  localStorage.setItem('reservations', JSON.stringify(reservations));
-}
-
+    const reservations = this.getReservations();
+    reservations[id].status = nuevoEstado;
+    localStorage.setItem('reservations', JSON.stringify(reservations));
+  }
 }

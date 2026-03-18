@@ -1,54 +1,95 @@
-<div class="container-fluid">
+<div class="container-fluid py-4">
 
-  <!-- TÍTULO -->
-  <div class="mb-4">
-    <h2 class="text-info fw-bold">Panel del Cliente</h2>
-    <p class="text-secondary">Resumen general de tu actividad</p>
+  <div class="mb-5">
+    <h2 class="text-info fw-bold d-flex align-items-center gap-2 mb-1">
+      <i class="bi bi-grid-1x2-fill"></i> Panel del Cliente
+    </h2>
+    <p class="text-secondary mb-0">Resumen general de tu actividad reciente</p>
   </div>
 
-  <!-- CARDS -->
-  <div class="row g-4">
+  <div class="row g-4 mb-5">
 
     <div class="col-md-4">
-      <div class="card bg-black text-light border border-secondary shadow-sm">
-        <div class="card-body text-center">
-          <h5 class="card-title text-info">Reservaciones Activas</h5>
-          <h2 class="fw-bold">{{ activeReservations }}</h2>
+      <div class="card bg-dark text-light border-0 shadow-sm rounded-4 h-100 hover-lift">
+        <div class="card-body p-4 d-flex align-items-center">
+          <div class="bg-info bg-opacity-10 text-info p-3 rounded-circle me-4">
+            <i class="bi bi-calendar-check fs-2"></i>
+          </div>
+          <div>
+            <h6 class="text-secondary text-uppercase fw-semibold mb-1" style="font-size: 0.8rem;">Reservaciones Activas</h6>
+            <h2 class="fw-bold mb-0 text-white">{{ activeReservations }}</h2>
+          </div>
         </div>
       </div>
     </div>
 
     <div class="col-md-4">
-      <div class="card bg-black text-light border border-secondary shadow-sm">
-        <div class="card-body text-center">
-          <h5 class="card-title text-info">Mensajes Pendientes</h5>
-          <h2 class="fw-bold">{{ pendingMessages }}</h2>
+      <div class="card bg-dark text-light border-0 shadow-sm rounded-4 h-100 hover-lift">
+        <div class="card-body p-4 d-flex align-items-center">
+          <div class="bg-warning bg-opacity-10 text-warning p-3 rounded-circle me-4">
+            <i class="bi bi-envelope-paper fs-2"></i>
+          </div>
+          <div>
+            <h6 class="text-secondary text-uppercase fw-semibold mb-1" style="font-size: 0.8rem;">Mensajes Pendientes</h6>
+            <h2 class="fw-bold mb-0 text-white">{{ pendingMessages }}</h2>
+          </div>
         </div>
       </div>
     </div>
 
     <div class="col-md-4">
-      <div class="card bg-black text-light border border-secondary shadow-sm">
-        <div class="card-body text-center">
-          <h5 class="card-title text-info">Comprobantes Enviados</h5>
-          <h2 class="fw-bold">{{ uploadedPayments }}</h2>
+      <div class="card bg-dark text-light border-0 shadow-sm rounded-4 h-100 hover-lift">
+        <div class="card-body p-4 d-flex align-items-center">
+          <div class="bg-success bg-opacity-10 text-success p-3 rounded-circle me-4">
+            <i class="bi bi-receipt fs-2"></i>
+          </div>
+          <div>
+            <h6 class="text-secondary text-uppercase fw-semibold mb-1" style="font-size: 0.8rem;">Comprobantes Enviados</h6>
+            <h2 class="fw-bold mb-0 text-white">{{ uploadedPayments }}</h2>
+          </div>
         </div>
       </div>
     </div>
 
   </div>
 
-  <!-- ACTIVIDAD RECIENTE -->
-  <div class="mt-5">
-    <h4 class="text-info mb-3">Actividad Reciente</h4>
-
-    <ul class="list-group">
-      @for (activity of recentActivity; track $index) {
-  <li class="list-group-item bg-dark text-light border-secondary">
-    {{ activity }}
-  </li>
-}
-    </ul>
+  <div class="card bg-dark border-0 shadow-sm rounded-4">
+    <div class="card-header border-secondary border-bottom p-4 bg-transparent">
+      <h5 class="text-info mb-0 fw-bold">
+        <i class="bi bi-clock-history me-2"></i> Actividad Reciente
+      </h5>
+    </div>
+    
+    <div class="card-body p-0">
+      <ul class="list-group list-group-flush rounded-bottom-4">
+        
+        @for (activity of recentActivity; track activity.id) {
+          <li class="list-group-item bg-transparent text-light border-secondary p-4 d-flex align-items-start gap-3 hover-bg">
+            
+            <div class="mt-1" [ngClass]="{
+              'text-success': activity.type === 'success',
+              'text-warning': activity.type === 'warning',
+              'text-info': activity.type === 'info'
+            }">
+              <i class="bi bi-record-circle-fill" style="font-size: 0.75rem;"></i>
+            </div>
+            
+            <div>
+              <p class="mb-0">{{ activity.message }}</p>
+              <small class="text-secondary">{{ activity.date | date:'mediumDate' }}</small>
+            </div>
+            
+          </li>
+        }
+        
+        @empty {
+          <li class="list-group-item bg-transparent text-secondary border-0 p-4 text-center">
+            No hay actividad reciente para mostrar.
+          </li>
+        }
+        
+      </ul>
+    </div>
   </div>
 
 </div>
