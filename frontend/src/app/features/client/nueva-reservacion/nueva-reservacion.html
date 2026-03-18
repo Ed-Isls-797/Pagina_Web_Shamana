@@ -1,0 +1,65 @@
+<div class="container mt-5 text-white">
+
+  <div class="card bg-dark border-secondary shadow-lg p-4">
+
+    <h3 class="text-info mb-4 text-center">
+      Nueva Reservación
+    </h3>
+
+    <form (ngSubmit)="guardarReserva()">
+
+      <div class="mb-3">
+        <label class="form-label">Fecha</label>
+        <input type="date"
+               [(ngModel)]="reserva.date"
+               name="date"
+               class="form-control"
+               required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Personas</label>
+        <input type="number"
+               [(ngModel)]="reserva.people"
+               name="people"
+               class="form-control"
+               min="1"
+               required>
+      </div>
+
+      <!-- 🔥 CORRECCIÓN AQUÍ -->
+      <div class="mb-3">
+        <label class="form-label">Nombre</label>
+        <input 
+          type="text" 
+          class="form-control" 
+          [(ngModel)]="reserva.nombre"
+          name="nombre"  
+          placeholder="Tu nombre"
+          required> <!-- 👈 OPCIONAL PERO RECOMENDADO -->
+      </div>
+
+      <div class="mb-3">
+  <label class="form-label">Comprobante</label>
+  <input 
+    type="file" 
+    class="form-control"
+    (change)="onFileSelected($event)"
+    required>
+</div>
+
+<!-- 🔥 AQUÍ -->
+<img *ngIf="reserva.comprobante" 
+     [src]="reserva.comprobante" 
+     class="img-fluid mt-3 rounded border"
+     style="max-height: 200px; object-fit: cover;">
+      <!-- 🔥 IMPORTANTE -->
+      <button type="submit" class="btn btn-success w-100">
+        Confirmar Reservación
+      </button>
+
+    </form>
+
+  </div>
+
+</div>
