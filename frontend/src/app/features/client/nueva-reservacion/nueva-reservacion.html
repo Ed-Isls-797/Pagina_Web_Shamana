@@ -27,7 +27,34 @@
                required>
       </div>
 
-      <button class="btn btn-success w-100">
+      <!-- 🔥 CORRECCIÓN AQUÍ -->
+      <div class="mb-3">
+        <label class="form-label">Nombre</label>
+        <input 
+          type="text" 
+          class="form-control" 
+          [(ngModel)]="reserva.nombre"
+          name="nombre"  
+          placeholder="Tu nombre"
+          required> <!-- 👈 OPCIONAL PERO RECOMENDADO -->
+      </div>
+
+      <div class="mb-3">
+  <label class="form-label">Comprobante</label>
+  <input 
+    type="file" 
+    class="form-control"
+    (change)="onFileSelected($event)"
+    required>
+</div>
+
+<!-- 🔥 AQUÍ -->
+<img *ngIf="reserva.comprobante" 
+     [src]="reserva.comprobante" 
+     class="img-fluid mt-3 rounded border"
+     style="max-height: 200px; object-fit: cover;">
+      <!-- 🔥 IMPORTANTE -->
+      <button type="submit" class="btn btn-success w-100">
         Confirmar Reservación
       </button>
 

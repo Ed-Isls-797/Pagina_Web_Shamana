@@ -12,9 +12,11 @@ import { ReservationService } from '../../../services/reservation.service';
 export class NuevaReservacion {
 
   reserva = {
+    nombre: '',
     date: '',
     people: 1,
-    status: 'Pendiente'
+    status: 'Pendiente',
+    comprobante: '' as string | null // 👈 MEJOR TIPADO
   };
 
   constructor(
@@ -23,11 +25,33 @@ export class NuevaReservacion {
   ) {}
 
   guardarReserva() {
+
+    // 🔥 VALIDACIÓN (IMPORTANTE)
+    if (!this.reserva.nombre || !this.reserva.date || !this.reserva.comprobante) {
+      alert('Completa todos los campos');
+      return;
+    }
+
     this.reservationService.addReservation(this.reserva);
 
     alert('Reservación creada correctamente');
 
-    this.router.navigate(['/client/reservations']); // ✅ CORRECTO
+    this.router.navigate(['/client/reservations']); 
+  }
+
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+
+    if (!input.files || input.files.length === 0) return;
+
+    const file = input.files[0];
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      this.reserva.comprobante = reader.result as string;
+    };
+
+    reader.readAsDataURL(file);
   }
 
 }

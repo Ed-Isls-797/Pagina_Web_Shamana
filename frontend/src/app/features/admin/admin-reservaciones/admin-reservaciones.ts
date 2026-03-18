@@ -47,18 +47,8 @@ export class AdminReservaciones {
   constructor(private reservationService: ReservationService) {}
 
   ngOnInit() {
-    const data = this.reservationService.getReservations();
-
-    // 🔥 ADAPTAMOS LOS DATOS AL FORMATO DEL ADMIN
-    this.reservaciones = data.map((res: any, index: number) => ({
-      id: index + 1,
-      cliente: 'Cliente App', // puedes mejorar luego
-      fecha: res.date,
-      mesa: res.people + ' personas',
-      estado: res.status || 'Pendiente',
-      monto: 'Sin definir',
-      comprobante: 'https://via.placeholder.com/400'
-    }));
+    // 🔥 USAMOS DATOS REALES (YA NO MAP)
+    this.reservaciones = this.reservationService.getReservations();
   }
 
   abrirModal(reserva: any) {
@@ -72,26 +62,31 @@ export class AdminReservaciones {
   }
 
   aprobarPago() {
-  if (this.reservaSeleccionada) {
+    if (this.reservaSeleccionada) {
 
-    this.reservationService.updateReservationStatus(
-      this.reservaSeleccionada.id - 1,
-      'Confirmado'
-    );
+      this.reservaSeleccionada.status = 'Confirmado';
 
-    this.reservaSeleccionada.estado = 'Confirmado';
+      this.guardarCambios();
 
-    this.mostrarToast('Pago aprobado. Reservación confirmada.', 'success');
-    this.cerrarModal();
+      this.mostrarToast('Pago aprobado. Reservación confirmada.', 'success');
+      this.cerrarModal();
+    }
   }
-}
 
   rechazarPago() {
     if (this.reservaSeleccionada) {
-      this.reservaSeleccionada.estado = 'Rechazado';
-      this.mostrarToast('Pago rechazado. Se notificará al cliente.', 'danger');
+
+      this.reservaSeleccionada.status = 'Rechazado';
+
+      this.guardarCambios();
+
+      this.mostrarToast('Pago rechazado.', 'danger');
       this.cerrarModal();
     }
+  }
+
+  guardarCambios() {
+    localStorage.setItem('reservations', JSON.stringify(this.reservaciones));
   }
 
   mostrarToast(mensaje: string, tipo: 'success' | 'danger') {
