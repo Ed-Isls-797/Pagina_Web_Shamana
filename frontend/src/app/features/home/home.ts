@@ -1,6 +1,7 @@
 import { Component } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { EventosService } from '../../services/eventos'
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'home',
@@ -31,8 +32,12 @@ export class Home {
   }
 ];
 
-  constructor(private eventosService:EventosService){
+  constructor(private eventosService:EventosService, private router: Router){
     this.eventos = this.eventosService.obtenerEventos()
+  }
+
+  irReservaciones() {
+    this.router.navigate(['/client/reservations']);
   }
 
 }

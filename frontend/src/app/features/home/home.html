@@ -83,10 +83,6 @@ background-position:center;
                 </p>
             </div>
 
-            <a class="text-decoration-none text-info">
-                Ver todos →
-            </a>
-
         </div>
 
         <div class="row g-4">
@@ -112,7 +108,7 @@ background-position:center;
                             {{evento.artista}}
                         </p>
 
-                        <button class="btn btn-outline-light mt-2">
+                        <button class="btn btn-outline-light mt-2" (click)="irReservaciones()">
                             Hacer Reserva
                         </button>
 
@@ -128,65 +124,40 @@ background-position:center;
 
 </section>
 
-<!-- UBICACIÓN / HORARIOS / CONTACTO -->
 <section class="bg-dark text-white py-5">
 
     <div class="container">
 
-        <div class="row g-4 text-center">
+        <div class="row g-4 text-center align-items-start">
 
             <!-- UBICACIÓN -->
             <div class="col-md-4">
 
-    <h4 class="text-info fw-bold mb-3">
-        📍 Ubicación
-    </h4>
-
-    <p class="text-secondary">
-        Shamana Pachuca <br>
-        Camino Real de La Plata 201 <br>
-        Zona Plateada, Pachuca de Soto, Hidalgo
-    </p>
-
-    <a href="https://www.google.com/maps/search/Shamana+Pachuca+Camino+Real+de+la+Plata+201"
-       target="_blank"
-       class="btn btn-outline-info btn-sm mt-2">
-       Ver en Google Maps
-    </a>
-
-</div>
-
-            <!-- HORARIOS -->
-            <div class="col-md-4">
-
                 <h4 class="text-info fw-bold mb-3">
-                    🕒 Horarios
+                    📍 Ubicación
                 </h4>
 
                 <p class="text-secondary">
+                    Shamana Pachuca <br>
+                    Camino Real de La Plata 201 <br>
+                    Zona Plateada, Pachuca de Soto, Hidalgo
+                </p>
+
+                <a href="https://www.google.com/maps/search/Shamana+Pachuca+Camino+Real+de+la+Plata+201"
+                   target="_blank"
+                   class="btn btn-outline-info btn-sm mt-2">
+                   Ver en Google Maps
+                </a>
+
+            </div>
+            <div class="col-md-4"></div>
+            <!-- HORARIOS -->
+            <div class="col-md-4 d-flex flex-column align-items-end justify-content-start">
+                <h4 class="text-info fw-bold mb-3">🕒 Horarios</h4>
+                <p class="text-secondary text-end">
                     Jueves a Sábado <br>
                     9:00 PM – 3:00 AM
                 </p>
-
-            </div>
-
-            <!-- CONTACTO -->
-            <div class="col-md-4">
-
-                <h4 class="text-info fw-bold mb-3">
-                    📞 Contacto
-                </h4>
-
-                <p class="text-secondary">
-                    Teléfono: 771 292 1452
-                </p>
-
-                <a href="https://wa.me/527712921452"
-                   class="btn btn-success btn-sm mt-2"
-                   target="_blank">
-                   WhatsApp
-                </a>
-
             </div>
 
         </div>
