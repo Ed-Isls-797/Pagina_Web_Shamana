@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ReservationService } from '../../../services/reservation.service';
@@ -6,17 +7,82 @@ import { ReservationService } from '../../../services/reservation.service';
 @Component({
   selector: 'app-nueva-reservacion',
   standalone: true,
-  imports: [FormsModule],
-  templateUrl: './nueva-reservacion.html'
+  imports: [CommonModule, FormsModule],
+  templateUrl: './nueva-reservacion.html',
+  styles: [`
+    /* ============================================== */
+    /* ESTILOS VIP CLIENTE (AZUL CYAN NEÓN)           */
+    /* ============================================== */
+    .fondo-modal {
+      background: rgba(0,0,0,0.85);
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 1050;
+      backdrop-filter: blur(5px);
+    }
+    .card-neon-cyan {
+      background-color: #0d0d0d;
+      border: 1px solid #222;
+      border-radius: 16px;
+      width: 100%; max-width: 420px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.9);
+    }
+    
+    .input-with-icon { position: relative; }
+    .input-with-icon svg {
+      position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #6c757d; z-index: 10;
+      pointer-events: none; /* Para que el clic pase a través del ícono */
+    }
+    
+    /* Estilos compartidos para el Select e Input */
+    .input-dark {
+      background-color: #111; border: 1px solid #333; color: white;
+      border-radius: 10px; padding: 0.8rem 1rem 0.8rem 45px; transition: all 0.3s;
+      appearance: none; /* Quita la flechita por defecto en algunos navegadores para un look más limpio */
+      cursor: pointer;
+    }
+    .input-dark:focus {
+      border-color: #0dcaf0; box-shadow: 0 0 12px rgba(13, 202, 240, 0.2);
+      outline: none; background-color: #111; color: white;
+    }
+    /* El fondo oscuro de la lista desplegable */
+    .input-dark option {
+      background-color: #111;
+      color: white;
+      padding: 10px;
+    }
+
+    /* Botones */
+    .btn-cyan {
+      background-color: #0dcaf0; color: #000; font-weight: 700; border: none;
+      border-radius: 10px; padding: 0.8rem; transition: all 0.3s;
+    }
+    .btn-cyan:hover {
+      box-shadow: 0 0 20px rgba(13, 202, 240, 0.5); transform: translateY(-1px);
+    }
+    .btn-cancel {
+      background-color: transparent; color: #6c757d; border: 1px solid #333;
+      border-radius: 10px; padding: 0.8rem; transition: all 0.3s;
+    }
+    .btn-cancel:hover { border-color: #6c757d; color: white; }
+  `]
 })
 export class NuevaReservacion {
 
+  // 🔥 LISTA DE FECHAS DISPONIBLES (Igualita a la de tu foto)
+  fechasDisponibles: string[] = [
+    'viernes, 23 de octubre de 2026',
+    'sábado, 24 de octubre de 2026',
+    'viernes, 30 de octubre de 2026',
+    'viernes, 6 de noviembre de 2026'
+  ];
+
   reserva = {
-    nombre: '',
-    date: '',
-    people: 1,
+    nombre: 'Cliente VIP', // Después se tomará del usuario logueado
+    date: '', 
+    people: null as number | null,
     status: 'Pendiente',
-    comprobante: '' as string | null // 👈 MEJOR TIPADO
+    comprobante: null 
   };
 
   constructor(
@@ -25,33 +91,16 @@ export class NuevaReservacion {
   ) {}
 
   guardarReserva() {
-
-    // 🔥 VALIDACIÓN (IMPORTANTE)
-    if (!this.reserva.nombre || !this.reserva.date || !this.reserva.comprobante) {
-      alert('Completa todos los campos');
+    if (!this.reserva.date || !this.reserva.people) {
+      alert('Por favor, selecciona la fecha y el número de personas.');
       return;
     }
 
     this.reservationService.addReservation(this.reserva);
-
-    alert('Reservación creada correctamente');
-
-    this.router.navigate(['/client/reservations']); 
+    this.router.navigate(['/client/dashboard']); 
   }
 
-  onFileSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-
-    if (!input.files || input.files.length === 0) return;
-
-    const file = input.files[0];
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      this.reserva.comprobante = reader.result as string;
-    };
-
-    reader.readAsDataURL(file);
+  cancelar() {
+    this.router.navigate(['/client/dashboard']); 
   }
-
 }

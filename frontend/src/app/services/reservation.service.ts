@@ -1,4 +1,3 @@
-// Archivo: src/app/services/reservation.service.ts
 import { Injectable } from '@angular/core';
 
 @Injectable({
@@ -6,25 +5,27 @@ import { Injectable } from '@angular/core';
 })
 export class ReservationService {
 
-  private key = 'reservations';
+  constructor() { }
 
   getReservations() {
-    return JSON.parse(localStorage.getItem(this.key) || '[]');
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const data = localStorage.getItem('reservations');
+      return data ? JSON.parse(data) : [];
+    }
+    return []; 
   }
 
-  addReservation(res: any) {
-    const reservations = this.getReservations();
-    reservations.push(res);
-    localStorage.setItem(this.key, JSON.stringify(reservations));
+  addReservation(reserva: any) {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const reservaciones = this.getReservations();
+      reservaciones.push(reserva);
+      localStorage.setItem('reservations', JSON.stringify(reservaciones));
+    }
   }
 
-  updateReservations(reservations: any[]) {
-    localStorage.setItem(this.key, JSON.stringify(reservations));
-  }
-
-  updateReservationStatus(id: number, nuevoEstado: string) {
-    const reservations = this.getReservations();
-    reservations[id].status = nuevoEstado;
-    localStorage.setItem('reservations', JSON.stringify(reservations));
+  saveReservations(reservations: any[]) {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      localStorage.setItem('reservations', JSON.stringify(reservations));
+    }
   }
 }
