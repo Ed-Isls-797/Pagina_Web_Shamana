@@ -1,83 +1,58 @@
-<div class="container-fluid py-4">
+<div class="container-fluid">
 
-  <div class="d-flex flex-wrap justify-content-between align-items-center mb-5 gap-3">
-    <div>
-      <h2 class="text-info fw-bold mb-1"><i class="bi bi-ticket-perforated-fill me-2"></i>Mis Reservaciones</h2>
-      <p class="text-secondary mb-0">Gestiona tus próximos accesos</p>
+  <h2 class="text-info fw-bold mb-4">
+    Mis Reservaciones
+  </h2>
+
+  <!-- BOTÓN NUEVA RESERVACIÓN -->
+  <div class="mb-3">
+  <button (click)="irNuevaReserva()" class="btn btn-info">
+  Nueva reservación
+</button>
+  </div>
+
+  <!-- TABLA -->
+  <div class="card bg-dark border-secondary">
+    <div class="card-body">
+
+      <table class="table table-dark table-striped align-middle">
+
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Personas</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          @for (res of reservations; track $index) {
+
+            <tr>
+              <td>{{ res.date }}</td>
+              <td>{{ res.people }}</td>
+              <td>
+
+                <span 
+                  class="badge"
+                  [class.bg-success]="res.status === 'Confirmada'"
+                  [class.bg-warning]="res.status === 'Pendiente'">
+
+                  {{ res.status }}
+
+                </span>
+
+              </td>
+            </tr>
+
+          }
+
+        </tbody>
+
+      </table>
+
     </div>
-    <button (click)="irNuevaReserva()" class="btn btn-info fw-bold shadow-sm px-4 py-2 rounded-pill">
-      <i class="bi bi-plus-lg me-1"></i> Nueva Reserva
-    </button>
   </div>
 
-  <div class="row g-4">
-    
-    @for (res of reservations; track $index) {
-      <div class="col-12 col-md-6 col-lg-4">
-        
-        <div class="card bg-dark border-0 shadow-lg rounded-4 overflow-hidden h-100 position-relative" style="border: 1px solid rgba(255,255,255,0.05) !important;">
-          
-          <div class="position-absolute top-0 start-0 w-100" style="height: 4px;" 
-               [ngClass]="{
-                 'bg-success': res.status === 'Confirmada', 
-                 'bg-warning': res.status === 'Pendiente'
-               }">
-          </div>
-
-          <div class="card-body p-4">
-            
-            <div class="d-flex justify-content-between align-items-start mb-4">
-              <span class="badge rounded-pill px-3 py-2 fw-bold"
-                    [ngClass]="{
-                      'bg-success bg-opacity-25 text-success border border-success': res.status === 'Confirmada', 
-                      'bg-warning bg-opacity-25 text-warning border border-warning': res.status === 'Pendiente'
-                    }">
-                {{ res.status }}
-              </span>
-              
-              <div class="text-end">
-                <h6 class="text-white mb-0 fw-bold text-uppercase">{{ res.zona || 'General' }}</h6>
-                <small class="text-secondary">Zona</small>
-              </div>
-            </div>
-
-            <h4 class="text-info fw-bold mb-4 border-bottom border-secondary pb-3">
-              <i class="bi bi-calendar-event me-2"></i>{{ res.date }}
-            </h4>
-
-            <div class="d-flex align-items-center text-light mb-2">
-              <i class="bi bi-person-vcard-fill me-3 text-secondary fs-5"></i>
-              <div>
-                <small class="text-secondary d-block lh-1">A nombre de</small>
-                <span class="fw-semibold">{{ res.nombre || 'Sin nombre' }}</span>
-              </div>
-            </div>
-
-            <div class="d-flex align-items-center text-light mt-3">
-              <i class="bi bi-people-fill me-3 text-secondary fs-5"></i>
-              <div>
-                <small class="text-secondary d-block lh-1">Accesos</small>
-                <span class="fw-semibold">{{ res.people }} {{ res.people == 1 ? 'Persona' : 'Personas' }}</span>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </div>
-    } 
-
-    @empty {
-      <div class="col-12 text-center py-5 mt-4">
-        <div class="text-secondary mb-3">
-          <i class="bi bi-ticket-detailed" style="font-size: 5rem; opacity: 0.5;"></i>
-        </div>
-        <h3 class="text-light fw-bold">Aún no tienes planes</h3>
-        <p class="text-secondary">Prepárate para la mejor noche. Crea tu primera reservación ahora.</p>
-        <button (click)="irNuevaReserva()" class="btn btn-outline-info rounded-pill px-4 mt-2">
-          Comenzar
-        </button>
-      </div>
-    }
-    
-  </div>
 </div>
