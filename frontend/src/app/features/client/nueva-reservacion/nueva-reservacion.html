@@ -1,65 +1,64 @@
 <div class="container mt-5 text-white">
 
-  <div class="card bg-dark border-secondary shadow-lg p-4">
+  <div class="card bg-dark border-secondary shadow-lg p-4 col-md-8 mx-auto rounded-4">
 
-    <h3 class="text-info mb-4 text-center">
-      Nueva Reservación
+    <h3 class="text-info mb-1 text-center fw-bold">
+      <i class="bi bi-moon-stars-fill me-2"></i>Nueva Reservación
     </h3>
+    <p class="text-secondary text-center mb-4">Exclusivo de Jueves a Sábado</p>
 
     <form (ngSubmit)="guardarReserva()">
 
-      <div class="mb-3">
-        <label class="form-label">Fecha</label>
-        <input type="date"
-               [(ngModel)]="reserva.date"
-               name="date"
-               class="form-control"
+      <div class="mb-4">
+        <label class="form-label text-secondary text-uppercase small fw-bold">Nombre a cargo</label>
+        <input type="text" 
+               class="form-control bg-black text-light border-secondary shadow-none p-3" 
+               [(ngModel)]="reserva.nombre"
+               name="nombre"  
+               placeholder="Ej. Juan Pérez"
                required>
       </div>
 
-      <div class="mb-3">
-        <label class="form-label">Personas</label>
-        <input type="number"
-               [(ngModel)]="reserva.people"
-               name="people"
-               class="form-control"
-               min="1"
-               required>
+      <div class="mb-4">
+        <label class="form-label text-secondary text-uppercase small fw-bold">Fecha de reserva</label>
+        <select class="form-select bg-black text-light border-secondary shadow-none p-3" 
+                [(ngModel)]="reserva.date" 
+                name="date" 
+                required>
+          @for (fecha of fechasDisponibles; track fecha.valor) {
+            <option [value]="fecha.valor">{{ fecha.texto }}</option>
+          }
+        </select>
       </div>
 
-      <!-- 🔥 CORRECCIÓN AQUÍ -->
-      <div class="mb-3">
-        <label class="form-label">Nombre</label>
-        <input 
-          type="text" 
-          class="form-control" 
-          [(ngModel)]="reserva.nombre"
-          name="nombre"  
-          placeholder="Tu nombre"
-          required> <!-- 👈 OPCIONAL PERO RECOMENDADO -->
+      <div class="row mb-5">
+        <div class="col-6">
+          <label class="form-label text-secondary text-uppercase small fw-bold">Personas</label>
+          <input type="number"
+                 [(ngModel)]="reserva.people"
+                 name="people"
+                 class="form-control bg-black text-light border-secondary shadow-none p-3"
+                 min="1"
+                 max="20"
+                 required>
+        </div>
+        
+        <div class="col-6">
+          <label class="form-label text-secondary text-uppercase small fw-bold">Zona</label>
+          <select class="form-select bg-black text-light border-secondary shadow-none p-3" 
+                  [(ngModel)]="reserva.zona" name="zona">
+            <option value="General">General</option>
+            <option value="VIP">VIP</option>
+            <option value="Terraza">Terraza</option>
+          </select>
+        </div>
       </div>
 
-      <div class="mb-3">
-  <label class="form-label">Comprobante</label>
-  <input 
-    type="file" 
-    class="form-control"
-    (change)="onFileSelected($event)"
-    required>
-</div>
-
-<!-- 🔥 AQUÍ -->
-<img *ngIf="reserva.comprobante" 
-     [src]="reserva.comprobante" 
-     class="img-fluid mt-3 rounded border"
-     style="max-height: 200px; object-fit: cover;">
-      <!-- 🔥 IMPORTANTE -->
-      <button type="submit" class="btn btn-success w-100">
-        Confirmar Reservación
+      <button type="submit" class="btn btn-info w-100 fw-bold py-3 fs-5 text-dark shadow-sm rounded-3">
+        Confirmar Accesos
       </button>
 
     </form>
 
   </div>
-
 </div>

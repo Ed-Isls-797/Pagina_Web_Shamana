@@ -1,57 +1,81 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core'; // <-- Asegúrate de importar OnInit
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ReservationService } from '../../../services/reservation.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-nueva-reservacion',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './nueva-reservacion.html'
 })
-export class NuevaReservacion {
+export class NuevaReservacion implements OnInit { // <-- Agrega implements OnInit
 
   reserva = {
     nombre: '',
     date: '',
     people: 1,
-    status: 'Pendiente',
-    comprobante: '' as string | null // 👈 MEJOR TIPADO
+    zona: 'General',
+    status: 'Pendiente'
   };
+
+  // Aquí guardaremos las fechas calculadas
+  fechasDisponibles: { valor: string, texto: string }[] = [];
 
   constructor(
     private reservationService: ReservationService,
-    private router: Router
+    public router: Router
   ) {}
 
-  guardarReserva() {
+  ngOnInit() {
+    this.generarFechas();
+  }
 
-    // 🔥 VALIDACIÓN (IMPORTANTE)
-    if (!this.reserva.nombre || !this.reserva.date || !this.reserva.comprobante) {
-      alert('Completa todos los campos');
+  // 🔥 MAGIA: Genera los próximos Jueves, Viernes y Sábados
+  generarFechas() {
+    let fechaActual = new Date();
+    
+    // Revisamos los próximos 30 días
+    for (let i = 0; i < 30; i++) {
+      const diaSemana = fechaActual.getDay();
+      
+      // 4 = Jueves, 5 = Viernes, 6 = Sábado
+      if (diaSemana === 4 || diaSemana === 5 || diaSemana === 6) {
+        const valor = fechaActual.toISOString().split('T')[0]; // Formato: YYYY-MM-DD
+        
+        // Lo ponemos bonito para el cliente (Ej: "Jueves, 20 de marzo")
+        const opciones: Intl.DateTimeFormatOptions = { weekday: 'long', day: 'numeric', month: 'long' };
+        let texto = fechaActual.toLocaleDateString('es-MX', opciones);
+        texto = texto.charAt(0).toUpperCase() + texto.slice(1); // Mayúscula inicial
+
+        this.fechasDisponibles.push({ valor, texto });
+      }
+      
+      // Avanzamos al día siguiente
+      fechaActual.setDate(fechaActual.getDate() + 1);
+    }
+
+    // Seleccionamos la primera fecha disponible por defecto
+    if (this.fechasDisponibles.length > 0) {
+      this.reserva.date = this.fechasDisponibles[0].valor;
+    }
+  }
+
+  guardarReserva() {
+    if (!this.reserva.nombre || !this.reserva.date) {
+      alert('Por favor, ingresa tu nombre.');
       return;
     }
 
-    this.reservationService.addReservation(this.reserva);
-
-    alert('Reservación creada correctamente');
-
-    this.router.navigate(['/client/reservations']); 
-  }
-
-  onFileSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-
-    if (!input.files || input.files.length === 0) return;
-
-    const file = input.files[0];
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      this.reserva.comprobante = reader.result as string;
+    // Como ya solo pueden elegir días válidos, quitamos la validación de error anterior
+    const reservaFinal = {
+      ...this.reserva,
+      fecha: this.reserva.date 
     };
 
-    reader.readAsDataURL(file);
+    this.reservationService.addReservation(reservaFinal);
+    alert('¡Reservación creada con éxito!');
+    this.router.navigate(['/client/reservations']); 
   }
-
 }
