@@ -39,29 +39,37 @@ import { Router } from '@angular/router';
     }
 
     .input-dark-group .input-group-text {
-      background-color: #111;
-      border: 1px solid #333;
-      border-right: none;
-      color: #6c757d;
+      background-color: #111 !important;
+      border: 1px solid #333 !important;
+      color: #6c757d !important;
     }
+    
     .input-dark-group .form-control {
-      background-color: #111;
-      border: 1px solid #333;
-      border-left: none;
-      color: white;
+      background-color: #111 !important;
+      border: 1px solid #333 !important;
+      color: white !important;
     }
+    
     .input-dark-group .form-control:focus {
-      border-color: #bc13fe;
-      box-shadow: none;
+      box-shadow: none !important;
+      background-color: #111 !important;
+      color: white !important;
     }
+    
     .input-dark-group:focus-within .input-group-text,
     .input-dark-group:focus-within .form-control {
-      border-color: #bc13fe;
-      border-top: 1px solid #bc13fe;
-      border-bottom: 1px solid #bc13fe;
+      border-color: #bc13fe !important;
     }
-    .input-dark-group:focus-within .input-group-text { border-left: 1px solid #bc13fe; }
-    .input-dark-group:focus-within .form-control { border-right: 1px solid #bc13fe; }
+
+    .input-dark-group .form-control:-webkit-autofill,
+    .input-dark-group .form-control:-webkit-autofill:hover, 
+    .input-dark-group .form-control:-webkit-autofill:focus, 
+    .input-dark-group .form-control:-webkit-autofill:active {
+        -webkit-box-shadow: 0 0 0 30px #111 inset !important;
+        -webkit-text-fill-color: white !important;
+        transition: background-color 5000s ease-in-out 0s;
+    }
+    /* ========================================= */
 
     .toast-error {
       position: fixed;
@@ -85,6 +93,8 @@ export class Login {
   correo = '';
   password = '';
 
+  mostrarPassword = false;
+
   toastVisible = false;
   toastMensaje = '';
   toastTimeout: any;
@@ -95,18 +105,34 @@ export class Login {
     this.rolSeleccionado = rol;
   }
 
+  togglePassword() {
+    this.mostrarPassword = !this.mostrarPassword;
+  }
+
   mostrarError(mensaje: string) {
     this.toastMensaje = mensaje;
     this.toastVisible = true;
     if (this.toastTimeout) clearTimeout(this.toastTimeout);
     this.toastTimeout = setTimeout(() => {
       this.toastVisible = false;
-    }, 3000);
+    }, 4000); 
   }
 
   entrar() {
     if (!this.correo || !this.password) {
       this.mostrarError("Tienes que llenar todos los datos para entrar.");
+      return;
+    }
+
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@(gmail\.com|outlook\.com|hotmail\.com|yahoo\.com|live\.com|icloud\.com)$/i;
+    
+    if (!emailRegex.test(this.correo)) {
+      this.mostrarError("Usa un correo real (@gmail, @outlook, @hotmail). Revisa que esté bien escrito, we.");
+      return;
+    }
+
+    if (this.password.length < 8) {
+      this.mostrarError("La contraseña debe tener al menos 8 caracteres.");
       return;
     }
 
@@ -118,6 +144,6 @@ export class Login {
   }
 
   irARegistro() {
-    this.router.navigate(['/register']); 
+    this.router.navigate(['/register']);
   }
 }

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ReservationService } from '../../../services/reservation.service';
 
 @Component({
   selector: 'admin-reservaciones',
@@ -7,7 +8,6 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule],
   templateUrl: './admin-reservaciones.html',
   styles: [`
-    /* EL TOAST NEUTRÓN VIP */
     .toast-neutron {
       position: fixed;
       top: 30px;
@@ -23,7 +23,6 @@ import { CommonModule } from '@angular/common';
       visibility: visible;
       transform: translateY(0);
     }
-    /* Efecto hover para la imagen del comprobante */
     .comprobante-img {
       transition: transform 0.3s ease;
       cursor: zoom-in;
@@ -35,45 +34,7 @@ import { CommonModule } from '@angular/common';
 })
 export class AdminReservaciones {
 
-  // Base de datos falsa de reservaciones
-  reservaciones = [
-    { 
-      id: 1, 
-      cliente: 'Juan Pérez', 
-      fecha: '24 Oct 2026', 
-      mesa: 'Booth VIP 1', 
-      estado: 'Pendiente', 
-      monto: '$1,500 MXN',
-      comprobante: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTENukelP8EWH4umIhxxN0_Tfn3tlxDrbzIQA&s' 
-    },
-    { 
-      id: 2, 
-      cliente: 'María García', 
-      fecha: '24 Oct 2026', 
-      mesa: 'Mesa General 3', 
-      estado: 'Confirmado', 
-      monto: '$800 MXN',
-      comprobante: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&q=80&w=400' 
-    },
-    { 
-      id: 3, 
-      cliente: 'Carlos López', 
-      fecha: '25 Oct 2026', 
-      mesa: 'Booth VIP 2', 
-      estado: 'Pendiente', 
-      monto: '$2,000 MXN',
-      comprobante: 'https://images.unsplash.com/photo-1607344645866-009c320b63e0?auto=format&fit=crop&q=80&w=400' 
-    },
-    { 
-      id: 4, 
-      cliente: 'Ana Martínez', 
-      fecha: '31 Oct 2026', 
-      mesa: 'Barra', 
-      estado: 'Rechazado', 
-      monto: '$500 MXN',
-      comprobante: null 
-    }
-  ];
+  reservaciones: any[] = [];
 
   reservaSeleccionada: any = null;
   showModal = false;
@@ -82,6 +43,13 @@ export class AdminReservaciones {
   toastMensaje = '';
   toastTipo = 'success'; 
   toastTimeout: any;
+
+  constructor(private reservationService: ReservationService) {}
+
+  ngOnInit() {
+    // 🔥 USAMOS DATOS REALES (YA NO MAP)
+    this.reservaciones = this.reservationService.getReservations();
+  }
 
   abrirModal(reserva: any) {
     this.reservaSeleccionada = reserva;
@@ -95,7 +63,11 @@ export class AdminReservaciones {
 
   aprobarPago() {
     if (this.reservaSeleccionada) {
-      this.reservaSeleccionada.estado = 'Confirmado';
+
+      this.reservaSeleccionada.status = 'Confirmado';
+
+      this.guardarCambios();
+
       this.mostrarToast('Pago aprobado. Reservación confirmada.', 'success');
       this.cerrarModal();
     }
@@ -103,13 +75,20 @@ export class AdminReservaciones {
 
   rechazarPago() {
     if (this.reservaSeleccionada) {
-      this.reservaSeleccionada.estado = 'Rechazado';
-      this.mostrarToast('Pago rechazado. Se notificará al cliente.', 'danger');
+
+      this.reservaSeleccionada.status = 'Rechazado';
+
+      this.guardarCambios();
+
+      this.mostrarToast('Pago rechazado.', 'danger');
       this.cerrarModal();
     }
   }
 
-  // --- EL TOAST NEUTRÓN ---
+  guardarCambios() {
+    localStorage.setItem('reservations', JSON.stringify(this.reservaciones));
+  }
+
   mostrarToast(mensaje: string, tipo: 'success' | 'danger') {
     this.toastMensaje = mensaje;
     this.toastTipo = tipo;
