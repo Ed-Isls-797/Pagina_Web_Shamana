@@ -18,7 +18,6 @@ import { Router } from '@angular/router';
       position: absolute; top:0; left:0; right:0; bottom:0;
       background: rgba(0,0,0,0.75);
     }
-    
     .neon-purple {
       background-color: #bc13fe !important;
       color: white !important;
@@ -27,30 +26,24 @@ import { Router } from '@angular/router';
     }
     .text-neon { color: #bc13fe !important; }
 
+    /* CSS Ajustado para soportar el ojito de la contraseña */
     .input-dark-group .input-group-text {
       background-color: #111;
       border: 1px solid #333;
-      border-right: none;
       color: #6c757d;
     }
     .input-dark-group .form-control {
       background-color: #111;
       border: 1px solid #333;
-      border-left: none;
       color: white;
     }
     .input-dark-group .form-control:focus {
-      border-color: #bc13fe;
       box-shadow: none;
     }
     .input-dark-group:focus-within .input-group-text,
     .input-dark-group:focus-within .form-control {
       border-color: #bc13fe;
-      border-top: 1px solid #bc13fe;
-      border-bottom: 1px solid #bc13fe;
     }
-    .input-dark-group:focus-within .input-group-text { border-left: 1px solid #bc13fe; }
-    .input-dark-group:focus-within .form-control { border-right: 1px solid #bc13fe; }
 
     .toast-error {
       position: fixed;
@@ -74,11 +67,19 @@ export class Register {
   correo = '';
   password = '';
 
+  // Variable para el ojito
+  mostrarPassword = false;
+
   toastVisible = false;
   toastMensaje = '';
   toastTimeout: any;
 
-  constructor(private router: Router) { }
+  constructor(private router: Router) {}
+
+  // Función para cambiar de texto a contraseña
+  togglePassword() {
+    this.mostrarPassword = !this.mostrarPassword;
+  }
 
   mostrarError(mensaje: string) {
     this.toastMensaje = mensaje;
@@ -86,16 +87,31 @@ export class Register {
     if (this.toastTimeout) clearTimeout(this.toastTimeout);
     this.toastTimeout = setTimeout(() => {
       this.toastVisible = false;
-    }, 3000);
+    }, 4000); // 4 segundos para que lo lean bien
   }
 
   crearCuenta() {
+    // 1. Validar campos vacíos
     if (!this.nombre || !this.correo || !this.password) {
-      this.mostrarError("Por favor llena todos los campos para registrarte.");
+      this.mostrarError("Por favor completa todos los campos requeridos.");
       return;
     }
 
-    this.router.navigate(['/login']);
+    // 2. Validar formato y DOMINIO EXACTO (Modo Paranoico)
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@(gmail\.com|outlook\.com|hotmail\.com|yahoo\.com|live\.com|icloud\.com)$/i;
+    if (!emailRegex.test(this.correo)) {
+      this.mostrarError("Usa un correo real (@gmail, @outlook, @hotmail). Revisa que esté bien escrito.");
+      return;
+    }
+
+    // 3. Validar los 8 caracteres de la contraseña
+    if (this.password.length < 8) {
+      this.mostrarError("La contraseña debe tener al menos 8 caracteres.");
+      return;
+    }
+
+    // Proceso exitoso (por ahora redirigimos al login)
+    this.router.navigate(['/login']); 
   }
 
   irALogin() {
