@@ -1,56 +1,60 @@
-<div class="container-fluid">
+<div class="p-4 p-md-5 bg-black text-light" style="min-height: 100vh;">
 
-  <h2 class="text-info fw-bold mb-4">
-    Mensajes con Administración
-  </h2>
-
-  <!-- HISTORIAL -->
-  <div class="card bg-dark border-secondary mb-4">
-    <div class="card-body">
-
-      @for (msg of messages; track $index) {
-
-        <div class="mb-3">
-
-          <strong 
-            [class.text-warning]="msg.sender === 'Admin'"
-            [class.text-info]="msg.sender === 'Cliente'">
-
-            {{ msg.sender }}
-
-          </strong>
-
-          <p class="mb-0 text-light">
-            {{ msg.text }}
-          </p>
-
-        </div>
-
-      }
-
-    </div>
+  <div class="mb-4">
+    <h2 class="fw-bold mb-1">Mensajes</h2>
+    <p class="text-secondary m-0">Comunicación directa con el administrador</p>
   </div>
 
-  <!-- ENVIAR MENSAJE -->
+  <div class="chat-card d-flex flex-column">
 
-  <div class="card bg-dark border-secondary">
-    <div class="card-body">
+    <div class="chat-header p-3 d-flex align-items-center">
+      <div class="avatar-admin me-3">
+        S
+      </div>
+      <div>
+        <h6 class="fw-bold mb-0 text-white">Shamana Admin</h6>
+        <small class="text-success d-flex align-items-center gap-2 mt-1" style="font-size: 0.8rem;">
+          <span class="status-dot"></span> En línea
+        </small>
+      </div>
+    </div>
 
-      <label class="form-label text-light">
-        Escribir mensaje
-      </label>
+    <div class="chat-body d-flex flex-column">
 
-      <textarea
-        class="form-control bg-black text-light border-secondary mb-3"
-        rows="3"
-        [(ngModel)]="newMessage">
-      </textarea>
+      <ng-container *ngFor="let msg of mensajes">
 
-      <button class="btn btn-info">
-        Enviar
+        <div class="align-self-start mb-1" *ngIf="msg.sender === 'admin'" style="max-width: 100%;">
+          <div class="msg-bubble msg-admin">
+            {{ msg.text }}
+          </div>
+          <div class="msg-time ms-2">{{ msg.time }}</div>
+        </div>
+
+        <div class="align-self-end mb-1 text-end" *ngIf="msg.sender === 'client'" style="max-width: 100%;">
+          <div class="msg-bubble msg-client d-inline-block text-start">
+            {{ msg.text }}
+          </div>
+          <div class="msg-time me-2">{{ msg.time }}</div>
+        </div>
+
+      </ng-container>
+
+    </div>
+
+    <div class="chat-footer d-flex gap-3 align-items-center">
+
+      <input type="text" class="form-control input-dark flex-grow-1" placeholder="Escribe un mensaje..."
+        [(ngModel)]="nuevoMensaje" (keyup.enter)="enviarMensaje()">
+
+      <button class="btn-send" (click)="enviarMensaje()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+          <path
+            d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z" />
+        </svg>
       </button>
 
     </div>
+
   </div>
 
 </div>
