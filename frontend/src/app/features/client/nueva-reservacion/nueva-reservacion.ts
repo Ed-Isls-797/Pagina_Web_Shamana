@@ -64,10 +64,10 @@ import { ReservationService } from '../../../services/reservation.service';
 export class NuevaReservacion {
 
   fechasDisponibles: string[] = [
-    'viernes, 23 de octubre de 2026',
-    'sábado, 24 de octubre de 2026',
-    'viernes, 30 de octubre de 2026',
-    'viernes, 6 de noviembre de 2026'
+    'viernes, 23 de octubre de 2026, 9:00 PM',
+    'sábado, 24 de octubre de 2026, 10:00 PM',
+    'viernes, 30 de octubre de 2026, 8:00 PM',
+    'viernes, 6 de noviembre de 2026, 11:00 PM'
   ];
 
   reserva = {

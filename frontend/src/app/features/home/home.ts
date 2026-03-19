@@ -30,7 +30,17 @@ export class Home {
     fecha: 'Dom, 26 Oct',
     imagen: 'assets/event3.jpg'
   }
+  
 ];
+horarios = [
+    { dia: 'Lunes', abierto: true, apertura: '10:00 PM', cierre: '02:00 AM' },
+    { dia: 'Martes', abierto: true, apertura: '10:00 PM', cierre: '02:00 AM' },
+    { dia: 'Miércoles', abierto: true, apertura: '10:00 PM', cierre: '02:00 AM' },
+    { dia: 'Jueves', abierto: true, apertura: '10:00 PM', cierre: '04:00 AM' },
+    { dia: 'Viernes', abierto: true, apertura: '10:00 PM', cierre: '04:00 AM' },
+    { dia: 'Sábado', abierto: true, apertura: '10:00 PM', cierre: '04:00 AM' },
+    { dia: 'Domingo', abierto: false, apertura: '', cierre: '' } 
+  ];
 
   constructor(private eventosService:EventosService, private router: Router){
     this.eventos = this.eventosService.obtenerEventos()
