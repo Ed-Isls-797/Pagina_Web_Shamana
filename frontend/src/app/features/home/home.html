@@ -153,12 +153,40 @@ background-position:center;
             <div class="col-md-4"></div>
             <!-- HORARIOS -->
             <div class="col-md-4 d-flex flex-column align-items-end justify-content-start">
-                <h4 class="text-info fw-bold mb-3">🕒 Horarios</h4>
-                <p class="text-secondary text-end">
-                    Jueves a Sábado <br>
-                    9:00 PM – 3:00 AM
-                </p>
+    <h4 class="text-info fw-bold mb-3">🕒 Horarios</h4>
+    <p class="text-secondary text-end">
+        Jueves a Sábado <br>
+        9:00 PM – 3:00 AM
+    </p>
+    <button class="btn btn-outline-info btn-sm mt-2" data-bs-toggle="modal" data-bs-target="#modalHorarios">
+        Ver horarios completos
+    </button>
+</div>
+
+<div class="modal fade" id="modalHorarios" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark text-white border-secondary">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title text-info fw-bold">Horarios de Operación</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+            <div class="modal-body">
+                <div *ngFor="let h of horarios" class="d-flex justify-content-between py-2 border-bottom border-secondary border-opacity-25">
+                    <span [class.text-secondary]="!h.abierto">{{ h.dia }}</span>
+                    <span *ngIf="h.abierto" class="badge outline-info text-info border border-info">
+                        {{ h.apertura }} - {{ h.cierre }}
+                    </span>
+                    <span *ngIf="!h.abierto" class="badge text-danger border border-danger">
+                        Cerrado
+                    </span>
+                </div>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-outline-light w-100" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
 
         </div>
 
