@@ -34,4 +34,5 @@ export class ReservationService {
     localStorage.setItem(this.storageKey, JSON.stringify(this.reservations));
     window.dispatchEvent(new Event('storage'));
   }
+  
 }
