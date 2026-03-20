@@ -1,12 +1,45 @@
+<style>
+  .text-vip-nav {
+    color: #bc13fe !important;
+  }
+
+  .btn-vip-nav {
+    background-color: transparent;
+    color: #bc13fe;
+    border: 1px solid rgba(188, 19, 254, 0.5);
+    transition: all 0.3s ease;
+  }
+
+  .btn-vip-nav:hover {
+    background-color: rgba(188, 19, 254, 0.1);
+    color: #d03cf5;
+    border-color: #d03cf5;
+    box-shadow: 0 0 10px rgba(188, 19, 254, 0.5);
+  }
+
+  .border-vip {
+    border-color: rgba(188, 19, 254, 0.3) !important;
+  }
+</style>
+
 <div class="d-flex flex-column min-vh-100 bg-dark text-light">
 
   <app-banner-notificacion tipoDestino="General"></app-banner-notificacion>
 
-  <nav class="navbar navbar-expand-lg navbar-dark bg-black border-bottom border-secondary">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-black border-bottom border-vip">
     <div class="container">
-      <a class="navbar-brand fw-bold text-info" routerLink="/">SHAMANA</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
+
+      <a class="navbar-brand fw-bold text-vip-nav d-flex align-items-center" routerLink="/"
+        style="letter-spacing: 1px;">     
+        SHAMANA
+      </a>
+
+      <button class="navbar-toggler border-vip text-vip-nav" type="button" data-bs-toggle="collapse"
+        data-bs-target="#navbarNav">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#bc13fe" viewBox="0 0 16 16">
+          <path fill-rule="evenodd"
+            d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z" />
+        </svg>
       </button>
 
       <div class="collapse navbar-collapse" id="navbarNav">
@@ -17,19 +50,21 @@
           <li class="nav-item">
             <a class="nav-link text-light" routerLink="/login">Login</a>
           </li>
-          <li class="nav-item ms-lg-3">
-            <a class="btn btn-outline-info btn-sm" routerLink="/register">Registrarse</a>
+          <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
+            <a class="btn btn-vip-nav btn-sm px-4 py-2 rounded-3 fw-bold w-100" routerLink="/register">Registrarse</a>
           </li>
         </ul>
       </div>
+
     </div>
   </nav>
 
-  <main class="flex-fill">
-   <router-outlet></router-outlet>
+  <main class="flex-fill" style="background-color: #030303;">
+    <router-outlet></router-outlet>
   </main>
 
-  <footer class="bg-black text-center text-secondary py-3 mt-auto border-top border-secondary">
+  <footer class="bg-black text-center text-secondary py-4 mt-auto border-top border-vip">
     <small>© 2026 Shamana Night Club | Todos los derechos reservados</small>
   </footer>
+
 </div>

@@ -56,9 +56,9 @@ export class AdminNotificaciones {
       leida: false
     });
 
-    console.log("Disparando banner:", this.nuevoTitulo, "Para:", this.nuevoTipo);
+    console.log("Disparando banner:", this.nuevoTitulo, "Mensaje:", this.nuevoMensaje, "Para:", this.nuevoTipo);
     
-    this.notificationService.publicarNotificacion(this.nuevoTitulo, this.nuevoTipo);
+    this.notificationService.publicarNotificacion(this.nuevoTitulo, this.nuevoMensaje, this.nuevoTipo);
 
     this.cerrarModal();
   }

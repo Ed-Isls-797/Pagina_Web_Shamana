@@ -6,10 +6,9 @@ import { Injectable } from '@angular/core';
 export class NotificationService {
 
   constructor() { }
-
-  publicarNotificacion(titulo: string, tipo: 'Cliente' | 'General') {
+  publicarNotificacion(titulo: string, mensaje: string, tipo: 'Cliente' | 'General') {
     if (typeof window !== 'undefined' && window.localStorage) {
-      const notificacion = { titulo, tipo, activa: true, id: new Date().getTime() };
+      const notificacion = { titulo, mensaje, tipo, activa: true, id: new Date().getTime() };
       localStorage.setItem('shamana_notificacion', JSON.stringify(notificacion));
       
       window.dispatchEvent(new Event('notificacion_actualizada'));

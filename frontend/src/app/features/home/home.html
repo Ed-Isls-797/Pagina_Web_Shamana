@@ -10,175 +10,109 @@
     animation: parpadeo-neon 2s infinite alternate;
 }
 
-@keyframes parpadeo-neon {
-    0%,18%,22%,25%,53%,57%,100% {
-        text-shadow:
-            0 0 5px #fff,
-            0 0 10px #fff,
-            0 0 20px #bc13fe,
-            0 0 40px #bc13fe;
+    @keyframes parpadeo-neon {
+
+        0%,
+        18%,
+        22%,
+        25%,
+        53%,
+        57%,
+        100% {
+            text-shadow:
+                0 0 5px #fff,
+                0 0 10px #fff,
+                0 0 20px #bc13fe,
+                0 0 40px #bc13fe,
+                0 0 80px #bc13fe;
+        }
+
+        20%,
+        24%,
+        55% {
+            text-shadow: none;
+            color: rgba(255, 255, 255, 0.4);
+        }
     }
-    20%,24%,55% {
-        text-shadow: none;
-        color: rgba(255,255,255,0.4);
-    }
-}
-
-/* HOVER PRO */
-.card:hover {
-    transform: translateY(-8px) scale(1.02);
-    transition: 0.3s;
-}
-
-img:hover {
-    transform: scale(1.05);
-}
-
-.btn-outline-light:hover,
-.btn-outline-info:hover {
-    box-shadow: 0 0 10px #0dcaf0, 0 0 20px #0dcaf0;
-}
 </style>
 
 <!-- HERO -->
-<section class="vh-100 d-flex align-items-center text-center text-white position-relative"
-style="background-image:url('https://www.neonmonki.com/cdn/shop/files/NEONMONKI_-_Express_Neonlampe.jpg?v=1691390186&width=3000'); background-size:cover; background-position:center;">
+<section class="vh-100 d-flex align-items-center text-center text-white position-relative" style="
+background-image:url('https://www.neonmonki.com/cdn/shop/files/NEONMONKI_-_Express_Neonlampe.jpg?v=1691390186&width=3000');
+background-size:cover;
+background-position:center;
+">
 
-<div class="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-75"></div>
+    <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-75"></div>
 
-<div class="container position-relative">
+    <div class="container position-relative">
 
-    <p class="display-1 fw-bold">Shamana</p>
 
-    <h1 class="display-1 fw-bold texto-neon">
-        VIVE LA NOCHE
-    </h1>
+        <p class="display-1 fw-bold ">  
+            Shamana
+        </p>
 
-    <p class="lead">
-        Donde el sonido y la energía colisionan
-    </p>
+        <h1 class="display-1 fw-bold texto-neon">
+            VIVE LA NOCHE
+        </h1>
 
-    <button class="btn btn-outline-info btn-lg mt-3 px-5" (click)="irLogin()">
-        Reservar Ahora
-    </button>
-
-</div>
-</section>
-
-<!-- EXPERIENCIA -->
-<section class="bg-black text-white py-5 border-top border-secondary border-opacity-25">
-
-<div class="container text-center">
-
-    <h2 class="fw-bold mb-3">
-        La <span class="text-info">Experiencia</span>
-    </h2>
-
-    <p class="text-secondary mb-5">
-        No es solo una fiesta… es una experiencia sensorial completa.
-    </p>
-
-    <div class="row g-4">
-
-        <div class="col-md-4">
-            <div class="p-4 rounded-4 bg-dark h-100 shadow-lg border border-secondary border-opacity-25">
-                <h5 class="text-info">🎧 DJs en Vivo</h5>
-                <p class="text-secondary small">Los mejores DJs locales e invitados internacionales.</p>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="p-4 rounded-4 bg-dark h-100 shadow-lg border border-secondary border-opacity-25">
-                <h5 class="text-info">💡 Luces & Neon</h5>
-                <p class="text-secondary small">Un espectáculo visual que vibra con la música.</p>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="p-4 rounded-4 bg-dark h-100 shadow-lg border border-secondary border-opacity-25">
-                <h5 class="text-info">🍸 Bebidas Premium</h5>
-                <p class="text-secondary small">Mixología de alto nivel para una noche perfecta.</p>
-            </div>
-        </div>
-
-   <div class="mapa-real">
-
-  <!-- BARRA -->
-  <div class="zona barra">BARRA</div>
-
-  <!-- GENERAL -->
-  <div class="mesa general" style="top: 60%; left: 20%;">G1</div>
-  <div class="mesa general" style="top: 60%; left: 35%;">G2</div>
-  <div class="mesa general" style="top: 75%; left: 25%;">G3</div>
-
-  <!-- VIP -->
-  <div class="mesa vip" style="top: 25%; left: 70%;">VIP1</div>
-  <div class="mesa vip" style="top: 40%; left: 75%;">VIP2</div>
-
-  <!-- TERRAZA -->
-  <div class="mesa terraza" style="top: 10%; left: 20%;">T1</div>
-  <div class="mesa terraza" style="top: 20%; left: 35%;">T2</div>
-
-  <!-- DJ -->
-  <div class="zona dj">DJ</div>
-
-</div>
+        <p class="lead">
+            Donde el sonido y la energía colisionan
+        </p>
 
     </div>
 
-</div>
 </section>
 
-<!-- EVENTOS -->
-<section class="bg-black text-white py-5">
+<div class="linea-neon"></div>
 
-<div class="container">
+    <div class="container">
 
-    <h2 class="fw-bold mb-4">
-        Próximos <span class="text-info">Eventos</span>
-    </h2>
+        <div class="d-flex justify-content-between align-items-center mb-4">
 
-    <!-- LOADING -->
-    <div *ngIf="loading" class="text-center text-secondary py-5">
-        Cargando eventos...
-    </div>
-
-    <div class="row g-4" *ngIf="!loading">
-
-        <div class="col-md-4"
-             *ngFor="let evento of eventos; trackBy: trackByEvento">
-
-            <div class="card bg-dark border-0 text-white rounded-4 overflow-hidden">
-
-                <img [src]="evento.imagen"
-                     class="card-img"
-                     style="height:420px; object-fit:cover;">
-
-                <div class="card-img-overlay d-flex flex-column justify-content-end"
-                     style="background: linear-gradient(transparent, rgba(0,0,0,0.8));">
-
-                    <p class="small text-info">
-                        {{evento.fecha}}
-                    </p>
-
-                    <h4 class="fw-bold">
-                        {{evento.titulo}}
-                    </h4>
-
-                    <p class="small text-light">
-                        {{evento.artista}}
-                    </p>
-
-                    <button class="btn btn-outline-light mt-2"
-                            (click)="irLogin()">
-                        Hacer Reserva
-                    </button>
-
-                </div>
-
+            <div>
+                <h2 class="fw-bold">
+                    Próximos <span class="text-info">Eventos</span>
+                </h2>
+                <p class="text-secondary">
+                    No te pierdas las mejores noches del mes.
+                </p>
             </div>
 
         </div>
+
+        <div class="row g-4">
+
+            <div class="col-md-4" *ngFor="let evento of eventos">
+
+                <div class="card bg-dark border-0 text-white rounded-4 overflow-hidden">
+
+                    <img [src]="evento.imagen" class="card-img" style="height:420px; object-fit:cover;">
+
+                    <div class="card-img-overlay d-flex flex-column justify-content-end"
+                        style="background: linear-gradient(transparent, rgba(0,0,0,0.8));">
+
+                        <p class="small text-info">
+                            {{evento.fecha}}
+                        </p>
+
+                        <h4 class="fw-bold">
+                            {{evento.titulo}}
+                        </h4>
+
+                        <p class="small text-light">
+                            {{evento.artista}}
+                        </p>
+
+                        <button class="btn btn-outline-light mt-2" (click)="irReservaciones()">
+                            Hacer Reserva
+                        </button>
+
+                    </div>
+
+            </div>
+
+            </div>
 
     </div>
 
@@ -210,125 +144,74 @@ style="background-image:url('https://www.neonmonki.com/cdn/shop/files/NEONMONKI_
 
     </div>
 
-</div>
 </section>
 
-<!-- UBICACIÓN + HORARIOS -->
 <section class="bg-dark text-white py-5">
 
-<div class="container">
+    <div class="container">
 
-    <div class="row g-4 text-center align-items-start">
+        <div class="row g-4 text-center align-items-start">
 
-        <!-- UBICACIÓN -->
-        <div class="col-md-4">
+            <!-- UBICACIÓN -->
+            <div class="col-md-4">
 
-            <h4 class="text-info fw-bold mb-3">📍 Ubicación</h4>
+                <h4 class="text-info fw-bold mb-3">
+                    📍 Ubicación
+                </h4>
 
-            <p class="text-secondary">
-                Shamana Pachuca <br>
-                Camino Real de La Plata 201 <br>
-                Zona Plateada, Pachuca de Soto, Hidalgo
-            </p>
+                <p class="text-secondary">
+                    Shamana Pachuca <br>
+                    Camino Real de La Plata 201 <br>
+                    Zona Plateada, Pachuca de Soto, Hidalgo
+                </p>
 
-            <a href="https://www.google.com/maps/search/Shamana+Pachuca+Camino+Real+de+la+Plata+201"
-               target="_blank"
-               class="btn btn-outline-info btn-sm mt-2">
-               Ver en Google Maps
-            </a>
+                <a href="https://www.google.com/maps/search/Shamana+Pachuca+Camino+Real+de+la+Plata+201"
+                   target="_blank"
+                   class="btn btn-outline-info btn-sm mt-2">
+                   Ver en Google Maps
+                </a>
 
-        </div>
-
-        <div class="col-md-4"></div>
-
-        <!-- HORARIOS -->
-        <div class="col-md-4 d-flex flex-column align-items-end">
-
-            <h4 class="text-info fw-bold mb-3">🕒 Horarios</h4>
-
-            <p class="text-secondary text-end">
-                Jueves a Sábado <br>
-                9:00 PM – 3:00 AM
-            </p>
-
-            <button class="btn btn-outline-info btn-sm mt-2"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modalHorarios">
-                Ver horarios completos
-            </button>
-
-        </div>
-
-    </div>
-
-</div>
-</section>
-
-<!-- CTA FINAL -->
-<section class="text-center text-white py-5"
-style="background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);">
-
-<div class="container">
-
-    <h2 class="fw-bold display-5 texto-neon mb-3">
-        ¿Listo para vivir la noche?
-    </h2>
-
-    <p class="text-light mb-4">
-        Reserva ahora y asegura tu lugar.
+            </div>
+            <div class="col-md-4"></div>
+            <!-- HORARIOS -->
+            <div class="col-md-4 d-flex flex-column align-items-end justify-content-start">
+    <h4 class="text-info fw-bold mb-3">🕒 Horarios</h4>
+    <p class="text-secondary text-end">
+        Jueves a Sábado <br>
+        9:00 PM – 3:00 AM
     </p>
-
-    <button class="btn btn-outline-info btn-lg mt-3"
-        (click)="irRegistro()">
-    Crear Cuenta
-</button>
-
+    <button class="btn btn-outline-info btn-sm mt-2" data-bs-toggle="modal" data-bs-target="#modalHorarios">
+        Ver horarios completos
+    </button>
 </div>
-</section>
 
-<!-- MODAL HORARIOS -->
-<div class="modal fade" id="modalHorarios" tabindex="-1">
-<div class="modal-dialog modal-dialog-centered">
-<div class="modal-content bg-dark text-white border-secondary">
-
-    <div class="modal-header border-secondary">
-        <h5 class="modal-title text-info fw-bold">
-            Horarios de Operación
-        </h5>
-        <button class="btn-close btn-close-white"
-                data-bs-dismiss="modal"></button>
+<div class="modal fade" id="modalHorarios" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark text-white border-secondary">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title text-info fw-bold">Horarios de Operación</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div *ngFor="let h of horarios" class="d-flex justify-content-between py-2 border-bottom border-secondary border-opacity-25">
+                    <span [class.text-secondary]="!h.abierto">{{ h.dia }}</span>
+                    <span *ngIf="h.abierto" class="badge outline-info text-info border border-info">
+                        {{ h.apertura }} - {{ h.cierre }}
+                    </span>
+                    <span *ngIf="!h.abierto" class="badge text-danger border border-danger">
+                        Cerrado
+                    </span>
+                </div>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-outline-light w-100" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
     </div>
-
-    <div class="modal-body">
-
-        <div *ngFor="let h of horarios"
-             class="d-flex justify-content-between py-2 border-bottom border-secondary border-opacity-25">
-
-            <span [class.text-secondary]="!h.abierto">
-                {{ h.dia }}
-            </span>
-
-            <span *ngIf="h.abierto"
-                  class="badge text-info border border-info">
-                {{ h.apertura }} - {{ h.cierre }}
-            </span>
-
-            <span *ngIf="!h.abierto"
-                  class="badge text-danger border border-danger">
-                Cerrado
-            </span>
+</div>
 
         </div>
 
     </div>
 
-    <div class="modal-footer border-0">
-        <button class="btn btn-outline-light w-100"
-                data-bs-dismiss="modal">
-            Cerrar
-        </button>
-    </div>
-
-</div>
-</div>
-</div>
+</section>
