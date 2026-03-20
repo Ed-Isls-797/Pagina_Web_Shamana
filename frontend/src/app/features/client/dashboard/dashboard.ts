@@ -30,23 +30,20 @@ export class Dashboard implements OnInit {
     this.cargarDatos();
   }
 
-  cargarDatos() {
-    const reservations: any[] = this.reservationService.getReservations();
+cargarDatos() {
+  const reservations: any[] = this.reservationService.getReservations();
 
-    const activas = reservations.filter(res => res.status === 'Activa' || res.status === 'Pendiente');
-    this.activeReservations = activas.length;
+  this.activeReservations = reservations.filter(
+    res => res.status === 'Confirmada' || res.status === 'Pendiente'
+  ).length;
 
-    const ultimasReservaciones = reservations.slice(-4).reverse();
-
-    this.recentActivity = ultimasReservaciones.map((res: any, index: number) => {
-      return {
-        id: res.id || index, 
-        message: `Reservación creada/actualizada: ${res.status || 'Sin estado'}`, 
-        date: res.fecha || new Date(), 
-        type: this.obtenerColorPorEstado(res.status)
-      };
-    });
-  }
+  this.recentActivity = reservations.slice(-4).reverse().map((res: any, index: number) => ({
+    id: res.id || index,
+    message: `Reservación: ${res.date || res.fecha || 'Sin fecha'}`,
+    date: res.date || res.fecha || new Date(),
+    type: this.obtenerColorPorEstado(res.status || res.estado)
+  }));
+}
 
   obtenerColorPorEstado(status: string): 'success' | 'info' | 'warning' {
     const estado = status?.toLowerCase() || '';
