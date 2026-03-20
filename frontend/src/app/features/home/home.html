@@ -22,12 +22,7 @@
         53%,
         57%,
         100% {
-            text-shadow:
-                0 0 5px #fff,
-                0 0 10px #fff,
-                0 0 20px #bc13fe,
-                0 0 40px #bc13fe,
-                0 0 80px #bc13fe;
+            text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px #bc13fe, 0 0 40px #bc13fe, 0 0 80px #bc13fe;
         }
 
         20%,
@@ -37,159 +32,243 @@
             color: rgba(255, 255, 255, 0.4);
         }
     }
+
+    .text-vip {
+        color: #bc13fe !important;
+    }
+
+    .card-vip {
+        background-color: #050505;
+        border: 1px solid rgba(188, 19, 254, 0.3);
+        border-radius: 16px;
+        box-shadow: 0 0 30px rgba(188, 19, 254, 0.08);
+        transition: all 0.3s ease;
+    }
+
+    .card-vip:hover {
+        box-shadow: 0 0 50px rgba(188, 19, 254, 0.15);
+    }
+
+    .btn-vip-solid {
+        background-color: #bc13fe;
+        color: #fff;
+        border: none;
+        box-shadow: 0 0 15px rgba(188, 19, 254, 0.5);
+        transition: all 0.3s ease;
+    }
+
+    .btn-vip-solid:hover {
+        background-color: #d03cf5;
+        color: #fff;
+        box-shadow: 0 0 25px rgba(188, 19, 254, 0.8);
+        transform: translateY(-2px);
+    }
+
+    .btn-vip-outline {
+        background-color: transparent;
+        color: #bc13fe;
+        border: 1px solid rgba(188, 19, 254, 0.5);
+        transition: all 0.3s ease;
+    }
+
+    .btn-vip-outline:hover {
+        background-color: rgba(188, 19, 254, 0.1);
+        color: #d03cf5;
+        border-color: #d03cf5;
+    }
+
+    .linea-neon {
+        height: 1px;
+        width: 100%;
+        background: linear-gradient(90deg, transparent, rgba(188, 19, 254, 0.8), transparent);
+        box-shadow: 0 0 15px rgba(188, 19, 254, 0.6);
+        margin: 0;
+        border: none;
+    }
 </style>
 
-<!-- HERO -->
 <section class="vh-100 d-flex align-items-center text-center text-white position-relative" style="
 background-image:url('https://www.neonmonki.com/cdn/shop/files/NEONMONKI_-_Express_Neonlampe.jpg?v=1691390186&width=3000');
 background-size:cover;
 background-position:center;
 ">
-
     <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-75"></div>
-
     <div class="container position-relative">
-
-
-        <p class="display-1 fw-bold ">  
-            Shamana
-        </p>
-
-        <h1 class="display-1 fw-bold texto-neon">
-            VIVE LA NOCHE
-        </h1>
-
-        <p class="lead">
-            Donde el sonido y la energía colisionan
-        </p>
-
+        <p class="display-1 fw-bold">Shamana</p>
+        <h1 class="display-1 fw-bold texto-neon">VIVE LA NOCHE</h1>
+        <p class="lead">Donde el sonido y la energía colisionan</p>
     </div>
-
 </section>
 
-<!-- EVENTOS -->
-<section class="bg-black text-white py-5">
+<div class="linea-neon"></div>
 
-    <div class="container">
+<section class="bg-black text-white py-5" style="background-color: #030303 !important;">
+    <div class="container py-4">
 
-        <div class="d-flex justify-content-between align-items-center mb-4">
-
+        <div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-3">
             <div>
-                <h2 class="fw-bold">
-                    Próximos <span class="text-info">Eventos</span>
-                </h2>
-                <p class="text-secondary">
-                    No te pierdas las mejores noches del mes.
-                </p>
+                <small class="text-vip fw-bold tracking-widest text-uppercase"
+                    style="letter-spacing: 2px;">Agenda</small>
+                <h2 class="display-6 fw-bold mb-1">Próximos <span class="text-vip">Eventos</span></h2>
+                <p class="text-secondary m-0">No te pierdas las mejores noches del mes.</p>
             </div>
-
         </div>
 
         <div class="row g-4">
-
             <div class="col-md-4" *ngFor="let evento of eventos">
 
-                <div class="card bg-dark border-0 text-white rounded-4 overflow-hidden">
+                <div class="card border-0 text-white rounded-4 overflow-hidden h-100"
+                    style="background-color: #0d0d0d;">
 
-                    <img [src]="evento.imagen" class="card-img" style="height:420px; object-fit:cover;">
+                    <div class="position-relative">
+                        <img [src]="evento.imagen" class="card-img-top" style="height:220px; object-fit:cover;">
+                    </div>
 
-                    <div class="card-img-overlay d-flex flex-column justify-content-end"
-                        style="background: linear-gradient(transparent, rgba(0,0,0,0.8));">
-
-                        <p class="small text-info">
+                    <div class="card-body p-4 d-flex flex-column">
+                        <p class="small text-secondary mb-2 d-flex align-items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="#bc13fe" class="me-2"
+                                viewBox="0 0 16 16">
+                                <path
+                                    d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z" />
+                            </svg>
                             {{evento.fecha}}
                         </p>
 
-                        <h4 class="fw-bold">
-                            {{evento.titulo}}
-                        </h4>
+                        <h4 class="fw-bold mb-1">{{evento.titulo}}</h4>
 
-                        <p class="small text-light">
+                        <p class="small text-secondary mb-4 d-flex align-items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="#bc13fe" class="me-2"
+                                viewBox="0 0 16 16">
+                                <path d="M9 13c0 1.105-1.12 2-2.5 2S4 14.105 4 13s1.12-2 2.5-2 2.5.895 2.5 2z" />
+                                <path fill-rule="evenodd" d="M9 3v10H8V3h1z" />
+                                <path d="M8 2.82a1 1 0 0 1 .804-.98l3-.6A1 1 0 0 1 13 2.22V4L8 5V2.82z" />
+                            </svg>
                             {{evento.artista}}
                         </p>
 
-                        <button class="btn btn-outline-light mt-2" (click)="irReservaciones()">
-                            Hacer Reserva
+                        <button class="btn btn-vip-solid w-100 mt-auto py-2 fw-bold rounded-3"
+                            (click)="irReservaciones()">
+                            Comprar Entradas
                         </button>
-
                     </div>
 
                 </div>
 
             </div>
+        </div>
+    </div>
+</section>
+
+<div class="linea-neon"></div>
+
+<section class="bg-black text-white py-5">
+    <div class="container py-5">
+
+        <div class="card-vip p-4 p-md-5 text-center mx-auto" style="max-width: 800px;">
+
+            <div class="mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="#bc13fe" viewBox="0 0 16 16">
+                    <path
+                        d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z" />
+                </svg>
+            </div>
+
+            <h2 class="display-6 fw-bold mb-3">
+                Experiencia <span class="text-vip">VIP</span>
+            </h2>
+
+            <p class="text-secondary mb-5 mx-auto" style="max-width: 600px; font-size: 1.1rem;">
+                Acceso exclusivo, mesas reservadas, servicio personalizado y los mejores DJs del mundo. Únete al club
+                más exclusivo de la ciudad.
+            </p>
+
+            <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
+                <a href="/register" class="btn btn-vip-solid px-5 py-3 fw-bold rounded-3 text-decoration-none">
+                    Únete Ahora
+                </a>
+                <a href="/login" class="btn btn-vip-outline px-5 py-3 fw-bold rounded-3 text-decoration-none">
+                    Ya soy miembro
+                </a>
+            </div>
 
         </div>
 
     </div>
-
 </section>
 
-<section class="bg-dark text-white py-5">
+<div class="linea-neon"></div>
 
-    <div class="container">
+<section class="text-white py-5" style="background-color: #050505;">
+    <div class="container py-4">
+        <div class="row g-5 justify-content-center text-center">
 
-        <div class="row g-4 text-center align-items-start">
-
-            <!-- UBICACIÓN -->
-            <div class="col-md-4">
-
-                <h4 class="text-info fw-bold mb-3">
-                    📍 Ubicación
+            <div class="col-12 col-md-6 d-flex flex-column align-items-center">
+                <h4 class="text-vip fw-bold mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="me-2"
+                        viewBox="0 0 16 16">
+                        <path
+                            d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
+                    </svg>
+                    Ubicación
                 </h4>
-
-                <p class="text-secondary">
+                <p class="text-secondary mb-4">
                     Shamana Pachuca <br>
                     Camino Real de La Plata 201 <br>
                     Zona Plateada, Pachuca de Soto, Hidalgo
                 </p>
-
-                <a href="https://www.google.com/maps/search/Shamana+Pachuca+Camino+Real+de+la+Plata+201"
-                   target="_blank"
-                   class="btn btn-outline-info btn-sm mt-2">
-                   Ver en Google Maps
+                <a href="https://www.google.com/maps/search/Shamana+Pachuca+Camino+Real+de+la+Plata+201" target="_blank"
+                    class="btn btn-vip-outline px-4 py-2 rounded-3">
+                    Ver en Google Maps
                 </a>
-
             </div>
-            <div class="col-md-4"></div>
-            <!-- HORARIOS -->
-            <div class="col-md-4 d-flex flex-column align-items-end justify-content-start">
-    <h4 class="text-info fw-bold mb-3">🕒 Horarios</h4>
-    <p class="text-secondary text-end">
-        Jueves a Sábado <br>
-        9:00 PM – 3:00 AM
-    </p>
-    <button class="btn btn-outline-info btn-sm mt-2" data-bs-toggle="modal" data-bs-target="#modalHorarios">
-        Ver horarios completos
-    </button>
-</div>
 
-<div class="modal fade" id="modalHorarios" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content bg-dark text-white border-secondary">
-            <div class="modal-header border-secondary">
-                <h5 class="modal-title text-info fw-bold">Horarios de Operación</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="col-12 col-md-6 d-flex flex-column align-items-center">
+                <h4 class="text-vip fw-bold mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="me-2"
+                        viewBox="0 0 16 16">
+                        <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z" />
+                        <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z" />
+                    </svg>
+                    Horarios
+                </h4>
+                <p class="text-secondary mb-4">
+                    Jueves a Sábado <br>
+                    9:00 PM – 3:00 AM
+                </p>
+                <button class="btn btn-vip-outline px-4 py-2 rounded-3" data-bs-toggle="modal"
+                    data-bs-target="#modalHorarios">
+                    Ver horarios completos
+                </button>
             </div>
-            <div class="modal-body">
-                <div *ngFor="let h of horarios" class="d-flex justify-content-between py-2 border-bottom border-secondary border-opacity-25">
-                    <span [class.text-secondary]="!h.abierto">{{ h.dia }}</span>
-                    <span *ngIf="h.abierto" class="badge outline-info text-info border border-info">
-                        {{ h.apertura }} - {{ h.cierre }}
-                    </span>
-                    <span *ngIf="!h.abierto" class="badge text-danger border border-danger">
-                        Cerrado
-                    </span>
+
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalHorarios" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-white border-0"
+                style="background-color: #0d0d0d; box-shadow: 0 0 30px rgba(188, 19, 254, 0.2);">
+                <div class="modal-header border-secondary border-opacity-25">
+                    <h5 class="modal-title text-vip fw-bold">Horarios de Operación</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div *ngFor="let h of horarios"
+                        class="d-flex justify-content-between py-2 border-bottom border-secondary border-opacity-25">
+                        <span [class.text-secondary]="!h.abierto">{{ h.dia }}</span>
+                        <span *ngIf="h.abierto" class="badge text-white" style="background-color: #bc13fe;">
+                            {{ h.apertura }} - {{ h.cierre }}
+                        </span>
+                        <span *ngIf="!h.abierto" class="badge bg-dark text-secondary border border-secondary">
+                            Cerrado
+                        </span>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-vip-outline w-100" data-bs-dismiss="modal">Cerrar</button>
                 </div>
             </div>
-            <div class="modal-footer border-0">
-                <button type="button" class="btn btn-outline-light w-100" data-bs-dismiss="modal">Cerrar</button>
-            </div>
         </div>
     </div>
-</div>
-
-        </div>
-
-    </div>
-
 </section>

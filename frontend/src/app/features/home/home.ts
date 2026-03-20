@@ -1,10 +1,9 @@
-import { Component } from '@angular/core'
-import { CommonModule } from '@angular/common'
-import { EventosService } from '../../services/eventos'
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'home',
+  selector: 'app-home',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './home.html'
@@ -12,42 +11,40 @@ import { Router } from '@angular/router';
 export class Home {
 
   eventos = [
-  {
-    titulo: 'Neon Dreams',
-    artista: 'DJ Snake',
-    fecha: 'Vie, 24 Oct',
-    imagen: 'assets/event1.jpg'
-  },
-  {
-    titulo: 'Techno Bunker',
-    artista: 'Charlotte de Witte',
-    fecha: 'Sab, 25 Oct',
-    imagen: 'assets/event2.jpg'
-  },
-  {
-    titulo: 'Retro Wave',
-    artista: 'Kavinsky',
-    fecha: 'Dom, 26 Oct',
-    imagen: 'assets/event3.jpg'
-  }
-  
-];
-horarios = [
-    { dia: 'Lunes', abierto: true, apertura: '10:00 PM', cierre: '02:00 AM' },
-    { dia: 'Martes', abierto: true, apertura: '10:00 PM', cierre: '02:00 AM' },
-    { dia: 'Miércoles', abierto: true, apertura: '10:00 PM', cierre: '02:00 AM' },
-    { dia: 'Jueves', abierto: true, apertura: '10:00 PM', cierre: '04:00 AM' },
-    { dia: 'Viernes', abierto: true, apertura: '10:00 PM', cierre: '04:00 AM' },
-    { dia: 'Sábado', abierto: true, apertura: '10:00 PM', cierre: '04:00 AM' },
-    { dia: 'Domingo', abierto: false, apertura: '', cierre: '' } 
+    {
+      imagen: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      fecha: 'Viernes, 24 de Octubre',
+      titulo: 'Neon Party',
+      artista: 'DJ Tiesto'
+    },
+    {
+      imagen: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      fecha: 'Sábado, 25 de Octubre',
+      titulo: 'Techno Night',
+      artista: 'Charlotte de Witte'
+    },
+    {
+      imagen: 'https://images.unsplash.com/photo-1558317374-067fb5f30001?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      fecha: 'Viernes, 31 de Octubre',
+      titulo: 'Halloween Bash',
+      artista: 'Martin Garrix'
+    }
   ];
 
-  constructor(private eventosService:EventosService, private router: Router){
-    this.eventos = this.eventosService.obtenerEventos()
-  }
+  horarios = [
+    { dia: 'Lunes', abierto: false },
+    { dia: 'Martes', abierto: false },
+    { dia: 'Miércoles', abierto: false },
+    { dia: 'Jueves', abierto: true, apertura: '9:00 PM', cierre: '3:00 AM' },
+    { dia: 'Viernes', abierto: true, apertura: '9:00 PM', cierre: '3:00 AM' },
+    { dia: 'Sábado', abierto: true, apertura: '9:00 PM', cierre: '3:00 AM' },
+    { dia: 'Domingo', abierto: false }
+  ];
+
+  constructor(private router: Router) {}
 
   irReservaciones() {
-    this.router.navigate(['/client/reservations']);
+    this.router.navigate(['/login']); 
   }
 
 }
