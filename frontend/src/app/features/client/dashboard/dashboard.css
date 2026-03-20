@@ -58,3 +58,20 @@
     font-size: 0.75rem;
     font-weight: 700;
 }
+.transition-hover {
+    transition: all 0.3s ease;
+}
+
+.transition-hover:hover {
+    background: rgba(255, 255, 255, 0.02) !important;
+    padding-left: 30px !important;
+}
+
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+}
