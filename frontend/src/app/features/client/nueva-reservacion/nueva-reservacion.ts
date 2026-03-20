@@ -24,45 +24,62 @@ import { ReservationService } from '../../../services/reservation.service';
       width: 100%; max-width: 420px;
       box-shadow: 0 8px 32px rgba(0,0,0,0.9);
     }
-    
+
     .input-with-icon { position: relative; }
     .input-with-icon svg {
-      position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #6c757d; z-index: 10;
-      pointer-events: none; 
+      position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+      color: #6c757d; z-index: 10;
+      pointer-events: none;
     }
-    
+
     .input-dark {
-      background-color: #111; border: 1px solid #333; color: white;
-      border-radius: 10px; padding: 0.8rem 1rem 0.8rem 45px; transition: all 0.3s;
-      appearance: none; 
+      background-color: #111;
+      border: 1px solid #333;
+      color: white;
+      border-radius: 10px;
+      padding: 0.8rem 1rem 0.8rem 45px;
+      transition: all 0.3s;
+      appearance: none;
       cursor: pointer;
     }
+
     .input-dark:focus {
-      border-color: #0dcaf0; box-shadow: 0 0 12px rgba(13, 202, 240, 0.2);
-      outline: none; background-color: #111; color: white;
+      border-color: #0dcaf0;
+      box-shadow: 0 0 12px rgba(13, 202, 240, 0.2);
+      outline: none;
     }
+
     .input-dark option {
       background-color: #111;
       color: white;
-      padding: 10px;
     }
 
     .btn-cyan {
-      background-color: #0dcaf0; color: #000; font-weight: 700; border: none;
-      border-radius: 10px; padding: 0.8rem; transition: all 0.3s;
+      background-color: #0dcaf0;
+      color: #000;
+      font-weight: 700;
+      border: none;
+      border-radius: 10px;
+      padding: 0.8rem;
+      transition: all 0.3s;
     }
+
     .btn-cyan:hover {
-      box-shadow: 0 0 20px rgba(13, 202, 240, 0.5); transform: translateY(-1px);
+      box-shadow: 0 0 20px rgba(13, 202, 240, 0.5);
     }
+
     .btn-cancel {
-      background-color: transparent; color: #6c757d; border: 1px solid #333;
-      border-radius: 10px; padding: 0.8rem; transition: all 0.3s;
+      background-color: transparent;
+      color: #6c757d;
+      border: 1px solid #333;
+      border-radius: 10px;
+      padding: 0.8rem;
     }
-    .btn-cancel:hover { border-color: #6c757d; color: white; }
   `]
 })
 export class NuevaReservacion {
 
+  // 🔥 FECHAS
   fechasDisponibles: string[] = [
     'viernes, 23 de octubre de 2026, 9:00 PM',
     'sábado, 24 de octubre de 2026, 10:00 PM',
@@ -70,12 +87,13 @@ export class NuevaReservacion {
     'viernes, 6 de noviembre de 2026, 11:00 PM'
   ];
 
-  reserva = {
-    nombre: 'Cliente VIP', 
-    date: '', 
-    people: null as number | null,
-    status: 'Pendiente',
-    comprobante: null 
+  // 🔥 FORMULARIO
+  form = {
+    nombre: '',
+    fecha: '',
+    personas: 1,
+    comprobante: '',
+    zona: ''
   };
 
   constructor(
@@ -83,17 +101,51 @@ export class NuevaReservacion {
     private router: Router
   ) {}
 
+  // 🔥 GUARDAR RESERVA
   guardarReserva() {
-    if (!this.reserva.date || !this.reserva.people) {
-      alert('Por favor, selecciona la fecha y el número de personas.');
+
+    // VALIDACIONES
+    if (!this.form.nombre || !this.form.fecha) {
+      alert('Completa todos los campos');
       return;
     }
 
-    this.reservationService.addReservation(this.reserva);
-    this.router.navigate(['/client/dashboard']); 
+    if (!this.form.zona) {
+      alert('Selecciona una zona');
+      return;
+    }
+
+    // 🔥 VIP → IR A PAGOS
+    if (this.form.zona === 'VIP') {
+
+      localStorage.setItem('reservaVIP', JSON.stringify(this.form));
+
+      this.router.navigate(['client', 'payments']);
+      return;
+    }
+
+    // 🔥 GUARDAR NORMAL
+    this.reservationService.addReservation({
+      ...this.form,
+      estado: 'pendiente'
+    });
+
+    alert('Reservación creada');
+
+    // LIMPIAR FORM
+    this.form = {
+      nombre: '',
+      fecha: '',
+      personas: 1,
+      comprobante: '',
+      zona: ''
+    };
+
+    this.router.navigate(['client', 'dashboard']);
   }
 
+  // 🔥 CANCELAR
   cancelar() {
-    this.router.navigate(['/client/dashboard']); 
+    this.router.navigate(['client', 'dashboard']);
   }
 }

@@ -7,7 +7,8 @@ import { Router } from '@angular/router'
   selector: 'home',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './home.html'
+  templateUrl: './home.html',
+  styleUrl: './home.css' // 🔥 ESTA ES LA BUENA
 })
 export class Home implements OnInit {
 
