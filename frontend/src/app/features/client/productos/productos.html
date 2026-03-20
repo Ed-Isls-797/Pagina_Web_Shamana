@@ -1,185 +1,113 @@
-<section class="bg-black text-white py-5">
+<section class="bg-black text-white py-5 min-vh-100" style="background-color: #030303 !important; overflow-x: hidden;">
+    <div class="container">
 
-<div class="container">
+        <h2 class="fw-bold text-center mb-5">
+            Experiencia <span class="text-info" style="color: #bc13fe !important;">Shamana</span>
+        </h2>
 
-    <!-- TITULO -->
-    <h2 class="fw-bold text-center mb-5">
-        Experiencia <span class="text-info">Shamana</span>
-    </h2>
+        <h4 class="mb-4 d-flex align-items-center gap-2" style="color: #bc13fe;">
+            Carta
+        </h4>
 
-    <!-- 🍾 CARTA PRINCIPAL -->
-    <h4 class="text-info mb-3">🍾 Carta</h4>
+        <div *ngFor="let categoria of menuShamana" class="mb-5">
+            <h5 class="text-light border-bottom border-secondary pb-2 mb-3">
+                {{categoria.nombre}}
+            </h5>
 
-    <div *ngFor="let categoria of menuShamana" class="mb-5">
+            <div class="row g-3">
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngFor="let item of categoria.items">
+                    <div class="p-3 bg-dark rounded-4 border border-secondary border-opacity-25 h-100 carta-card">
 
-        <h5 class="text-light border-bottom pb-2">
-            {{categoria.nombre}}
-        </h5>
+                        <h6 class="fw-bold mb-3">{{item.nombre}}</h6>
 
-        <div class="row g-3 mt-2">
+                        <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom border-secondary border-opacity-25"
+                            *ngIf="item.botella">
+                            <span class="small text-secondary">Botella ({{item.botella.ml}}ml)</span>
+                            <span class="fw-bold" style="color: #bc13fe;">$ {{item.botella.precio}}</span>
+                        </div>
 
-            <div class="col-md-4" *ngFor="let item of categoria.items">
+                        <div class="d-flex justify-content-between align-items-center" *ngIf="item.copeo">
+                            <span class="small text-secondary">Copeo</span>
+                            <span class="fw-bold text-info">$ {{item.copeo}}</span>
+                        </div>
 
-                <div class="p-3 bg-dark rounded-4 border border-secondary border-opacity-25 h-100">
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                    <h6 class="fw-bold mb-2">{{item.nombre}}</h6>
+        <h4 class="mb-4 mt-5 d-flex align-items-center gap-2" style="color: #bc13fe;">
+            Coctelería & Shots
+        </h4>
 
-                    <p class="small text-secondary mb-1"
-                       *ngIf="item.botella">
-                        Botella: {{item.botella.ml}}ml -
-                        <span class="text-info">$ {{item.botella.precio}}</span>
-                    </p>
+        <div *ngFor="let categoria of extrasMenu" class="mb-5">
+            <h5 class="text-light border-bottom border-secondary pb-2 mb-3">
+                {{categoria.nombre}}
+            </h5>
 
-                    <p class="small text-secondary"
-                       *ngIf="item.copeo">
-                        Copeo:
-                        <span class="text-info">$ {{item.copeo}}</span>
-                    </p>
+            <div class="row g-3">
+                <div class="col-6 col-md-3" *ngFor="let item of categoria.items">
+                    <div
+                        class="p-3 bg-dark rounded-4 text-center border border-secondary border-opacity-25 h-100 carta-card d-flex flex-column justify-content-center">
+                        <p class="mb-2 small fw-bold">{{item.nombre}}</p>
+                        <span class="fs-5 fw-bold" style="color: #bc13fe;">$ {{item.precio}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
 
+        <div class="row g-5 mt-4">
+
+            <div class="col-12 col-lg-7">
+                <h4 class="mb-4 d-flex align-items-center gap-2" style="color: #bc13fe;">
+                    Mesas Disponibles
+                </h4>
+
+                <div class="d-flex flex-wrap gap-3 mb-4 justify-content-center justify-content-lg-start">
+                        <div class="mesa" *ngFor="let mesa of mesas" [ngClass]="{
+                            'disponible': mesa.estado === 'disponible',
+                            'ocupado': mesa.estado === 'ocupado',
+                            'vip': mesa.zona === 'VIP',
+                            'seleccionada': mesaSeleccionada?.id === mesa.id
+                            }" (click)="seleccionarMesa(mesa)">
+                        M{{mesa.id}}
+                    </div>
                 </div>
 
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- 🍹 COCTELERÍA -->
-    <h4 class="text-info mb-3 mt-5">🍹 Coctelería & Shots</h4>
-
-    <div *ngFor="let categoria of extrasMenu" class="mb-5">
-
-        <h5 class="text-light mb-3">
-            {{categoria.nombre}}
-        </h5>
-
-        <div class="row g-3">
-
-            <div class="col-md-3 col-6" *ngFor="let item of categoria.items">
-
-                <div class="p-3 bg-dark rounded-4 text-center border border-secondary border-opacity-25 h-100">
-
-                    <p class="mb-1 small">{{item.nombre}}</p>
-
-                    <span class="text-info fw-bold">
-                        $ {{item.precio}}
-                    </span>
-
+                <div class="p-3 rounded-3 bg-dark border border-secondary border-opacity-25 text-center text-lg-start">
+                    <p class="text-secondary m-0" *ngIf="mesaSeleccionada">
+                        Mesa seleccionada:
+                        <span class="fw-bold ms-2 px-2 py-1 rounded"
+                            style="background-color: rgba(188, 19, 254, 0.2); color: #bc13fe;">
+                            #{{mesaSeleccionada.id}} ({{mesaSeleccionada.zona}})
+                        </span>
+                    </p>
+                    <p class="text-secondary m-0" *ngIf="!mesaSeleccionada">
+                        Selecciona una mesa en el mapa superior.
+                    </p>
                 </div>
+            </div>
 
+            <div class="col-12 col-lg-5">
+                <h4 class="mb-4 d-flex align-items-center gap-2" style="color: #bc13fe;">
+                    Servicios
+                </h4>
+
+                <div class="row g-3">
+                    <div class="col-12 col-sm-4 col-lg-12" *ngFor="let s of servicios">
+                        <div
+                            class="p-3 bg-dark rounded-4 border border-secondary border-opacity-25 d-flex align-items-center gap-3 h-100 carta-card">
+                            <div class="fs-2 bg-black rounded-3 d-flex align-items-center justify-content-center"
+                                style="width: 60px; height: 60px;">
+                                {{s.icono}}
+                            </div>
+                            <h6 class="m-0 text-light fw-bold">{{s.nombre}}</h6>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </div>
 
     </div>
-
-    <!-- 🪑 MESAS -->
-    <h4 class="text-info mb-3">🪑 Mesas Disponibles</h4>
-
-    <div class="mapa-bar mb-5">
-
-        <div class="mesa"
-             *ngFor="let mesa of mesas"
-             [ngClass]="{
-               'disponible': mesa.estado === 'disponible',
-               'ocupado': mesa.estado === 'ocupado',
-               'vip': mesa.zona === 'VIP',
-               'seleccionada': mesaSeleccionada?.id === mesa.id
-             }"
-             (click)="seleccionarMesa(mesa)">
-
-            M{{mesa.id}}
-
-        </div>
-
-    </div>
-
-    <!-- INFO MESA -->
-    <div class="text-center mb-5" *ngIf="mesaSeleccionada">
-
-        <p class="text-secondary">
-            Mesa seleccionada:
-            <span class="text-info fw-bold">
-                #{{mesaSeleccionada.id}} ({{mesaSeleccionada.zona}})
-            </span>
-        </p>
-
-    </div>
-
-    <!-- 🆓 SERVICIOS -->
-    <h4 class="text-info mb-3">🆓 Servicios</h4>
-
-    <div class="row g-4 text-center">
-
-        <div class="col-md-4" *ngFor="let s of servicios">
-
-            <div class="p-4 bg-dark rounded-4 border border-secondary border-opacity-25 h-100">
-
-                <h2>{{s.icono}}</h2>
-
-                <p class="mt-2 text-light">
-                    {{s.nombre}}
-                </p>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
 </section>
-
-<!-- 🎨 ESTILOS -->
-<style>
-
-.mapa-bar {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  justify-items: center;
-}
-
-.mesa {
-  width: 70px;
-  height: 70px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-/* DISPONIBLE */
-.disponible {
-  background: #198754;
-  box-shadow: 0 0 10px #198754;
-}
-
-/* OCUPADO */
-.ocupado {
-  background: #dc3545;
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-/* VIP */
-.vip {
-  border: 2px solid #bc13fe;
-  box-shadow: 0 0 10px #bc13fe;
-}
-
-/* SELECCIONADA */
-.seleccionada {
-  transform: scale(1.2);
-  box-shadow: 0 0 20px #0dcaf0;
-}
-
-/* HOVER PRO */
-.mesa:hover {
-  transform: scale(1.1);
-}
-
-</style>

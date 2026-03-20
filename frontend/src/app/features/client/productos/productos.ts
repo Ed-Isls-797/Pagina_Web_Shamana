@@ -5,11 +5,11 @@ import { CommonModule } from '@angular/common';
   selector: 'app-productos',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './productos.html'
+  templateUrl: './productos.html',
+  styleUrls: ['./productos.css'] 
 })
 export class Productos {
 
-  // 🍾 CARTA PRINCIPAL
   menuShamana = [
     {
       nombre: "Ron",
@@ -42,7 +42,6 @@ export class Productos {
     }
   ];
 
-  // 🍹 COCTELERÍA Y EXTRAS
   extrasMenu = [
     {
       nombre: "Coctelería",
@@ -62,19 +61,18 @@ export class Productos {
     }
   ];
 
-  // 🆓 SERVICIOS
   servicios = [
     { nombre: 'Estacionamiento', icono: '🚗' },
-    { nombre: 'Guardarropa', icono: '🧥' },
-    { nombre: 'Seguridad', icono: '🛡️' }
+    { nombre: 'Guardarropa', icono: '🧥' }
   ];
 
-  // 🪑 MESAS
   mesas = [
     { id: 1, zona: 'General', estado: 'disponible' },
     { id: 2, zona: 'VIP', estado: 'ocupado' },
     { id: 3, zona: 'VIP', estado: 'disponible' },
-    { id: 4, zona: 'Terraza', estado: 'disponible' }
+    { id: 4, zona: 'Terraza', estado: 'disponible' },
+    { id: 5, zona: 'General', estado: 'disponible' },
+    { id: 6, zona: 'VIP', estado: 'ocupado' }
   ];
 
   mesaSeleccionada: any = null;
@@ -83,5 +81,4 @@ export class Productos {
     if (mesa.estado === 'ocupado') return;
     this.mesaSeleccionada = mesa;
   }
-  
 }

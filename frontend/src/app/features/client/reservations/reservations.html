@@ -1,14 +1,15 @@
-<div class="container-fluid py-4">
+<div class="container-fluid py-4" style="background-color: #09090b; min-height: 100vh;">
 
   <div class="d-flex flex-wrap justify-content-between align-items-center mb-5 gap-3">
     <div>
-      <h2 class="text-info fw-bold mb-1">
-        <i class="bi bi-ticket-perforated-fill me-2"></i>Mis Reservaciones
+      <h2 class="text-white fw-bold mb-1">
+        Mis Reservaciones
       </h2>
-      <p class="text-secondary mb-0 small text-uppercase tracking-wider">Tus próximos accesos exclusivos</p>
+      <p class="text-secondary mb-0 small">Tus próximos accesos exclusivos</p>
     </div>
-    <button (click)="irNuevaReserva()" class="btn btn-info fw-bold shadow-sm px-4 py-2 rounded-pill shadow-lg">
-      <i class="bi bi-plus-lg me-1"></i> Nueva Reserva
+    
+    <button (click)="irNuevaReserva()" class="btn border border-secondary text-white fw-bold shadow-sm px-4 py-2 rounded-3" style="background-color: #18181b;">
+      Nueva Reserva
     </button>
   </div>
 
@@ -17,59 +18,73 @@
     @for (res of reservations; track $index) {
       <div class="col-12 col-md-6 col-lg-4">
         
-        <div class="card bg-dark border-0 shadow-lg rounded-4 overflow-hidden h-100 position-relative" 
-             style="border: 1px solid rgba(255,255,255,0.1) !important;">
+        <div class="card-reserva">
           
-          <div class="position-absolute top-0 start-0 w-100" style="height: 5px;" 
-               [ngClass]="{
-                 'bg-success shadow-success': res.status === 'Confirmada', 
-                 'bg-warning shadow-warning': res.status === 'Pendiente'
-               }">
-          </div>
-
-          <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-center mb-4">
             
-            <div class="d-flex justify-content-between align-items-center mb-4">
-              <span class="badge rounded-pill px-3 py-2 fw-bold"
-                    [ngClass]="{
-                      'bg-success bg-opacity-10 text-success border border-success': res.status === 'Confirmada', 
-                      'bg-warning bg-opacity-10 text-warning border border-warning': res.status === 'Pendiente'
-                    }">
-                <i class="bi" [ngClass]="res.status === 'Confirmada' ? 'bi-check-circle-fill' : 'bi-clock-history'"></i>
-                {{ res.status }}
-              </span>
-              <span class="text-secondary small fw-bold text-uppercase">#{{ $index + 1 }}</span>
+            <div class="estado-texto">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="icon-estado" viewBox="0 0 16 16">
+                <path *ngIf="res.status === 'Pendiente' || !res.status" d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
+                <path *ngIf="res.status === 'Pendiente' || !res.status" d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
+                
+                <path *ngIf="res.status === 'Aceptado' || res.status === 'Confirmada'" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                
+                <path *ngIf="res.status === 'Rechazado'" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"/>
+              </svg>
+              <span>{{res.status || 'Pendiente'}}</span>
             </div>
 
-            <div class="mb-4 text-center py-3 bg-black bg-opacity-25 rounded-3 border border-secondary border-opacity-25">
-               <h3 class="text-info fw-bold mb-0">{{ res.date }}</h3>
-               <small class="text-secondary text-uppercase tracking-widest">Fecha de Acceso</small>
+            <span class="text-secondary" style="font-size: 0.75rem;">#{{ $index + 1 }}</span>
+          </div>
+
+          <div class="flex-grow-1 d-flex flex-column justify-content-center align-items-center text-center my-3">
+            
+            <div *ngIf="!res.date || res.date === 'Por definir'" class="w-100 py-3 rounded" style="background-color: #18181b; border: 1px solid #27272a;">
+              <span class="fecha-label">FECHA DE ACCESO</span>
             </div>
 
-            <div class="row text-center border-top border-secondary border-opacity-25 pt-3 mt-2">
-              <div class="col-6 border-end border-secondary border-opacity-25">
-                <small class="text-secondary d-block">Personas</small>
-                <span class="text-white fw-bold fs-5"><i class="bi bi-people-fill me-1"></i>{{ res.people }}</span>
+            <ng-container *ngIf="res.date && res.date !== 'Por definir'">
+              <h3 class="text-cyan-neon fw-bold mb-2 lh-sm px-2" style="font-size: 1.4rem;">
+                {{res.date}}
+              </h3>
+              <span class="fecha-label">FECHA DE ACCESO</span>
+            </ng-container>
+          </div>
+
+          <div class="d-flex justify-content-center align-items-center mt-3 pt-3" style="border-top: 1px solid #27272a;">
+            
+            <div class="text-center w-50">
+              <span class="d-block text-secondary mb-1" style="font-size: 0.7rem;">Personas</span>
+              <div class="fw-bold text-white d-flex justify-content-center align-items-center gap-2" style="font-size: 1.1rem;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                  <path d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8Zm-7.978-1A.261.261 0 0 1 7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002a.274.274 0 0 1-.014.002H7.022ZM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM6.936 9.28a5.88 5.88 0 0 0-1.23-.247A7.35 7.35 0 0 0 5 9c-4 0-5 3-5 4 0 .667.333 1 1 1h4.216A2.238 2.238 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816ZM4.92 10A5.493 5.493 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275ZM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0Zm3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z"/>
+                </svg>
+                {{res.people || res.personas}}
               </div>
-              <div class="col-6">
-                <small class="text-secondary d-block">Zona</small>
-                <span class="text-white fw-bold fs-5">{{ res.zona || 'General' }}</span>
+            </div>
+
+            <div class="divider-vertical"></div>
+
+            <div class="text-center w-50">
+              <span class="d-block text-secondary mb-1" style="font-size: 0.7rem;">Zona</span>
+              <div class="fw-bold text-white" style="font-size: 1.1rem;">
+                {{res.zona || 'General'}}
               </div>
             </div>
 
           </div>
-          
-          <div class="position-absolute top-50 start-0 translate-middle bg-body rounded-circle" style="width: 20px; height: 20px; margin-left: -10px;"></div>
-          <div class="position-absolute top-50 start-100 translate-middle bg-body rounded-circle" style="width: 20px; height: 20px; margin-left: 10px;"></div>
+
         </div>
       </div>
     } 
 
     @empty {
       <div class="col-12 text-center py-5">
-        <i class="bi bi-calendar-x text-secondary" style="font-size: 4rem; opacity: 0.3;"></i>
+        <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="currentColor" class="text-secondary mb-3" style="opacity: 0.3;" viewBox="0 0 16 16">
+          <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
+        </svg>
         <h4 class="text-secondary mt-3">No tienes reservaciones aún</h4>
-        <button (click)="irNuevaReserva()" class="btn btn-outline-info mt-3 rounded-pill">Hacer mi primera reserva</button>
+        <button (click)="irNuevaReserva()" class="btn border border-info text-info mt-3 rounded-pill" style="background: transparent;">Hacer mi primera reserva</button>
       </div>
     }
     
