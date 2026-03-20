@@ -2,76 +2,141 @@
 
   <div class="d-flex flex-wrap justify-content-between align-items-center mb-5 gap-3">
     <div>
-      <h2 class="text-info fw-bold mb-1">
-        <i class="bi bi-ticket-perforated-fill me-2"></i>Mis Reservaciones
+      <h2 class="fw-bold mb-1" style="font-family: 'Syne', sans-serif; color: var(--bs-body-color)">
+        <i class="bi bi-ticket-perforated-fill me-2 text-info"></i>Mis Reservaciones
       </h2>
-      <p class="text-secondary mb-0 small text-uppercase tracking-wider">Tus próximos accesos exclusivos</p>
+      <p class="text-secondary mb-0 small text-uppercase" style="letter-spacing:.08em; font-family: monospace">
+        Tus próximos accesos exclusivos
+      </p>
     </div>
-    <button (click)="irNuevaReserva()" class="btn btn-info fw-bold shadow-sm px-4 py-2 rounded-pill shadow-lg">
+    <button (click)="irNuevaReserva()" class="btn btn-info fw-bold px-4 py-2 rounded-pill text-white">
       <i class="bi bi-plus-lg me-1"></i> Nueva Reserva
     </button>
   </div>
 
   <div class="row g-4">
-    
+
     @for (res of reservations; track $index) {
       <div class="col-12 col-md-6 col-lg-4">
-        
-        <div class="card bg-dark border-0 shadow-lg rounded-4 overflow-hidden h-100 position-relative" 
-             style="border: 1px solid rgba(255,255,255,0.1) !important;">
-          
-          <div class="position-absolute top-0 start-0 w-100" style="height: 5px;" 
-               [ngClass]="{
-                 'bg-success shadow-success': res.status === 'Confirmada', 
-                 'bg-warning shadow-warning': res.status === 'Pendiente'
-               }">
+        <div class="card bg-dark border-0 rounded-4 overflow-hidden h-100 position-relative res-card"
+             style="border: 0.5px solid rgba(255,255,255,0.1) !important;">
+
+          <!-- Stripe superior de estado -->
+          <div style="height: 4px;"
+               [class]="res.status === 'Confirmada' ? 'bg-success' : 'bg-warning'">
           </div>
 
           <div class="card-body p-4">
-            
+
+            <!-- Badge + número -->
             <div class="d-flex justify-content-between align-items-center mb-4">
-              <span class="badge rounded-pill px-3 py-2 fw-bold"
+              <span class="badge rounded-pill px-3 py-2 d-flex align-items-center gap-2"
                     [ngClass]="{
-                      'bg-success bg-opacity-10 text-success border border-success': res.status === 'Confirmada', 
-                      'bg-warning bg-opacity-10 text-warning border border-warning': res.status === 'Pendiente'
-                    }">
-                <i class="bi" [ngClass]="res.status === 'Confirmada' ? 'bi-check-circle-fill' : 'bi-clock-history'"></i>
+                      'text-success border border-success': res.status === 'Confirmada',
+                      'text-warning border border-warning': res.status === 'Pendiente'
+                    }"
+                    style="background: transparent; font-size: 11px; font-family: monospace">
+                <span class="rounded-circle d-inline-block"
+                      style="width:7px; height:7px;"
+                      [class]="res.status === 'Confirmada' ? 'bg-success' : 'bg-warning'">
+                </span>
                 {{ res.status }}
               </span>
-              <span class="text-secondary small fw-bold text-uppercase">#{{ $index + 1 }}</span>
+              <span class="text-secondary fw-bold" style="font-size: 11px; font-family: monospace">
+                #{{ $index + 1 }}
+              </span>
             </div>
 
-            <div class="mb-4 text-center py-3 bg-black bg-opacity-25 rounded-3 border border-secondary border-opacity-25">
-               <h3 class="text-info fw-bold mb-0">{{ res.date }}</h3>
-               <small class="text-secondary text-uppercase tracking-widest">Fecha de Acceso</small>
-            </div>
+<div class="mb-4 text-center py-3 rounded-3"
+     style="background: rgba(0,0,0,0.3); border: 0.5px solid rgba(255,255,255,0.08)">
+  @if (isFechaValida(res.date)) {
+    <h3 class="text-info fw-bold mb-0" style="font-family: monospace; font-size: 1rem">
+      {{ getFechaParte(res.date) }}
+    </h3>
+    <span class="badge bg-info bg-opacity-10 text-info border border-info mt-1"
+          style="font-family: monospace; font-size: 11px">
+      {{ getHoraParte(res.date) }}
+    </span>
+  } @else {
+    <h3 class="mb-0" style="color: #ef4444; font-family: monospace; font-size: 1rem">
+      <i class="bi bi-exclamation-triangle-fill me-1"></i>Fecha inválida
+    </h3>
+  }
+  <small class="text-secondary text-uppercase d-block mt-2"
+         style="letter-spacing: .1em; font-size: 10px">
+    Fecha de Acceso
+  </small>
+</div>
 
-            <div class="row text-center border-top border-secondary border-opacity-25 pt-3 mt-2">
-              <div class="col-6 border-end border-secondary border-opacity-25">
-                <small class="text-secondary d-block">Personas</small>
-                <span class="text-white fw-bold fs-5"><i class="bi bi-people-fill me-1"></i>{{ res.people }}</span>
+
+            <!-- Personas y Zona -->
+            <div class="row text-center border-top pt-3 mt-2" style="border-color: rgba(255,255,255,0.08) !important">
+              <div class="col-6" style="border-right: 0.5px solid rgba(255,255,255,0.08)">
+                <small class="text-secondary d-block" style="font-size:10px; letter-spacing:.08em; text-transform:uppercase">Personas</small>
+                <span class="text-white fw-bold">
+                  <i class="bi bi-people-fill me-1 text-info"></i>{{ res.people }}
+                </span>
               </div>
               <div class="col-6">
-                <small class="text-secondary d-block">Zona</small>
-                <span class="text-white fw-bold fs-5">{{ res.zona || 'General' }}</span>
+                <small class="text-secondary d-block" style="font-size:10px; letter-spacing:.08em; text-transform:uppercase">Zona</small>
+                <span class="text-white fw-bold">{{ res.zona || 'General' }}</span>
               </div>
             </div>
 
           </div>
-          
-          <div class="position-absolute top-50 start-0 translate-middle bg-body rounded-circle" style="width: 20px; height: 20px; margin-left: -10px;"></div>
-          <div class="position-absolute top-50 start-100 translate-middle bg-body rounded-circle" style="width: 20px; height: 20px; margin-left: 10px;"></div>
+
+          <!-- Footer: botón cancelar -->
+          <div class="card-footer bg-transparent px-4 py-3"
+               style="border-top: 0.5px solid rgba(255,255,255,0.08) !important">
+            <button class="btn btn-sm w-100 text-secondary btn-cancel-res"
+                    style="border: 0.5px solid rgba(255,255,255,0.15); border-radius: 6px; font-family: monospace; font-size: 12px"
+                    (click)="abrirModalCancelar($index)">
+              <i class="bi bi-trash3 me-1"></i> Cancelar reservación
+            </button>
+          </div>
+
+          <!-- Notches decorativos (ticket) -->
+          <div class="position-absolute rounded-circle bg-body"
+               style="width:16px;height:16px;top:50%;left:-8px;transform:translateY(-50%);border:0.5px solid rgba(255,255,255,0.1)">
+          </div>
+          <div class="position-absolute rounded-circle bg-body"
+               style="width:16px;height:16px;top:50%;right:-8px;transform:translateY(-50%);border:0.5px solid rgba(255,255,255,0.1)">
+          </div>
+
         </div>
       </div>
-    } 
+    }
 
     @empty {
       <div class="col-12 text-center py-5">
-        <i class="bi bi-calendar-x text-secondary" style="font-size: 4rem; opacity: 0.3;"></i>
+        <i class="bi bi-calendar-x text-secondary" style="font-size: 4rem; opacity: 0.3"></i>
         <h4 class="text-secondary mt-3">No tienes reservaciones aún</h4>
-        <button (click)="irNuevaReserva()" class="btn btn-outline-info mt-3 rounded-pill">Hacer mi primera reserva</button>
+        <button (click)="irNuevaReserva()" class="btn btn-outline-info mt-3 rounded-pill">
+          Hacer mi primera reserva
+        </button>
       </div>
     }
-    
+
   </div>
 </div>
+
+<!-- Modal de confirmación -->
+@if (modalCancelarIndex !== null) {
+  <div class="modal d-flex" tabindex="-1" style="background:rgba(0,0,0,.55); position:fixed; inset:0; z-index:1055; align-items:center; justify-content:center">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content bg-dark text-white border-0 rounded-4 p-4 text-center" style="max-width:320px; border: 0.5px solid rgba(255,255,255,0.12) !important">
+        <i class="bi bi-trash3-fill text-danger mb-3" style="font-size:2rem"></i>
+        <h5 class="fw-bold mb-1">¿Cancelar reservación?</h5>
+        <p class="text-secondary small mb-4" style="font-family:monospace">
+          {{ reservations[modalCancelarIndex!].date }} ·
+          {{ reservations[modalCancelarIndex!].people }} persona(s) ·
+          {{ reservations[modalCancelarIndex!].zona || 'General' }}
+        </p>
+        <div class="d-flex gap-3">
+          <button class="btn btn-outline-secondary flex-fill rounded-3" (click)="cerrarModal()">Volver</button>
+          <button class="btn btn-danger flex-fill rounded-3 fw-bold" (click)="confirmarCancelar()">Sí, cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

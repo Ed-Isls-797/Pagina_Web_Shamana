@@ -115,22 +115,22 @@ export class NuevaReservacion {
       return;
     }
 
-    // 🔥 VIP → IR A PAGOS
-    if (this.form.zona === 'VIP') {
-
-      localStorage.setItem('reservaVIP', JSON.stringify(this.form));
-
-      this.router.navigate(['client', 'payments']);
-      return;
-    }
-
-    // 🔥 GUARDAR NORMAL
-    this.reservationService.addReservation({
-      ...this.form,
-      estado: 'pendiente'
-    });
-
-    alert('Reservación creada');
+// 🔥 VIP → IR A PAGOS
+localStorage.setItem('reservaVIP', JSON.stringify({
+  nombre: this.form.nombre,
+  date: this.form.fecha,
+  people: this.form.personas,
+  zona: this.form.zona,
+  status: 'Pendiente'
+}));
+// 🔥 GUARDAR NORMAL
+this.reservationService.addReservation({
+  nombre: this.form.nombre,
+  date: this.form.fecha,        // fecha → date
+  people: this.form.personas,   // personas → people
+  zona: this.form.zona,
+  status: 'Pendiente'           // estado → status, con mayúscula
+});
 
     // LIMPIAR FORM
     this.form = {
