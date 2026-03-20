@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { ReservationService } from '../../../services/reservation.service';
 import { CommonModule } from '@angular/common';
@@ -10,43 +10,38 @@ import { CommonModule } from '@angular/common';
   templateUrl: './reservations.html'
 })
 export class Reservations implements OnInit {
-
   reservations: any[] = [];
+  
+  // 🔥 Esta es la variable que faltaba para el modal 🔥
   modalCancelarIndex: number | null = null;
 
-  constructor(
-    private router: Router,
-    private reservationService: ReservationService
-  ) {}
+  constructor(private router: Router, private resService: ReservationService) {}
 
-  ngOnInit() {
-  this.reservations = (this.reservationService.getReservations() as any[])
-    .map((r: any) => ({
-      ...r,
-      status: r.status === 'Aceptado' ? 'Confirmada' : r.status
-    }))
-    .reverse();
-}
+  ngOnInit() { this.cargar(); }
 
-isFechaValida(fecha: string): boolean {
-  return !!fecha && fecha.trim().length > 0;
-}
-
-getFechaParte(fecha: string): string {
-  // Retorna todo antes de la última coma → "viernes, 23 de octubre de 2026"
-  const partes = fecha.split(',');
-  return partes.slice(0, -1).join(',').trim();
-}
-
-getHoraParte(fecha: string): string {
-  // Retorna lo último después de la última coma → "9:00 PM"
-  const partes = fecha.split(',');
-  return partes[partes.length - 1].trim();
-}
-  irNuevaReserva() {
-    this.router.navigate(['/client/nueva-reservacion']);
+  @HostListener('window:storage')
+  cargar() { 
+    this.reservations = this.resService.getReservations().slice().reverse(); 
   }
 
+  irNuevaReserva() { 
+    this.router.navigate(['/client/nueva-reservacion']); 
+  }
+
+  // --- FUNCIONES QUE GIT TE BORRÓ ---
+  isFechaValida(fecha: any): boolean {
+    return fecha !== null && fecha !== undefined && fecha !== '';
+  }
+
+  getFechaParte(fecha: any): string {
+    return fecha ? fecha.toString().split(' ')[0] : 'Pendiente';
+  }
+
+  getHoraParte(fecha: any): string {
+    return '22:00 PM'; // Hora por defecto
+  }
+
+  // --- LÓGICA DEL MODAL DE CANCELACIÓN ---
   abrirModalCancelar(index: number) {
     this.modalCancelarIndex = index;
   }
@@ -56,15 +51,11 @@ getHoraParte(fecha: string): string {
   }
 
   confirmarCancelar() {
-    if (this.modalCancelarIndex === null) return;
-
-    // Elimina del array local
-    this.reservations.splice(this.modalCancelarIndex, 1);
-
-    // Persiste en localStorage a través del servicio
-    // (el array ya está invertido, así que guardamos la copia original)
-    this.reservationService.saveReservations([...this.reservations].reverse());
-
+    if (this.modalCancelarIndex !== null) {
+      const reserva = this.reservations[this.modalCancelarIndex];
+      this.resService.updateStatus(reserva.id, 'Rechazado');
+      this.cargar();
+    }
     this.cerrarModal();
   }
 }

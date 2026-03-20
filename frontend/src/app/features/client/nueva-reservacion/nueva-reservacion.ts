@@ -96,6 +96,10 @@ export class NuevaReservacion {
     zona: ''
   };
 
+  // 🔥 VARIABLES DEL TOAST (Por si las ocupas en tu HTML)
+  toastVisible = false;
+  toastMensaje = '';
+
   constructor(
     private reservationService: ReservationService,
     private router: Router
@@ -104,9 +108,9 @@ export class NuevaReservacion {
   // 🔥 GUARDAR RESERVA
   guardarReserva() {
 
-    // VALIDACIONES
+    // 1. VALIDACIONES
     if (!this.form.nombre || !this.form.fecha) {
-      alert('Completa todos los campos');
+      alert('Completa todos los campos obligatorios');
       return;
     }
 
@@ -115,24 +119,27 @@ export class NuevaReservacion {
       return;
     }
 
-// 🔥 VIP → IR A PAGOS
-localStorage.setItem('reservaVIP', JSON.stringify({
-  nombre: this.form.nombre,
-  date: this.form.fecha,
-  people: this.form.personas,
-  zona: this.form.zona,
-  status: 'Pendiente'
-}));
-// 🔥 GUARDAR NORMAL
-this.reservationService.addReservation({
-  nombre: this.form.nombre,
-  date: this.form.fecha,        // fecha → date
-  people: this.form.personas,   // personas → people
-  zona: this.form.zona,
-  status: 'Pendiente'           // estado → status, con mayúscula
-});
+    // 2. 🔥 LÓGICA VIP CORREGIDA (Solo si es VIP)
+    if (this.form.zona === 'VIP' || this.form.zona === 'Booth VIP 1' || this.form.zona === 'Booth VIP 2') {
+      localStorage.setItem('reservaVIP', JSON.stringify({
+        nombre: this.form.nombre,
+        fecha: this.form.fecha,
+        personas: this.form.personas,
+        zona: this.form.zona,
+        estado: 'Pendiente'
+      }));
+    }
 
-    // LIMPIAR FORM
+    // 3. 🔥 GUARDAR NORMAL CORREGIDO (Todo en español para que el Admin lo lea)
+    this.reservationService.addReservation({
+      nombre: this.form.nombre,
+      fecha: this.form.fecha,       // Estaba como date
+      personas: this.form.personas, // Estaba como people
+      zona: this.form.zona,
+      estado: 'Pendiente'           // Estaba como status
+    });
+
+    // 4. LIMPIAR FORM
     this.form = {
       nombre: '',
       fecha: '',
@@ -141,11 +148,13 @@ this.reservationService.addReservation({
       zona: ''
     };
 
-    this.router.navigate(['client', 'dashboard']);
+    // 5. REDIRECCIÓN
+    // Lo mando a 'reservations' para que el cliente vea que sí se guardó, pero si prefieres 'dashboard', cámbialo.
+    this.router.navigate(['client', 'reservations']);
   }
 
   // 🔥 CANCELAR
   cancelar() {
-    this.router.navigate(['client', 'dashboard']);
+    this.router.navigate(['client', 'reservations']);
   }
 }
