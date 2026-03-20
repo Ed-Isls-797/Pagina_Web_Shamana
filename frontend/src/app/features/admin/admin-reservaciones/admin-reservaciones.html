@@ -2,13 +2,12 @@
 
     <div class="mb-5">
         <h2 class="fw-bold mb-1 text-warning">Reservaciones</h2>
-        <p class="text-secondary m-0">Gestiona las mesas y verifica los pagos</p>
+        <p class="text-secondary m-0">Gestiona las mesas y verifica los pagos de Shamana</p>
     </div>
 
     <div class="card bg-dark border-secondary rounded-4 overflow-hidden" style="background-color: #111 !important;">
         <div class="table-responsive">
             <table class="table table-dark table-hover align-middle mb-0">
-
                 <thead>
                     <tr>
                         <th class="ps-4 py-3">CLIENTE</th>
@@ -21,75 +20,53 @@
 
                 <tbody>
                     <tr *ngFor="let r of reservaciones">
-
-                        <td class="ps-4 fw-bold" style="font-size: 0.9rem;">
-                            {{ r.nombre || 'Cliente Nuevo' }}
-                        </td>
-
+                        <td class="ps-4 fw-bold">{{ r.nombre || 'Cliente Nuevo' }}</td>
                         <td>
-                            <div class="fw-bold" style="font-size: 0.85rem;">{{ r.personas || r.people || 1 }} personas
-                            </div>
-                            <div class="text-secondary" style="font-size: 0.75rem;">{{ r.fecha || r.date || 'Por
-                                definir' }}</div>
+                            <div class="fw-bold" style="font-size: 0.85rem;">{{ r.personas || r.people || 1 }} personas</div>
+                            <div class="text-secondary small">{{ r.fecha || r.date || 'Por definir' }}</div>
                         </td>
-
-                        <td class="text-warning fw-bold" style="font-size: 0.85rem;">
-                            {{ r.zona || 'General' }}
-                        </td>
+                        <td class="text-warning fw-bold small">{{ r.zona || 'General' }}</td>
 
                         <td class="text-center">
-                            <span class="badge-estado st-confirmado"
-                                *ngIf="r.estado === 'Confirmado' || r.status === 'Confirmada'">Confirmado</span>
-                            <span class="badge-estado st-rechazado"
-                                *ngIf="r.estado === 'Rechazado' || r.status === 'Rechazado'">Rechazado</span>
-                            <span class="badge-estado st-aceptado"
-                                *ngIf="r.estado === 'Aceptado' || r.status === 'Aceptado'">Aceptado</span>
-
-                            <span class="badge-estado st-pendiente"
-                                *ngIf="r.estado === 'Pendiente' || r.estado === 'pendiente' || !r.estado">O</span>
+                            <span class="badge-estado st-confirmado" *ngIf="r.estado === 'Confirmado'">Confirmado</span>
+                            <span class="badge-estado st-rechazado" *ngIf="r.estado === 'Rechazado'">Rechazado</span>
+                            <span class="badge-estado st-aceptado" *ngIf="r.estado === 'Aceptado'">Aceptado</span>
+                            <span class="badge-estado text-info border border-info px-2" *ngIf="r.estado === 'Esperando Pago'">Esperando Pago</span>
+                            <span class="badge-estado st-pendiente" *ngIf="r.estado === 'Pendiente' || !r.estado">O</span>
                         </td>
 
                         <td class="pe-4 text-end">
-
-                            <ng-container *ngIf="r.estado === 'Pendiente' || r.estado === 'pendiente' || !r.estado">
-                                <button class="btn-accion btn-aceptar" (click)="aceptarReserva(r)">Aceptar</button>
+                            <ng-container *ngIf="r.estado === 'Pendiente' || !r.estado">
+                                <button class="btn-accion btn-aceptar me-2" (click)="aceptarReserva(r)">Aceptar</button>
                                 <button class="btn-accion btn-rechazar" (click)="rechazarReserva(r)">Rechazar</button>
                             </ng-container>
 
-                            <ng-container *ngIf="r.estado === 'Aceptado' || r.status === 'Aceptado'">
-                                <button class="btn-accion btn-solicitar" (click)="solicitarPago(r)">Solicitar
-                                    Pago</button>
+                            <ng-container *ngIf="r.estado === 'Aceptado'">
+                                <button class="btn-accion btn-solicitar" (click)="solicitarPago(r)">Solicitar Pago</button>
                             </ng-container>
 
-                            <ng-container *ngIf="r.estado === 'Pago Recibido'">
-                                <button class="btn-accion btn-ver-pago me-2" (click)="verPago(r, 'Aprobar')">Aprobar
-                                    Pago</button>
-                                <button class="btn-accion btn-rechazar"
-                                    (click)="verPago(r, 'Rechazar')">Rechazar</button>
+                            <ng-container *ngIf="r.estado === 'Pago Recibido' || r.estado === 'Esperando Pago'">
+                                <button class="btn-accion btn-ver-pago me-2" (click)="verPago(r, 'Aprobar')">Aprobar Pago</button>
+                                <button class="btn-accion btn-rechazar" (click)="verPago(r, 'Rechazar')">Rechazar</button>
                             </ng-container>
-
                         </td>
                     </tr>
                 </tbody>
             </table>
 
             <div *ngIf="reservaciones.length === 0" class="text-center py-5">
+                <i class="bi bi-calendar-x text-secondary fs-1 d-block mb-3"></i>
                 <p class="text-secondary mb-0">No hay reservaciones registradas aún.</p>
             </div>
-
         </div>
     </div>
-
 </div>
 
 <div class="toast-neutron" [ngClass]="{'show-toast': toastVisible}">
-    <div class="d-flex align-items-center bg-black border border-warning px-3 py-2"
-        style="border-radius: 12px; min-width: 320px; box-shadow: 0 10px 25px rgba(0,0,0,0.8);">
-        <div class="bg-white rounded-circle d-flex justify-content-center align-items-center me-3"
-            style="width: 26px; height: 26px;">
+    <div class="d-flex align-items-center bg-black border border-warning px-3 py-2" style="border-radius: 12px; min-width: 320px; box-shadow: 0 10px 25px rgba(0,0,0,0.8);">
+        <div class="bg-white rounded-circle d-flex justify-content-center align-items-center me-3" style="width: 26px; height: 26px;">
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="#000" viewBox="0 0 16 16">
-                <path
-                    d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z" />
+                <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z" />
             </svg>
         </div>
         <span class="text-white fw-bold m-0" style="font-size: 0.95rem;">{{toastMensaje}}</span>

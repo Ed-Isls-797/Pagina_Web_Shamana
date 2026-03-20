@@ -1,31 +1,37 @@
 import { Injectable } from '@angular/core';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class ReservationService {
+  private storageKey = 'shamana_reservations_database';
+  private reservations: any[] = [];
 
-  constructor() { }
+  constructor() { this.load(); }
 
-  getReservations() {
+  private load() {
     if (typeof window !== 'undefined' && window.localStorage) {
-      const data = localStorage.getItem('reservations');
-      return data ? JSON.parse(data) : [];
+      const saved = localStorage.getItem(this.storageKey);
+      this.reservations = saved ? JSON.parse(saved) : [];
     }
-    return []; 
   }
+
+  getReservations() { this.load(); return this.reservations; }
 
   addReservation(reserva: any) {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      const reservaciones = this.getReservations();
-      reservaciones.push(reserva);
-      localStorage.setItem('reservations', JSON.stringify(reservaciones));
+    const nueva = { ...reserva, id: Date.now(), estado: 'Pendiente' };
+    this.reservations.push(nueva);
+    this.save();
+  }
+
+  updateStatus(id: number, nuevoEstado: string) {
+    const index = this.reservations.findIndex(r => r.id === id);
+    if (index !== -1) {
+      this.reservations[index].estado = nuevoEstado;
+      this.save();
     }
   }
 
-  saveReservations(reservations: any[]) {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      localStorage.setItem('reservations', JSON.stringify(reservations));
-    }
+  private save() {
+    localStorage.setItem(this.storageKey, JSON.stringify(this.reservations));
+    window.dispatchEvent(new Event('storage'));
   }
 }
