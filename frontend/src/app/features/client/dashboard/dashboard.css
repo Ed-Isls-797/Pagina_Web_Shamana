@@ -1,0 +1,60 @@
+/* Contenedor principal con fondo profundo */
+.dashboard-container {
+    background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+    min-height: 100vh;
+    padding: 2rem;
+}
+
+/* Tarjetas con efecto Glassmorphism suave */
+.custom-card {
+    background: rgba(33, 37, 41, 0.7) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    border-radius: 16px !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.custom-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border-color: rgba(13, 202, 240, 0.3) !important; /* Brillo color Info */
+}
+
+/* Iconos con resplandor neón */
+.icon-shape {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.icon-info {
+    background: rgba(13, 202, 240, 0.1);
+    color: #0dcaf0;
+    box-shadow: 0 0 15px rgba(13, 202, 240, 0.2);
+}
+
+/* Estilo para la Actividad Reciente */
+.activity-item {
+    border-left: 3px solid transparent;
+    transition: all 0.2s ease;
+    background: transparent !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+.activity-item:hover {
+    background: rgba(255, 255, 255, 0.03) !important;
+    border-left-color: #0dcaf0;
+    padding-left: 1.25rem !important;
+}
+
+/* Títulos con espaciado elegante */
+.stat-label {
+    letter-spacing: 1px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}

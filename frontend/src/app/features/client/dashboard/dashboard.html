@@ -1,26 +1,25 @@
 <div class="container-fluid py-4">
 
-  <div class="mb-5">
+  <div class="mb-5 text-white">
     <h2 class="fw-bold mb-1" style="font-family: 'Syne', sans-serif">
       Panel del cliente
     </h2>
-    <p class="mb-0" style="font-size: 11px; color: #6c757d; text-transform: uppercase; letter-spacing: .1em; font-family: monospace">
+    <p class="mb-0 text-secondary" style="font-size: 11px; text-transform: uppercase; letter-spacing: .1em; font-family: monospace">
       Resumen de tu actividad reciente
     </p>
   </div>
 
-  <!-- MÉTRICAS -->
   <div class="row g-3 mb-5">
 
     <div class="col-md-4">
-      <div class="card border-0 rounded-4 h-100 overflow-hidden" style="background: rgba(255,255,255,0.04)">
+      <div class="card border-0 rounded-4 h-100 overflow-hidden shadow-sm" style="background: rgba(255,255,255,0.04)">
         <div style="height: 3px; background: #0ea5e9"></div>
         <div class="card-body p-4">
           <div class="rounded-3 d-inline-flex align-items-center justify-content-center mb-3"
                style="width:36px;height:36px;background:rgba(14,165,233,.12)">
             <i class="bi bi-calendar-check" style="color:#0ea5e9;font-size:16px"></i>
           </div>
-          <p class="mb-1" style="font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#6c757d;font-family:monospace">
+          <p class="mb-1 text-secondary" style="font-size:10px;text-transform:uppercase;letter-spacing:.1em;font-family:monospace">
             Reservaciones activas
           </p>
           <h2 class="fw-bold mb-0 text-white">{{ activeReservations }}</h2>
@@ -29,14 +28,14 @@
     </div>
 
     <div class="col-md-4">
-      <div class="card border-0 rounded-4 h-100 overflow-hidden" style="background: rgba(255,255,255,0.04)">
+      <div class="card border-0 rounded-4 h-100 overflow-hidden shadow-sm" style="background: rgba(255,255,255,0.04)">
         <div style="height: 3px; background: #f59e0b"></div>
         <div class="card-body p-4">
           <div class="rounded-3 d-inline-flex align-items-center justify-content-center mb-3"
                style="width:36px;height:36px;background:rgba(245,158,11,.12)">
             <i class="bi bi-envelope-paper" style="color:#f59e0b;font-size:16px"></i>
           </div>
-          <p class="mb-1" style="font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#6c757d;font-family:monospace">
+          <p class="mb-1 text-secondary" style="font-size:10px;text-transform:uppercase;letter-spacing:.1em;font-family:monospace">
             Mensajes pendientes
           </p>
           <h2 class="fw-bold mb-0 text-white">{{ pendingMessages }}</h2>
@@ -45,14 +44,14 @@
     </div>
 
     <div class="col-md-4">
-      <div class="card border-0 rounded-4 h-100 overflow-hidden" style="background: rgba(255,255,255,0.04)">
+      <div class="card border-0 rounded-4 h-100 overflow-hidden shadow-sm" style="background: rgba(255,255,255,0.04)">
         <div style="height: 3px; background: #22c55e"></div>
         <div class="card-body p-4">
           <div class="rounded-3 d-inline-flex align-items-center justify-content-center mb-3"
                style="width:36px;height:36px;background:rgba(34,197,94,.12)">
             <i class="bi bi-receipt" style="color:#22c55e;font-size:16px"></i>
           </div>
-          <p class="mb-1" style="font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#6c757d;font-family:monospace">
+          <p class="mb-1 text-secondary" style="font-size:10px;text-transform:uppercase;letter-spacing:.1em;font-family:monospace">
             Comprobantes enviados
           </p>
           <h2 class="fw-bold mb-0 text-white">{{ uploadedPayments }}</h2>
@@ -62,51 +61,48 @@
 
   </div>
 
-  <!-- ACTIVIDAD RECIENTE -->
   <div class="card bg-dark border-0 rounded-4 overflow-hidden"
        style="border: 0.5px solid rgba(255,255,255,0.08) !important">
 
-    <div class="px-4 py-3 d-flex align-items-center gap-2"
+    <div class="px-4 py-3 d-flex align-items-center gap-2 text-white"
          style="border-bottom: 0.5px solid rgba(255,255,255,0.08)">
       <span class="rounded-circle" style="width:6px;height:6px;background:#0ea5e9;display:inline-block"></span>
       <span class="fw-bold" style="font-size:13px">Actividad reciente</span>
     </div>
 
     <ul class="list-group list-group-flush">
-
       @for (activity of recentActivity; track activity.id) {
         <li class="list-group-item d-flex align-items-start gap-3 px-4 py-3"
             style="background:transparent;border-color:rgba(255,255,255,0.06)">
 
-          <span class="rounded-circle mt-1 flex-shrink-0"
+          <span class="rounded-circle mt-2 flex-shrink-0"
                 style="width:8px;height:8px;display:inline-block"
                 [style.background]="activity.type === 'success' ? '#22c55e' : activity.type === 'warning' ? '#f59e0b' : '#0ea5e9'">
           </span>
 
-          <div>
-            <p class="mb-0 text-white" style="font-size:13px">
-              {{ activity.message }}
-              <span class="ms-2 px-2 py-1 rounded-pill"
-                    style="font-size:10px;font-family:monospace"
+          <div class="w-100">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <p class="mb-0 text-white fw-medium" style="font-size:13px">
+                {{ activity.message }}
+              </p>
+              <span class="px-2 py-1 rounded-pill fw-bold"
+                    style="font-size:9px; text-transform: uppercase;"
                     [style.background]="activity.type === 'warning' ? 'rgba(245,158,11,.12)' : 'rgba(34,197,94,.12)'"
                     [style.color]="activity.type === 'warning' ? '#f59e0b' : '#22c55e'">
                 {{ activity.type === 'warning' ? 'Pendiente' : 'Confirmada' }}
               </span>
-            </p>
+            </div>
             <small class="text-secondary" style="font-family:monospace;font-size:11px">
               {{ activity.date | date:'mediumDate' }}
             </small>
           </div>
-
         </li>
-      }
-
-      @empty {
-        <li class="list-group-item bg-transparent text-secondary border-0 p-4 text-center">
+      } @empty {
+        <li class="list-group-item bg-transparent text-secondary border-0 p-5 text-center">
+          <i class="bi bi-inbox mb-2 d-block fs-3 opacity-25"></i>
           No hay actividad reciente.
         </li>
       }
-
     </ul>
   </div>
 

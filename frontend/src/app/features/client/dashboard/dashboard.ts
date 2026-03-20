@@ -1,8 +1,8 @@
-// Archivo: src/app/dashboard/dashboard.component.ts (o donde tengas tu componente)
 import { Component, OnInit, inject } from '@angular/core';
-import { DatePipe, NgClass } from '@angular/common';
-
+import { DatePipe, NgClass, CommonModule } from '@angular/common'; // Agregamos CommonModule por si acaso
 import { ReservationService } from '../../../services/reservation.service';
+
+// Definimos la interfaz para que no haya errores de tipo
 export interface ActivityRecord {
   id: number;
   message: string;
@@ -13,13 +13,15 @@ export interface ActivityRecord {
 @Component({
   selector: 'app-client-dashboard',
   standalone: true,
-  imports: [DatePipe, NgClass], 
-  templateUrl: './dashboard.html' // Asegúrate de que tu archivo HTML se llame exactamente así
+  imports: [CommonModule, DatePipe, NgClass], // CommonModule es clave
+  templateUrl: './dashboard.html',
+  styleUrls: ['./dashboard.css'] // Asegúrate de que el CSS esté vinculado
 })
 export class Dashboard implements OnInit {
 
   private reservationService = inject(ReservationService);
 
+  // Estas variables deben existir para que el HTML no marque error
   activeReservations = 0;
   pendingMessages = 1; 
   uploadedPayments = 3; 
@@ -30,24 +32,27 @@ export class Dashboard implements OnInit {
     this.cargarDatos();
   }
 
-cargarDatos() {
-  const reservations: any[] = this.reservationService.getReservations();
+  cargarDatos() {
+    // Obtenemos las reservaciones del servicio
+    const reservations: any[] = this.reservationService.getReservations() || [];
 
-  this.activeReservations = reservations.filter(
-    res => res.status === 'Confirmada' || res.status === 'Pendiente'
-  ).length;
+    // Contamos las activas
+    this.activeReservations = reservations.filter(
+      res => res.status === 'Confirmada' || res.status === 'Pendiente'
+    ).length;
 
-  this.recentActivity = reservations.slice(-4).reverse().map((res: any, index: number) => ({
-    id: res.id || index,
-    message: `Reservación: ${res.date || res.fecha || 'Sin fecha'}`,
-    date: res.date || res.fecha || new Date(),
-    type: this.obtenerColorPorEstado(res.status || res.estado)
-  }));
-}
+    // Mapeamos las últimas 4 reservaciones a la lista de actividad reciente
+    this.recentActivity = reservations.slice(-4).reverse().map((res: any, index: number) => ({
+      id: res.id || index,
+      message: `Reserva para el ${res.date || 'Fecha no definida'}`,
+      date: res.date || new Date(),
+      type: this.obtenerColorPorEstado(res.status)
+    }));
+  }
 
   obtenerColorPorEstado(status: string): 'success' | 'info' | 'warning' {
     const estado = status?.toLowerCase() || '';
-    if (estado.includes('completada') || estado.includes('aprobada')) return 'success';
+    if (estado.includes('confirmada') || estado.includes('aprobada')) return 'success';
     if (estado.includes('pendiente') || estado.includes('espera')) return 'warning';
     return 'info'; 
   }
