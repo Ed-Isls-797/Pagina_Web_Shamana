@@ -1,7 +1,7 @@
-import { Component } from '@angular/core'
+import { Component, OnInit } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { EventosService } from '../../services/eventos'
-import { Router } from '@angular/router';
+import { Router } from '@angular/router'
 
 @Component({
   selector: 'home',
@@ -9,45 +9,64 @@ import { Router } from '@angular/router';
   imports: [CommonModule],
   templateUrl: './home.html'
 })
-export class Home {
+export class Home implements OnInit {
 
-  eventos = [
-  {
-    titulo: 'Neon Dreams',
-    artista: 'DJ Snake',
-    fecha: 'Vie, 24 Oct',
-    imagen: 'assets/event1.jpg'
-  },
-  {
-    titulo: 'Techno Bunker',
-    artista: 'Charlotte de Witte',
-    fecha: 'Sab, 25 Oct',
-    imagen: 'assets/event2.jpg'
-  },
-  {
-    titulo: 'Retro Wave',
-    artista: 'Kavinsky',
-    fecha: 'Dom, 26 Oct',
-    imagen: 'assets/event3.jpg'
-  }
-  
-];
-horarios = [
+  // 🔹 EVENTOS
+  eventos: any[] = []
+
+  // 🔹 GALERÍA
+  galeria: string[] = [
+    'https://images.unsplash.com/photo-1571266028243-d220c9c3b8a1',
+    'https://images.unsplash.com/photo-1506157786151-b8491531f063',
+    'https://images.unsplash.com/photo-1514525253161-7a46d19cd819',
+    'https://images.unsplash.com/photo-1492684223066-81342ee5ff30'
+  ]
+
+  // 🔹 HORARIOS
+  horarios = [
     { dia: 'Lunes', abierto: true, apertura: '10:00 PM', cierre: '02:00 AM' },
     { dia: 'Martes', abierto: true, apertura: '10:00 PM', cierre: '02:00 AM' },
     { dia: 'Miércoles', abierto: true, apertura: '10:00 PM', cierre: '02:00 AM' },
     { dia: 'Jueves', abierto: true, apertura: '10:00 PM', cierre: '04:00 AM' },
     { dia: 'Viernes', abierto: true, apertura: '10:00 PM', cierre: '04:00 AM' },
     { dia: 'Sábado', abierto: true, apertura: '10:00 PM', cierre: '04:00 AM' },
-    { dia: 'Domingo', abierto: false, apertura: '', cierre: '' } 
-  ];
+    { dia: 'Domingo', abierto: false, apertura: '', cierre: '' }
+  ]
 
-  constructor(private eventosService:EventosService, private router: Router){
-    this.eventos = this.eventosService.obtenerEventos()
+  // 🔥 UI STATES
+  loading: boolean = true
+  hoverIndex: number | null = null
+
+  constructor(
+    private eventosService: EventosService,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+    this.cargarEventos()
   }
 
-  irReservaciones() {
-    this.router.navigate(['/client/reservations']);
+  cargarEventos(): void {
+    try {
+      this.eventos = this.eventosService.obtenerEventos()
+    } catch (error) {
+      console.error('Error cargando eventos', error)
+    } finally {
+      this.loading = false
+    }
   }
+  irLogin(): void {
+  this.router.navigate(['/login']);
+}
+irReservaciones(): void {
+  console.log('Navegando a reservaciones');
+  this.router.navigate(['client', 'reservations']);
+}
+ irRegistro(): void {
+  this.router.navigate(['/register']);
+}
 
+  trackByEvento(index: number, item: any): number {
+    return index
+  }
 }
