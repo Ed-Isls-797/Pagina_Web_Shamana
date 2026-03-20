@@ -1,70 +1,84 @@
-<div class="p-4 p-md-5 bg-black text-light" style="min-height: 100vh;">
-  
+<div class="container-fluid py-4" style="background-color: #09090b; min-height: 100vh;">
+
   <div class="mb-5">
-    <h2 class="fw-bold mb-1 text-white">Comprobantes de Pago</h2>
-    <p class="text-secondary m-0">Sube y gestiona tus comprobantes de reservación</p>
+    <h2 class="text-white fw-bold mb-1">Comprobantes de Pago</h2>
+    <p class="text-secondary small m-0">Sube y gestiona tus comprobantes de reservación</p>
   </div>
 
-  <div class="upload-zone-custom text-center py-5 px-3 mb-5" (click)="fileInput.click()">
-    
-    <input type="file" #fileInput hidden (change)="onFileSelected($event)" accept="image/jpeg, image/png, application/pdf">
-    
-    <div class="icon-circle-custom mb-4">
-      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-        <polyline points="17 8 12 3 7 8"></polyline>
-        <line x1="12" y1="3" x2="12" y2="15"></line>
+  <div class="upload-box mb-5 text-center">
+    <div class="upload-icon-container mx-auto mb-3">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-cyan-neon"
+        viewBox="0 0 16 16">
+        <path fill-rule="evenodd"
+          d="M8 15a.5.5 0 0 0 .5-.5V4.707l2.646 2.647a.5.5 0 0 0 .708-.708l-3.5-3.5a.5.5 0 0 0-.708 0l-3.5 3.5a.5.5 0 1 0 .708.708L7.5 4.707V14.5a.5.5 0 0 0 .5.5z" />
       </svg>
     </div>
-
-    <h4 class="fw-bold text-white mb-2">Arrastra tu comprobante aquí</h4>
+    <h4 class="text-white fw-bold mb-2">Arrastra tu comprobante aquí</h4>
     <p class="text-secondary small mb-4">o haz clic para seleccionar un archivo</p>
-    
-    <p class="text-secondary mb-4" style="font-size: 0.75rem; opacity: 0.6;">Formatos aceptados: JPG, PNG, PDF · Máximo 10MB</p>
+    <p class="text-secondary small mb-4" style="font-size: 0.75rem;">Formatos aceptados: JPG, PNG, PDF · Máximo 10MB</p>
 
-    <button class="btn-glow-cyan" (click)="fileInput.click(); $event.stopPropagation()">
-      Seleccionar Archivo
-    </button>
-
+    <input type="file" #fileInput hidden (change)="onFileSelected($event)" accept="image/*,.pdf">
+    <button class="btn-cyan-neon" (click)="fileInput.click()">Seleccionar Archivo</button>
   </div>
 
-  <div class="d-flex justify-content-between align-items-end mb-3" *ngIf="historial.length > 0">
-    <h4 class="fw-bold m-0 text-white">Historial de Comprobantes</h4>
+  <div
+    class="d-flex justify-content-between align-items-center border-bottom border-secondary border-opacity-25 pb-2 mb-4">
+    <h4 class="text-white fw-bold mb-0">Historial de Comprobantes</h4>
     <span class="text-secondary small">{{historial.length}} archivos</span>
   </div>
 
-  <div class="card bg-dark border-secondary rounded-4 overflow-hidden" style="background-color: #0a0a0c !important;" *ngIf="historial.length > 0">
-    <div *ngFor="let item of historial" class="historial-item p-3 d-flex justify-content-between align-items-center">
-      <div class="d-flex align-items-center">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-secondary me-3" viewBox="0 0 16 16">
-          <path d="M4 0h5.293A1 1 0 0 1 10 .293L13.707 4a1 1 0 0 1 .293.707V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zm5.5 1.5v2a1 1 0 0 0 1 1h2l-3-3z"/>
-        </svg>
-        <div>
-          <h6 class="fw-bold text-light m-0 mb-1">{{item.nombre}}</h6>
-          <small class="text-secondary">{{item.fecha}}</small>
+  <div class="row g-3">
+    <div class="col-12" *ngFor="let item of historial">
+      <div class="history-card d-flex align-items-center p-3">
+
+        <div class="file-icon me-3">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+            <path
+              d="M4 0h5.293A1 1 0 0 1 10 .293L13.707 4a1 1 0 0 1 .293.707V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zm5.5 1.5v2a1 1 0 0 0 1 1h2l-3-3zM4.5 10a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-7z" />
+          </svg>
         </div>
+
+        <div class="flex-grow-1">
+          <h6 class="text-white fw-bold mb-1 m-0">{{ item.nombre }}</h6>
+          <p class="text-secondary small m-0" style="font-size: 0.8rem;">{{ item.descripcion || 'Comprobante adjunto' }}
+          </p>
+        </div>
+
+        <div class="text-end">
+          <p class="text-secondary small m-0 mb-1" style="font-size: 0.75rem;">{{ item.fecha | date:'dd MMM yyyy' }} ·
+            {{ item.size }}</p>
+
+          <span class="badge-status" [ngClass]="{
+              'status-aprobado': item.estado === 'Aprobado',
+              'status-pendiente': item.estado === 'Pendiente' || item.estado === 'Enviado'
+            }">
+            <svg *ngIf="item.estado === 'Aprobado'" xmlns="http://www.w3.org/2000/svg" width="12" height="12"
+              fill="currentColor" class="me-1" viewBox="0 0 16 16">
+              <path
+                d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z" />
+            </svg>
+            <svg *ngIf="item.estado === 'Pendiente' || item.estado === 'Enviado'" xmlns="http://www.w3.org/2000/svg"
+              width="12" height="12" fill="currentColor" class="me-1" viewBox="0 0 16 16">
+              <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z" />
+              <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z" />
+            </svg>
+            {{ item.estado }}
+          </span>
+        </div>
+
       </div>
-      
-      <div class="text-end">
-        <span class="badge rounded-pill px-3 py-1" 
-              [ngClass]="{
-                'badge-confirmado': item.estado === 'Confirmado',
-                'badge-rechazado': item.estado === 'Rechazado',
-                'badge-pendiente': item.estado === 'Pendiente'
-              }">
-          {{item.estado}}
-        </span>
-      </div>
+    </div>
+
+    <div *ngIf="historial.length === 0" class="col-12 text-center py-5">
+      <p class="text-secondary m-0">No has subido ningún comprobante aún.</p>
     </div>
   </div>
 
 </div>
 
 <div class="toast-neutron" [ngClass]="{'show-toast': toastVisible}">
-    <div class="d-flex align-items-center bg-black border border-info px-3 py-2" style="border-radius: 12px; min-width: 320px; box-shadow: 0 10px 25px rgba(0,0,0,0.8);">
-        <div class="bg-white rounded-circle d-flex justify-content-center align-items-center me-3" style="width: 26px; height: 26px;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="#000" viewBox="0 0 16 16"><path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z" /></svg>
-        </div>
-        <span class="text-white fw-bold m-0" style="font-size: 0.95rem;">{{toastMensaje}}</span>
-    </div>
+  <div class="toast-content">
+    <div class="toast-icon">✓</div>
+    <span>{{toastMensaje}}</span>
+  </div>
 </div>
