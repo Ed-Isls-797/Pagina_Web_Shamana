@@ -1,0 +1,48 @@
+.mesa {
+  width: 70px;
+  height: 70px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  color: white;
+}
+
+
+.disponible {
+  background: #198754;
+  box-shadow: 0 0 10px #198754;
+}
+
+.ocupado {
+  background: #dc3545;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.vip {
+  border: 2px solid #bc13fe;
+  box-shadow: 0 0 10px rgba(188, 19, 254, 0.4);
+}
+
+.seleccionada {
+  transform: scale(1.2);
+  box-shadow: 0 0 20px #0dcaf0;
+  border: 2px solid #0dcaf0;
+  z-index: 10; 
+}
+.mesa:not(.ocupado):hover {
+  transform: scale(1.1);
+}
+
+.carta-card {
+    transition: all 0.3s ease;
+}
+.carta-card:hover {
+    border-color: #bc13fe !important;
+    box-shadow: 0 0 15px rgba(188, 19, 254, 0.1);
+    transform: translateY(-2px);
+}

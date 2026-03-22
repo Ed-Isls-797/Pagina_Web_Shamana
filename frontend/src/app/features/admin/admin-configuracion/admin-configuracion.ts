@@ -23,6 +23,11 @@ import { FormsModule } from '@angular/forms';
       visibility: visible;
       transform: translateY(0);
     }
+    
+    .input-apagado {
+        opacity: 0.3 !important;
+        transition: all 0.3s ease;
+    }
   `]
 })
 export class AdminConfiguracion {
@@ -32,18 +37,18 @@ export class AdminConfiguracion {
   toastTimeout: any;
 
   ubicacion = {
-    direccion: 'Avenida Paseo de la Reforma 505, México City, CDMX 06500',
-    latitud: '25.6866',
-    longitud: '-100.3161',
+    direccion: 'Zona Plateada, 42084 Pachuca de Soto, Hgo.',
+    latitud: '20.096944035139188',
+    longitud: '-98.77238250900248',
   };
 
   horarios = [
-    { dia: 'Lunes', abierto: true, apertura: '10:00', cierre: '02:00' },
-    { dia: 'Martes', abierto: true, apertura: '10:00', cierre: '02:00' },
-    { dia: 'Miércoles', abierto: true, apertura: '10:00', cierre: '02:00' },
-    { dia: 'Jueves', abierto: true, apertura: '10:00', cierre: '04:00' },
-    { dia: 'Viernes', abierto: true, apertura: '10:00', cierre: '04:00' },
-    { dia: 'Sábado', abierto: true, apertura: '10:00', cierre: '04:00' },
+    { dia: 'Lunes', abierto: false, apertura: '', cierre: '' },
+    { dia: 'Martes', abierto: false, apertura: '', cierre: '' },
+    { dia: 'Miércoles', abierto: false, apertura: '', cierre: '' },
+    { dia: 'Jueves', abierto: true, apertura: '21:00', cierre: '03:00' },
+    { dia: 'Viernes', abierto: true, apertura: '21:00', cierre: '03:00' },
+    { dia: 'Sábado', abierto: true, apertura: '21:00', cierre: '03:00' },
     { dia: 'Domingo', abierto: false, apertura: '', cierre: '' } 
   ];
 
@@ -51,9 +56,7 @@ export class AdminConfiguracion {
     this.toastMensaje = mensaje;
     this.toastVisible = true;
     
-    if (this.toastTimeout) {
-      clearTimeout(this.toastTimeout);
-    }
+    if (this.toastTimeout) clearTimeout(this.toastTimeout);
     
     this.toastTimeout = setTimeout(() => {
       this.toastVisible = false;
@@ -61,7 +64,7 @@ export class AdminConfiguracion {
   }
 
   toggleDia(horario: any) {
-    horario.abierto = !horario.abierto;
+    horario.abierto = !horario.abierto; 
   }
 
   guardarUbicacion() {

@@ -7,7 +7,8 @@ import { GaleriaService } from '../../services/galeria.service';
   selector: 'app-home',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './home.html'
+  templateUrl: './home.html',
+  styleUrl: './home.css' // 🔥 ESTA ES LA BUENA
 })
 export class Home {
   eventos: any[] = [];
