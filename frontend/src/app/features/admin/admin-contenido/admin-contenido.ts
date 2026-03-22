@@ -25,11 +25,13 @@ export class AdminContenido implements OnInit {
   eventoAEliminar: any = null;
   eventos: any[] = [];
 
-  constructor(private eventosService: EventosService, private route: ActivatedRoute) {
-    this.eventos = this.eventosService.obtenerEventos();
-  }
+  constructor(private eventosService: EventosService, private route: ActivatedRoute) {}
 
   ngOnInit() {
+    this.eventosService.obtenerEventos().subscribe((data: any[]) => {
+      this.eventos = Array.isArray(data) ? data : [];
+    });
+
     this.route.queryParams.subscribe(params => {
       if (params['accion'] === 'nuevo') {
         this.abrirModalNuevo();
@@ -105,7 +107,9 @@ export class AdminContenido implements OnInit {
       this.eventosService.agregarEvento(nuevoEvento);
     }
 
-    this.eventos = this.eventosService.obtenerEventos();
+    this.eventosService.obtenerEventos().subscribe((data: any[]) => {
+      this.eventos = Array.isArray(data) ? data : [];
+    });
     this.cerrarModalNuevo();
   }
 

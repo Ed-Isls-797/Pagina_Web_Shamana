@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -90,7 +91,7 @@ import { Router } from '@angular/router';
 })
 export class Login {
   rolSeleccionado: 'cliente' | 'admin' = 'cliente';
-  correo = '';
+  email = '';
   password = '';
 
   mostrarPassword = false;
@@ -99,7 +100,7 @@ export class Login {
   toastMensaje = '';
   toastTimeout: any;
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private authService: AuthService) { }
 
   setRol(rol: 'cliente' | 'admin') {
     this.rolSeleccionado = rol;
@@ -119,28 +120,35 @@ export class Login {
   }
 
   entrar() {
-    if (!this.correo || !this.password) {
+    if (!this.email || !this.password) {
       this.mostrarError("Tienes que llenar todos los datos para entrar.");
       return;
     }
-
     const emailRegex = /^[a-zA-Z0-9._%+-]+@(gmail\.com|outlook\.com|hotmail\.com|yahoo\.com|live\.com|icloud\.com)$/i;
-    
-    if (!emailRegex.test(this.correo)) {
+    if (!emailRegex.test(this.email)) {
       this.mostrarError("Usa un correo real (@gmail, @outlook, @hotmail). Revisa que esté bien escrito, we.");
       return;
     }
-
     if (this.password.length < 8) {
       this.mostrarError("La contraseña debe tener al menos 8 caracteres.");
       return;
     }
-
-    if (this.rolSeleccionado === 'cliente') {
-      this.router.navigate(['/client/dashboard']);
-    } else {
-      this.router.navigate(['/admin/dashboard']);
-    }
+    this.authService.login({ email: this.email, password: this.password }).subscribe({
+      next: (res) => {
+        if (res && res.usuario && res.usuario.rol) {
+          if (res.usuario.rol === 'admin') {
+            this.router.navigate(['/admin/dashboard']);
+          } else {
+            this.router.navigate(['/client/dashboard']);
+          }
+        } else {
+          this.mostrarError('Credenciales incorrectas.');
+        }
+      },
+      error: () => {
+        this.mostrarError('Credenciales incorrectas o error de servidor.');
+      }
+    });
   }
 
   irARegistro() {

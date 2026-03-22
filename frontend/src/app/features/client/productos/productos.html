@@ -1,185 +1,152 @@
-<section class="bg-black text-white py-5">
+<section class="bg-black text-white py-5 min-vh-100" style="background-color: #030303 !important; overflow-x: hidden;">
+    <div class="container">
 
-<div class="container">
+        <h2 class="fw-bold text-center mb-5">
+            Experiencia <span style="color: #bc13fe !important;">Shamana</span>
+        </h2>
 
-    <!-- TITULO -->
-    <h2 class="fw-bold text-center mb-5">
-        Experiencia <span class="text-info">Shamana</span>
-    </h2>
-
-    <!-- 🍾 CARTA PRINCIPAL -->
-    <h4 class="text-info mb-3">🍾 Carta</h4>
-
-    <div *ngFor="let categoria of menuShamana" class="mb-5">
-
-        <h5 class="text-light border-bottom pb-2">
-            {{categoria.nombre}}
-        </h5>
-
-        <div class="row g-3 mt-2">
-
-            <div class="col-md-4" *ngFor="let item of categoria.items">
-
-                <div class="p-3 bg-dark rounded-4 border border-secondary border-opacity-25 h-100">
-
-                    <h6 class="fw-bold mb-2">{{item.nombre}}</h6>
-
-                    <p class="small text-secondary mb-1"
-                       *ngIf="item.botella">
-                        Botella: {{item.botella.ml}}ml -
-                        <span class="text-info">$ {{item.botella.precio}}</span>
-                    </p>
-
-                    <p class="small text-secondary"
-                       *ngIf="item.copeo">
-                        Copeo:
-                        <span class="text-info">$ {{item.copeo}}</span>
-                    </p>
-
+        <h4 class="mb-4 d-flex align-items-center gap-2" style="color: #bc13fe;">Carta</h4>
+        <div *ngFor="let categoria of menuShamana" class="mb-5">
+            <h5 class="text-light border-bottom border-secondary pb-2 mb-3">{{categoria.nombre}}</h5>
+            <div class="row g-3">
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngFor="let item of categoria.items">
+                    <div class="p-3 bg-dark rounded-4 border border-secondary border-opacity-25 h-100 carta-card">
+                        <h6 class="fw-bold mb-3">{{item.nombre}}</h6>
+                        <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom border-secondary border-opacity-25"
+                            *ngIf="item.botella">
+                            <span class="small text-secondary">Botella ({{item.botella.ml}}ml)</span>
+                            <span class="fw-bold" style="color: #bc13fe;">$ {{item.botella.precio}}</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center" *ngIf="item.copeo">
+                            <span class="small text-secondary">Copeo</span>
+                            <span class="fw-bold text-info">$ {{item.copeo}}</span>
+                        </div>
+                    </div>
                 </div>
-
             </div>
-
         </div>
 
-    </div>
-
-    <!-- 🍹 COCTELERÍA -->
-    <h4 class="text-info mb-3 mt-5">🍹 Coctelería & Shots</h4>
-
-    <div *ngFor="let categoria of extrasMenu" class="mb-5">
-
-        <h5 class="text-light mb-3">
-            {{categoria.nombre}}
-        </h5>
-
-        <div class="row g-3">
-
-            <div class="col-md-3 col-6" *ngFor="let item of categoria.items">
-
-                <div class="p-3 bg-dark rounded-4 text-center border border-secondary border-opacity-25 h-100">
-
-                    <p class="mb-1 small">{{item.nombre}}</p>
-
-                    <span class="text-info fw-bold">
-                        $ {{item.precio}}
-                    </span>
-
+        <h4 class="mb-4 mt-5 d-flex align-items-center gap-2" style="color: #bc13fe;">Coctelería & Shots</h4>
+        <div *ngFor="let categoria of extrasMenu" class="mb-5">
+            <h5 class="text-light border-bottom border-secondary pb-2 mb-3">{{categoria.nombre}}</h5>
+            <div class="row g-3">
+                <div class="col-6 col-md-3" *ngFor="let item of categoria.items">
+                    <div
+                        class="p-3 bg-dark rounded-4 text-center border border-secondary border-opacity-25 h-100 d-flex flex-column justify-content-center">
+                        <p class="mb-2 small fw-bold">{{item.nombre}}</p>
+                        <span class="fs-5 fw-bold" style="color: #bc13fe;">$ {{item.precio}}</span>
+                    </div>
                 </div>
+            </div>
+        </div>
 
+        <div class="mb-5">
+            <h4 class="text-info mb-1">Mesas disponibles</h4>
+            <p class="text-secondary mb-4"
+                style="font-size:11px;text-transform:uppercase;letter-spacing:.1em;font-family:monospace">
+                Selecciona una mesa para reservar
+            </p>
+
+            <div class="row g-3 mb-3">
+                @for (mesa of mesas; track mesa.id) {
+                <div class="col-6 col-md-3">
+                    <div class="text-center py-3 rounded-4 h-100"
+                        style="cursor: pointer; border: 0.5px solid; transition: transform .15s"
+                        [style.background]="mesaSeleccionada?.id === mesa.id ? 'rgba(14,165,233,.15)' : mesa.zona === 'VIP' ? 'rgba(168,85,247,.08)' : mesa.estado === 'ocupado' ? 'rgba(239,68,68,.06)' : 'rgba(34,197,94,.08)'"
+                        [style.border-color]="mesaSeleccionada?.id === mesa.id ? 'rgba(14,165,233,.6)' : mesa.zona === 'VIP' ? 'rgba(168,85,247,.35)' : mesa.estado === 'ocupado' ? 'rgba(239,68,68,.2)' : 'rgba(34,197,94,.3)'"
+                        [style.transform]="mesaSeleccionada?.id === mesa.id ? 'scale(1.05)' : 'scale(1)'"
+                        [style.opacity]="mesa.estado === 'ocupado' ? '0.5' : '1'"
+                        [style.cursor]="mesa.estado === 'ocupado' ? 'not-allowed' : 'pointer'"
+                        (click)="seleccionarMesa(mesa)">
+
+                        <div class="fw-bold mb-1" style="font-family:monospace;font-size:15px"
+                            [style.color]="mesaSeleccionada?.id === mesa.id ? '#0ea5e9' : mesa.zona === 'VIP' ? '#a855f7' : mesa.estado === 'ocupado' ? '#ef4444' : '#22c55e'">
+                            M{{ mesa.id }}
+                        </div>
+
+                        <div style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;font-family:monospace"
+                            [style.color]="mesa.zona === 'VIP' ? 'rgba(168,85,247,.7)' : '#6c757d'">
+                            {{ mesa.zona }}
+                        </div>
+
+                        @if (mesa.estado === 'ocupado') {
+                        <div class="mt-1" style="font-size:10px;color:#ef4444;font-family:monospace">ocupado</div>
+                        }
+                    </div>
+                </div>
+                }
             </div>
 
-        </div>
-
-    </div>
-
-    <!-- 🪑 MESAS -->
-    <h4 class="text-info mb-3">🪑 Mesas Disponibles</h4>
-
-    <div class="mapa-bar mb-5">
-
-        <div class="mesa"
-             *ngFor="let mesa of mesas"
-             [ngClass]="{
-               'disponible': mesa.estado === 'disponible',
-               'ocupado': mesa.estado === 'ocupado',
-               'vip': mesa.zona === 'VIP',
-               'seleccionada': mesaSeleccionada?.id === mesa.id
-             }"
-             (click)="seleccionarMesa(mesa)">
-
-            M{{mesa.id}}
-
-        </div>
-
-    </div>
-
-    <!-- INFO MESA -->
-    <div class="text-center mb-5" *ngIf="mesaSeleccionada">
-
-        <p class="text-secondary">
-            Mesa seleccionada:
-            <span class="text-info fw-bold">
-                #{{mesaSeleccionada.id}} ({{mesaSeleccionada.zona}})
-            </span>
-        </p>
-
-    </div>
-
-    <!-- 🆓 SERVICIOS -->
-    <h4 class="text-info mb-3">🆓 Servicios</h4>
-
-    <div class="row g-4 text-center">
-
-        <div class="col-md-4" *ngFor="let s of servicios">
-
-            <div class="p-4 bg-dark rounded-4 border border-secondary border-opacity-25 h-100">
-
-                <h2>{{s.icono}}</h2>
-
-                <p class="mt-2 text-light">
-                    {{s.nombre}}
-                </p>
-
+            <div class="d-flex gap-4" style="font-size:11px;color:#6c757d;font-family:monospace">
+                <span><span class="rounded-circle d-inline-block me-1"
+                        style="width:7px;height:7px;background:#22c55e"></span>Disponible</span>
+                <span><span class="rounded-circle d-inline-block me-1"
+                        style="width:7px;height:7px;background:#ef4444"></span>Ocupado</span>
+                <span><span class="rounded-circle d-inline-block me-1"
+                        style="width:7px;height:7px;background:#a855f7"></span>VIP</span>
             </div>
 
+            @if (mesaSeleccionada) {
+            <div class="mt-3 px-3 py-2 rounded-3 d-inline-flex align-items-center gap-2"
+                style="background:rgba(14,165,233,.1);border:0.5px solid rgba(14,165,233,.3)">
+                <span style="width:6px;height:6px;border-radius:50%;background:#0ea5e9;display:inline-block"></span>
+                <span style="font-size:12px;font-family:monospace;color:#0ea5e9">
+                    Mesa #{{ mesaSeleccionada.id }} — {{ mesaSeleccionada.zona }}
+                </span>
+            </div>
+            }
+        </div>
+
+        <h4 class="text-info mb-3">🆓 Servicios Gratuitos en cada visita</h4>
+        <div class="row g-4 text-center">
+            <div class="col-md-4" *ngFor="let s of servicios">
+                <div class="p-4 bg-dark rounded-4 border border-secondary border-opacity-25 h-100">
+                    <h2>{{s.icono}}</h2>
+                    <p class="mt-2 text-light">{{s.nombre}}</p>
+                </div>
+            </div>
         </div>
 
     </div>
-
-</div>
 </section>
 
-<!-- 🎨 ESTILOS -->
 <style>
+    .mesa-item {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        color: #6c757d;
+    }
 
-.mapa-bar {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  justify-items: center;
-}
+    .mesa-item:hover:not(.mesa-ocupada) {
+        transform: scale(1.05);
+        border-color: #bc13fe;
+    }
 
-.mesa {
-  width: 70px;
-  height: 70px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.3s;
-}
+    .mesa-seleccionada {
+        background: rgba(188, 19, 254, 0.15) !important;
+        border-color: #bc13fe !important;
+        color: #bc13fe !important;
+        box-shadow: 0 0 15px rgba(188, 19, 254, 0.3);
+    }
 
-/* DISPONIBLE */
-.disponible {
-  background: #198754;
-  box-shadow: 0 0 10px #198754;
-}
+    .mesa-vip {
+        border-color: rgba(188, 19, 254, 0.4);
+    }
 
-/* OCUPADO */
-.ocupado {
-  background: #dc3545;
-  opacity: 0.6;
-  cursor: not-allowed;
-}
+    .mesa-ocupada {
+        opacity: 0.4;
+        cursor: not-allowed;
+        background: rgba(255, 0, 0, 0.05);
+    }
 
-/* VIP */
-.vip {
-  border: 2px solid #bc13fe;
-  box-shadow: 0 0 10px #bc13fe;
-}
+    .carta-card {
+        transition: transform 0.2s;
+    }
 
-/* SELECCIONADA */
-.seleccionada {
-  transform: scale(1.2);
-  box-shadow: 0 0 20px #0dcaf0;
-}
-
-/* HOVER PRO */
-.mesa:hover {
-  transform: scale(1.1);
-}
-
+    .carta-card:hover {
+        transform: translateY(-5px);
+        border-color: #bc13fe !important;
+    }
 </style>

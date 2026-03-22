@@ -1,10 +1,3 @@
-.mapa-bar {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  justify-items: center;
-}
-
 .mesa {
   width: 70px;
   height: 70px;
@@ -14,10 +7,11 @@
   justify-content: center;
   font-weight: bold;
   cursor: pointer;
-  transition: 0.3s;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  color: white;
 }
 
-/* estados */
+
 .disponible {
   background: #198754;
   box-shadow: 0 0 10px #198754;
@@ -31,9 +25,24 @@
 
 .vip {
   border: 2px solid #bc13fe;
+  box-shadow: 0 0 10px rgba(188, 19, 254, 0.4);
 }
 
 .seleccionada {
   transform: scale(1.2);
   box-shadow: 0 0 20px #0dcaf0;
+  border: 2px solid #0dcaf0;
+  z-index: 10; 
+}
+.mesa:not(.ocupado):hover {
+  transform: scale(1.1);
+}
+
+.carta-card {
+    transition: all 0.3s ease;
+}
+.carta-card:hover {
+    border-color: #bc13fe !important;
+    box-shadow: 0 0 15px rgba(188, 19, 254, 0.1);
+    transform: translateY(-2px);
 }

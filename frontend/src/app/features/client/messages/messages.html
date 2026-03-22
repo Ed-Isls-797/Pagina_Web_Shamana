@@ -25,16 +25,16 @@
 
         <div class="align-self-start mb-1" *ngIf="msg.sender === 'admin'" style="max-width: 100%;">
           <div class="msg-bubble msg-admin">
-            {{ msg.text }}
+            {{ msg.contenido }}
           </div>
-          <div class="msg-time ms-2">{{ msg.time }}</div>
+          <div class="msg-time ms-2">{{ msg.fecha | date:'short' }}</div>
         </div>
 
         <div class="align-self-end mb-1 text-end" *ngIf="msg.sender === 'client'" style="max-width: 100%;">
           <div class="msg-bubble msg-client d-inline-block text-start">
-            {{ msg.text }}
+            {{ msg.contenido }}
           </div>
-          <div class="msg-time me-2">{{ msg.time }}</div>
+          <div class="msg-time me-2">{{ msg.fecha | date:'short' }}</div>
         </div>
 
       </ng-container>
