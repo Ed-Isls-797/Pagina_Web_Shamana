@@ -338,4 +338,4 @@ def ping():
     return {"msg": "Conexión exitosa a MongoDB Shamana"}
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)
