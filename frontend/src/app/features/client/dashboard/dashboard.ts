@@ -31,20 +31,18 @@ export class Dashboard implements OnInit {
   }
 
   cargarDatos() {
-    const reservations: any[] = this.reservationService.getReservations();
-
-    const activas = reservations.filter(res => res.status === 'Activa' || res.status === 'Pendiente');
-    this.activeReservations = activas.length;
-
-    const ultimasReservaciones = reservations.slice(-4).reverse();
-
-    this.recentActivity = ultimasReservaciones.map((res: any, index: number) => {
-      return {
-        id: res.id || index, 
-        message: `Reservación creada/actualizada: ${res.status || 'Sin estado'}`, 
-        date: res.fecha || new Date(), 
-        type: this.obtenerColorPorEstado(res.status)
-      };
+    this.reservationService.getReservations().subscribe(reservations => {
+      const activas = reservations.filter(res => res.status === 'Activa' || res.status === 'Pendiente');
+      this.activeReservations = activas.length;
+      const ultimasReservaciones = reservations.slice(-4).reverse();
+      this.recentActivity = ultimasReservaciones.map((res: any, index: number) => {
+        return {
+          id: res.id || index,
+          message: `Reservación creada/actualizada: ${res.status || 'Sin estado'}`,
+          date: res.fecha || new Date(),
+          type: this.obtenerColorPorEstado(res.status)
+        };
+      });
     });
   }
 

@@ -1,77 +1,91 @@
-<div class="container-fluid py-4">
-
-  <div class="d-flex flex-wrap justify-content-between align-items-center mb-5 gap-3">
+<div class="container-fluid py-4" style="background-color: #09090b; min-height: 100vh;">
+  
+  <div class="d-flex justify-content-between align-items-end mb-5">
     <div>
-      <h2 class="text-info fw-bold mb-1">
-        <i class="bi bi-ticket-perforated-fill me-2"></i>Mis Reservaciones
-      </h2>
-      <p class="text-secondary mb-0 small text-uppercase tracking-wider">Tus próximos accesos exclusivos</p>
+      <h2 class="text-white fw-bold mb-1">Mis Reservaciones</h2>
+      <p class="text-secondary small m-0">Gestiona tus próximas visitas a Shamana</p>
     </div>
-    <button (click)="irNuevaReserva()" class="btn btn-info fw-bold shadow-sm px-4 py-2 rounded-pill shadow-lg">
-      <i class="bi bi-plus-lg me-1"></i> Nueva Reserva
+    <button class="btn text-dark fw-bold px-4" style="background-color: #0dcaf0; border: none; border-radius: 8px;" (click)="irNuevaReserva()">
+      + Nueva
     </button>
   </div>
 
   <div class="row g-4">
-    
-    @for (res of reservations; track $index) {
-      <div class="col-12 col-md-6 col-lg-4">
-        
-        <div class="card bg-dark border-0 shadow-lg rounded-4 overflow-hidden h-100 position-relative" 
-             style="border: 1px solid rgba(255,255,255,0.1) !important;">
-          
-          <div class="position-absolute top-0 start-0 w-100" style="height: 5px;" 
-               [ngClass]="{
-                 'bg-success shadow-success': res.status === 'Confirmada', 
-                 'bg-warning shadow-warning': res.status === 'Pendiente'
-               }">
-          </div>
-
-          <div class="card-body p-4">
-            
-            <div class="d-flex justify-content-between align-items-center mb-4">
-              <span class="badge rounded-pill px-3 py-2 fw-bold"
-                    [ngClass]="{
-                      'bg-success bg-opacity-10 text-success border border-success': res.status === 'Confirmada', 
-                      'bg-warning bg-opacity-10 text-warning border border-warning': res.status === 'Pendiente'
-                    }">
-                <i class="bi" [ngClass]="res.status === 'Confirmada' ? 'bi-check-circle-fill' : 'bi-clock-history'"></i>
-                {{ res.status }}
-              </span>
-              <span class="text-secondary small fw-bold text-uppercase">#{{ $index + 1 }}</span>
-            </div>
-
-            <div class="mb-4 text-center py-3 bg-black bg-opacity-25 rounded-3 border border-secondary border-opacity-25">
-               <h3 class="text-info fw-bold mb-0">{{ res.date }}</h3>
-               <small class="text-secondary text-uppercase tracking-widest">Fecha de Acceso</small>
-            </div>
-
-            <div class="row text-center border-top border-secondary border-opacity-25 pt-3 mt-2">
-              <div class="col-6 border-end border-secondary border-opacity-25">
-                <small class="text-secondary d-block">Personas</small>
-                <span class="text-white fw-bold fs-5"><i class="bi bi-people-fill me-1"></i>{{ res.people }}</span>
-              </div>
-              <div class="col-6">
-                <small class="text-secondary d-block">Zona</small>
-                <span class="text-white fw-bold fs-5">{{ res.zona || 'General' }}</span>
-              </div>
-            </div>
-
-          </div>
-          
-          <div class="position-absolute top-50 start-0 translate-middle bg-body rounded-circle" style="width: 20px; height: 20px; margin-left: -10px;"></div>
-          <div class="position-absolute top-50 start-100 translate-middle bg-body rounded-circle" style="width: 20px; height: 20px; margin-left: 10px;"></div>
-        </div>
-      </div>
-    } 
-
-    @empty {
+    @if (reservations.length === 0) {
       <div class="col-12 text-center py-5">
-        <i class="bi bi-calendar-x text-secondary" style="font-size: 4rem; opacity: 0.3;"></i>
-        <h4 class="text-secondary mt-3">No tienes reservaciones aún</h4>
-        <button (click)="irNuevaReserva()" class="btn btn-outline-info mt-3 rounded-pill">Hacer mi primera reserva</button>
+        <p class="text-secondary">Aún no tienes reservaciones.</p>
       </div>
+    } @else {
+      @for (res of reservations; track res.id; let i = $index) {
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="card-reserva p-4">
+            
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <div>
+                <span class="badge" 
+                  [ngClass]="{
+                    'bg-warning text-dark': res.estado === 'Pendiente' || !res.estado,
+                    'bg-success': res.estado === 'Confirmado',
+                    'bg-danger': res.estado === 'Rechazado',
+                    'bg-info text-dark': res.estado === 'Aceptado' || res.estado === 'Esperando Pago'
+                  }">
+                  {{ res.estado || 'Pendiente' }}
+                </span>
+              </div>
+              
+              @if (res.estado === 'Pendiente' || !res.estado) {
+                <button class="btn btn-sm text-secondary border-0 btn-cancelar-hover" (click)="abrirModalCancelar(i)">
+                  Cancelar
+                </button>
+              }
+            </div>
+            
+            <h4 class="text-white fw-bold mb-3">{{ res.zona || 'General' }}</h4>
+            
+            <div class="d-flex align-items-center text-secondary small mb-2">
+              <span class="text-cyan-neon me-2" style="font-size: 1.2rem;">📅</span>
+              <span>{{ getFechaParte(res.fecha) }}</span>
+            </div>
+            
+            <div class="d-flex align-items-center text-secondary small mb-3">
+              <span class="text-cyan-neon me-2" style="font-size: 1.2rem;">🕒</span>
+              <span>{{ getHoraParte(res.fecha) }}</span>
+            </div>
+
+            <div class="d-flex align-items-center text-secondary small">
+              <span class="text-cyan-neon me-2" style="font-size: 1.2rem;">👥</span>
+              <span>{{ res.personas || 1 }} persona(s)</span>
+            </div>
+
+          </div>
+        </div>
+      }
     }
-    
   </div>
 </div>
+
+@if (modalCancelarIndex !== null) {
+  <div class="fondo-modal">
+    <div class="card-neon-cyan p-4 text-center">
+      <h4 class="text-white fw-bold mb-3">¿Cancelar reservación?</h4>
+      <p class="text-secondary mb-4">
+        Estás a punto de cancelar tu reservación para 
+        <strong class="text-white">{{ reservations[modalCancelarIndex].zona || 'General' }}</strong>.
+      </p>
+      <div class="d-flex gap-3">
+        <button class="btn btn-secondary flex-fill rounded-3 border-0" style="background-color: #222;" (click)="cerrarModal()">Volver</button>
+        <button class="btn btn-danger flex-fill rounded-3 fw-bold border-0" (click)="confirmarCancelar()">Sí, cancelar</button>
+      </div>
+    </div>
+  </div>
+}
+
+<style>
+  .card-reserva { background-color: #121214; border: 1px solid #1f1f23; border-radius: 12px; transition: 0.3s; }
+  .card-reserva:hover { border-color: #0dcaf0; box-shadow: 0 0 15px rgba(13, 202, 240, 0.1); }
+  .text-cyan-neon { color: #0dcaf0 !important; }
+  .btn-cancelar-hover:hover { color: #dc3545 !important; }
+  
+  .fondo-modal { background: rgba(0,0,0,0.8); position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; z-index: 1050; backdrop-filter: blur(5px); }
+  .card-neon-cyan { background-color: #0d0d0d; border: 1px solid #222; border-radius: 16px; width: 100%; max-width: 400px; box-shadow: 0 8px 32px rgba(0,0,0,0.9); }
+</style>

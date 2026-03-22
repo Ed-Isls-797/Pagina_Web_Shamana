@@ -19,8 +19,9 @@ export class Reservations implements OnInit {
   ) {}
 
   ngOnInit() {
-    // Le agregamos .reverse() para que el ticket más nuevo salga primero
-    this.reservations = this.reservationService.getReservations().reverse();
+    this.reservationService.getReservations().subscribe(res => {
+      this.reservations = res.reverse();
+    });
   }
 
   irNuevaReserva() {

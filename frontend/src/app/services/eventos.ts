@@ -1,24 +1,32 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EventosService {
+  apiUrl = 'http://127.0.0.1:5000/eventos';
 
-  eventos:any[] = [
-    {
-      titulo: 'Fiesta Electrónica',
-      imagen: 'https://www.dondeir.com/wp-content/uploads/2017/11/5-festivales-de-musica-electronica-01.jpg',
-      descripcion: 'DJ invitado internacional este sábado'
-    }
-  ]
+  constructor(private http: HttpClient) {}
 
-  obtenerEventos(){
-    return this.eventos
+  obtenerEventos(): Observable<any[]> {
+    return this.http.get<any[]>(this.apiUrl);
   }
 
-  agregarEvento(evento:any){
-    this.eventos.push(evento)
+  agregarEvento(evento: any): Observable<any> {
+    return this.http.post(this.apiUrl, evento);
   }
 
+  getEvento(id: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/${id}`);
+  }
+
+  updateEvento(id: string, evento: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${id}`, evento);
+  }
+
+  deleteEvento(id: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`);
+  }
 }

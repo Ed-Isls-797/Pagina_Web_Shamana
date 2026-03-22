@@ -1,101 +1,84 @@
-<div class="p-4 p-md-5 bg-black text-light" style="min-height: 100vh;">
+<div class="container-fluid py-4" style="background-color: #09090b; min-height: 100vh;">
 
   <div class="mb-5">
-    <h2 class="fw-bold mb-1">Comprobantes de Pago</h2>
-    <p class="text-secondary m-0">Sube y gestiona tus comprobantes de reservación</p>
+    <h2 class="text-white fw-bold mb-1">Comprobantes de Pago</h2>
+    <p class="text-secondary small m-0">Sube y gestiona tus comprobantes de reservación</p>
   </div>
 
-  <div class="upload-box text-center p-5 mb-5 rounded-4 position-relative">
-    <input type="file" #fileInput (change)="onFileSelected($event)" style="display: none;" accept=".jpg,.png,.pdf">
-
-    <div class="icon-circle mb-4 mx-auto" (click)="fileInput.click()">
-      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16">
-        <path
-          d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
-        <path
-          d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z" />
+  <div class="upload-box mb-5 text-center">
+    <div class="upload-icon-container mx-auto mb-3">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-cyan-neon"
+        viewBox="0 0 16 16">
+        <path fill-rule="evenodd"
+          d="M8 15a.5.5 0 0 0 .5-.5V4.707l2.646 2.647a.5.5 0 0 0 .708-.708l-3.5-3.5a.5.5 0 0 0-.708 0l-3.5 3.5a.5.5 0 1 0 .708.708L7.5 4.707V14.5a.5.5 0 0 0 .5.5z" />
       </svg>
     </div>
-
-    <h4 class="fw-bold text-white mb-2">Arrastra tu comprobante aquí</h4>
+    <h4 class="text-white fw-bold mb-2">Arrastra tu comprobante aquí</h4>
     <p class="text-secondary small mb-4">o haz clic para seleccionar un archivo</p>
+    <p class="text-secondary small mb-4" style="font-size: 0.75rem;">Formatos aceptados: JPG, PNG, PDF · Máximo 10MB</p>
 
-    <button class="btn btn-cyan fw-bold px-4" (click)="fileInput.click()">
-      Seleccionar Archivo
-    </button>
-
-    <p class="text-secondary mt-4 mb-0" style="font-size: 0.75rem;">Formatos aceptados: JPG, PNG, PDF · Máximo 10MB</p>
+    <input type="file" #fileInput hidden (change)="onFileSelected($event)" accept="image/*,.pdf">
+    <button class="btn-cyan-neon" (click)="fileInput.click()">Seleccionar Archivo</button>
   </div>
 
-
-  <div class="d-flex justify-content-between align-items-center mb-4 mt-5">
-    <h4 class="fw-bold m-0">Historial de Comprobantes</h4>
-    <span class="text-secondary small">{{ reservaciones.length }} archivos</span>
+  <div
+    class="d-flex justify-content-between align-items-center border-bottom border-secondary border-opacity-25 pb-2 mb-4">
+    <h4 class="text-white fw-bold mb-0">Historial de Comprobantes</h4>
+    <span class="text-secondary small">{{historial.length}} archivos</span>
   </div>
 
-  <div class="card bg-dark border-secondary rounded-4 overflow-hidden" style="background-color: #111 !important;">
-    <ul class="list-group list-group-flush">
+  <div class="row g-3">
+    <div class="col-12" *ngFor="let item of historial">
+      <div class="history-card d-flex align-items-center p-3">
 
-      <li class="list-group-item bg-transparent text-secondary p-5 text-center border-0"
-        *ngIf="reservaciones.length === 0">
-        Aún no tienes reservaciones ni comprobantes subidos.
-      </li>
-
-      <li
-        class="list-group-item bg-transparent text-light border-secondary p-3 p-md-4 d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 hover-bg"
-        *ngFor="let res of reservaciones; let i = index">
-
-        <div class="d-flex align-items-center text-truncate w-100">
-          <div class="icon-file-bg me-3 flex-shrink-0 d-flex justify-content-center align-items-center rounded-3">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-              <path
-                d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2z" />
-              <path
-                d="M4.5 12.5A.5.5 0 0 1 5 12h3a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zm0-2A.5.5 0 0 1 5 10h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zm1.639-3.708 1.33.886 1.854-1.855a.25.25 0 0 1 .289-.047l1.888.974V8.5a.5.5 0 0 1-.5.5H5a.5.5 0 0 1-.5-.5V8s1.54-1.274 1.639-1.208zM6.25 6a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5z" />
-            </svg>
-          </div>
-          <div class="text-truncate">
-            <p class="fw-bold mb-1 text-white text-truncate">recibo_pago_00{{ i + 1 }}.jpg</p>
-            <p class="text-secondary small mb-0">{{res.date}} - {{ res.people || 1 }} Personas</p>
-          </div>
+        <div class="file-icon me-3">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+            <path
+              d="M4 0h5.293A1 1 0 0 1 10 .293L13.707 4a1 1 0 0 1 .293.707V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zm5.5 1.5v2a1 1 0 0 0 1 1h2l-3-3zM4.5 10a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-7z" />
+          </svg>
         </div>
 
-        <div
-          class="d-flex flex-row flex-md-column justify-content-between align-items-center align-items-md-end w-100 w-md-auto mt-2 mt-md-0">
-          <p class="text-secondary small mb-0 mb-md-2">Reciente</p>
+        <div class="flex-grow-1">
+          <h6 class="text-white fw-bold mb-1 m-0">{{ item.nombre }}</h6>
+          <p class="text-secondary small m-0" style="font-size: 0.8rem;">{{ item.descripcion || 'Comprobante adjunto' }}
+          </p>
+        </div>
 
-          <span class="badge rounded-pill border px-3 py-2 fw-bold bg-transparent" [ngClass]="{
-              'border-info text-info': res.status === 'Pendiente' || !res.status,
-              'border-success text-success': res.status === 'Confirmado' || res.status === 'Aceptado' || res.status === 'Aprobado',
-              'border-danger text-danger': res.status === 'Rechazado'
+        <div class="text-end">
+          <p class="text-secondary small m-0 mb-1" style="font-size: 0.75rem;">{{ item.fecha | date:'dd MMM yyyy' }} ·
+            {{ item.size }}</p>
+
+          <span class="badge-status" [ngClass]="{
+              'status-aprobado': item.estado === 'Aprobado',
+              'status-pendiente': item.estado === 'Pendiente' || item.estado === 'Enviado'
             }">
-
-              <i class="bi me-1" [ngClass]="{
-                  'bi-clock': res.status === 'Pendiente' || !res.status,
-                  'bi-check-circle': res.status === 'Confirmado' || res.status === 'Aceptado' || res.status === 'Aprobado',
-                  'bi-x-circle': res.status === 'Rechazado'
-                }"></i>
-            {{ res.status || 'Pendiente' }}
+            <svg *ngIf="item.estado === 'Aprobado'" xmlns="http://www.w3.org/2000/svg" width="12" height="12"
+              fill="currentColor" class="me-1" viewBox="0 0 16 16">
+              <path
+                d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z" />
+            </svg>
+            <svg *ngIf="item.estado === 'Pendiente' || item.estado === 'Enviado'" xmlns="http://www.w3.org/2000/svg"
+              width="12" height="12" fill="currentColor" class="me-1" viewBox="0 0 16 16">
+              <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z" />
+              <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z" />
+            </svg>
+            {{ item.estado }}
           </span>
         </div>
 
-      </li>
+      </div>
+    </div>
 
-    </ul>
+    <div *ngIf="historial.length === 0" class="col-12 text-center py-5">
+      <p class="text-secondary m-0">No has subido ningún comprobante aún.</p>
+    </div>
   </div>
 
 </div>
 
 <div class="toast-neutron" [ngClass]="{'show-toast': toastVisible}">
-  <div class="bg-black border border-info px-3 py-2 d-flex align-items-center"
-    style="border-radius: 12px; box-shadow: 0 4px 15px rgba(13, 202, 240, 0.4);">
-    <div class="bg-info rounded-circle d-flex justify-content-center align-items-center me-3"
-      style="width: 26px; height: 26px;">
-      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="#000" viewBox="0 0 16 16">
-        <path
-          d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z" />
-      </svg>
-    </div>
-    <span class="text-white fw-bold m-0" style="font-size: 0.95rem;">{{toastMensaje}}</span>
+  <div class="toast-content">
+    <div class="toast-icon">✓</div>
+    <span>{{toastMensaje}}</span>
   </div>
 </div>
