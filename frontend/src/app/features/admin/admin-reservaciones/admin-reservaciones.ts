@@ -30,7 +30,9 @@ export class AdminReservaciones implements OnInit {
   constructor(private reservationService: ReservationService) {}
 
   ngOnInit() {
-    this.reservaciones = this.reservationService.getReservations();
+    this.reservationService.getReservations().subscribe((data: any[]) => {
+      this.reservaciones = Array.isArray(data) ? data : [];
+    });
   }
 
   aceptarReserva(reserva: any) {
@@ -90,4 +92,4 @@ export class AdminReservaciones implements OnInit {
     if (this.toastTimeout) clearTimeout(this.toastTimeout);
     this.toastTimeout = setTimeout(() => { this.toastVisible = false; }, 3000);
   }
-} 
+}

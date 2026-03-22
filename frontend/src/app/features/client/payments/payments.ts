@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ComprobantesService } from '../../../services/comprobantes.service';
 import { ReservationService } from '../../../services/reservation.service';
 
 @Component({
@@ -57,14 +58,21 @@ import { ReservationService } from '../../../services/reservation.service';
 })
 export class Payments implements OnInit { 
 
+  comprobantes: any[] = [];
   reservaciones: any[] = [];
   toastVisible = false;
   toastMensaje = '';
 
-  constructor(private reservationService: ReservationService) {}
+  constructor(private comprobantesService: ComprobantesService, private reservationService: ReservationService) {}
 
   ngOnInit() {
-    this.reservaciones = this.reservationService.getReservations();
+    this.comprobantesService.getComprobantes().subscribe(data => {
+      this.comprobantes = data;
+    });
+
+    this.reservationService.getReservations().subscribe((data: any[]) => {
+      this.reservaciones = Array.isArray(data) ? data : [];
+    });
   }
 
   onFileSelected(event: Event) {
@@ -72,6 +80,7 @@ export class Payments implements OnInit {
     if (!input.files || input.files.length === 0) return;
 
     const file = input.files[0];
+    // Aquí deberías subir el archivo y crear el comprobante en MongoDB
     this.mostrarToast(`¡Archivo "${file.name}" subido correctamente!`);
   }
 

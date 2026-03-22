@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { GaleriaService } from '../../services/galeria.service';
 
 @Component({
   selector: 'app-home',
@@ -9,28 +10,7 @@ import { Router } from '@angular/router';
   templateUrl: './home.html'
 })
 export class Home {
-
-  eventos = [
-    {
-      imagen: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      fecha: 'Viernes, 24 de Octubre',
-      titulo: 'Neon Party',
-      artista: 'DJ Tiesto'
-    },
-    {
-      imagen: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      fecha: 'Sábado, 25 de Octubre',
-      titulo: 'Techno Night',
-      artista: 'Charlotte de Witte'
-    },
-    {
-      imagen: 'https://images.unsplash.com/photo-1558317374-067fb5f30001?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      fecha: 'Viernes, 31 de Octubre',
-      titulo: 'Halloween Bash',
-      artista: 'Martin Garrix'
-    }
-  ];
-
+  eventos: any[] = [];
   horarios = [
     { dia: 'Lunes', abierto: false },
     { dia: 'Martes', abierto: false },
@@ -41,10 +21,15 @@ export class Home {
     { dia: 'Domingo', abierto: false }
   ];
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private galeriaService: GaleriaService) {}
+
+  ngOnInit() {
+    this.galeriaService.getGaleria().subscribe(data => {
+      this.eventos = data;
+    });
+  }
 
   irReservaciones() {
     this.router.navigate(['/login']); 
   }
-
 }

@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { UserService } from '../../../services/user.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -85,7 +87,7 @@ export class Register {
   toastMensaje = '';
   toastTimeout: any;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private userService: UserService, private authService: AuthService) {}
 
   togglePassword() {
     this.mostrarPassword = !this.mostrarPassword;
@@ -100,23 +102,27 @@ export class Register {
     }, 4000); 
   }
 
-  crearCuenta() {
+  registrarUsuario() {
     if (!this.nombre || !this.correo || !this.password) {
-      this.mostrarError("Por favor completa todos los campos requeridos.");
+      this.mostrarError('Completa todos los campos');
       return;
     }
-
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@(gmail\.com|outlook\.com|hotmail\.com|yahoo\.com|live\.com|icloud\.com)$/i;
-    if (!emailRegex.test(this.correo)) {
-      this.mostrarError("Usa un correo real (@gmail, @outlook, @hotmail). Revisa que esté bien escrito.");
-      return;
-    }
-    if (this.password.length < 8) {
-      this.mostrarError("La contraseña debe tener al menos 8 caracteres.");
-      return;
-    }
-
-    this.router.navigate(['/login']); 
+    const usuario = {
+      nombre_completo: this.nombre,
+      email: this.correo,
+      password: this.password,
+      rol: 'cliente',
+      puntos_rewards: 0
+    };
+    this.userService.createUsuario(usuario).subscribe({
+      next: () => {
+        this.authService.login({ email: this.correo, password: this.password }).subscribe({
+          next: () => this.router.navigate(['/client/dashboard']),
+          error: () => this.router.navigate(['/login'])
+        });
+      },
+      error: () => this.mostrarError('Error al registrar usuario')
+    });
   }
 
   irALogin() {

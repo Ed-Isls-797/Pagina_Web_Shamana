@@ -85,12 +85,12 @@ export class NuevaReservacion {
 
   guardarReserva() {
     if (!this.reserva.date || !this.reserva.people) {
-      alert('Por favor, selecciona la fecha y el número de personas.');
+      // Aquí podrías mostrar un modal de error
       return;
     }
-
-    this.reservationService.addReservation(this.reserva);
-    this.router.navigate(['/client/dashboard']); 
+    this.reservationService.addReservation(this.reserva).subscribe(() => {
+      this.router.navigate(['/client/dashboard']);
+    });
   }
 
   cancelar() {

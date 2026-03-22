@@ -1,16 +1,21 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router'; 
+import { Router } from '@angular/router';
+import { ReservationService } from '../../../services/reservation.service';
+import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './dashboard.html' 
+  templateUrl: './dashboard.html'
 })
-export class Dashboard { 
-
-  constructor(private router: Router) {}
+export class Dashboard implements OnInit {
+  constructor(
+    private router: Router,
+    private reservationService: ReservationService,
+    private userService: UserService
+  ) {}
 
   metricas = {
     ingresos: { valor: '$48,250', porcentaje: '+41%', positivo: true },
@@ -19,20 +24,17 @@ export class Dashboard {
     solicitudes: { valor: '12', porcentaje: '-3%', positivo: false }
   };
 
-  reservaciones = [
-    { cliente: 'Juan Pérez', fecha: 'Oct 21, 2026', mesa: 'Booth VIP 1', estado: 'Pendiente' },
-    { cliente: 'María García', fecha: 'Oct 22, 2026', mesa: 'Booth VIP 2', estado: 'Confirmado' },
-    { cliente: 'Carlos López', fecha: 'Oct 23, 2026', mesa: 'Booth VIP 3', estado: 'Confirmado' },
-    { cliente: 'Ana Martínez', fecha: 'Oct 24, 2026', mesa: 'Booth VIP 4', estado: 'Confirmado' },
-    { cliente: 'Luis Torres', fecha: 'Oct 25, 2026', mesa: 'Mesa General', estado: 'Pendiente' }
-  ];
+  reservaciones: any[] = [];
+  actividad: any[] = [];
 
-  actividad = [
-    { titulo: 'Nuevo Pago recibido de Sara L.', tiempo: 'hace 5 minutos', tipo: 'pago' },
-    { titulo: 'Nuevo Cliente registrado', tiempo: 'hace 12 minutos', tipo: 'cliente' },
-    { titulo: 'Mensaje de solicitud sobre botella VIP...', tiempo: 'hace 1 hora', tipo: 'mensaje' },
-    { titulo: 'Nueva reservación de Pedro M.', tiempo: 'hace 2 horas', tipo: 'reserva' }
-  ];
+  ngOnInit() {
+    this.reservationService.getReservations().subscribe(data => {
+      this.reservaciones = data;
+    });
+    this.userService.getUsuarios().subscribe(data => {
+      this.metricas.clientes.valor = data.length.toString();
+    });
+  }
 
   goToReservations() {
     this.router.navigate(['/admin/reservations']);
