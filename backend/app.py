@@ -80,11 +80,6 @@ def get_usuarios():
         u["_id"] = str(u["_id"])
     return jsonify(usuarios)
 
-# @app.route("/usuarios", methods=["POST"])
-# def create_usuario():
-#     data = request.json
-#     mongo.db.usuarios.insert_one(data)
-#     return jsonify({"msg": "Usuario creado"}), 201
 
 @app.route("/usuarios/<id>", methods=["GET"])
 def get_usuario(id):
@@ -228,7 +223,7 @@ def get_mensajes():
         mensajes = list(mongo.db.mensajes.find())
     
     # Sort messages by date to ensure proper conversation order
-    mensajes.sort(key=lambda x: x['fecha'])
+    mensajes.sort(key=lambda x: x.get('fecha', ''))
 
     for m in mensajes:
         m["_id"] = str(m["_id"])

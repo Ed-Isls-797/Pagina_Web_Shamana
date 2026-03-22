@@ -24,11 +24,11 @@
   <div
     class="d-flex justify-content-between align-items-center border-bottom border-secondary border-opacity-25 pb-2 mb-4">
     <h4 class="text-white fw-bold mb-0">Historial de Comprobantes</h4>
-    <span class="text-secondary small">{{historial.length}} archivos</span>
+    <span class="text-secondary small">{{comprobantes.length}} archivos</span>
   </div>
 
   <div class="row g-3">
-    <div class="col-12" *ngFor="let item of historial">
+    <div class="col-12" *ngFor="let item of comprobantes">
       <div class="history-card d-flex align-items-center p-3">
 
         <div class="file-icon me-3">
@@ -69,7 +69,7 @@
       </div>
     </div>
 
-    <div *ngIf="historial.length === 0" class="col-12 text-center py-5">
+    <div *ngIf="comprobantes.length === 0" class="col-12 text-center py-5">
       <p class="text-secondary m-0">No has subido ningún comprobante aún.</p>
     </div>
   </div>

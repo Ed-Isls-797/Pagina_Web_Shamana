@@ -104,7 +104,13 @@ export class AdminContenido implements OnInit {
         imagen: this.imagen || 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&q=80&w=800',
         estado: comoBorrador ? 'Borrador' : 'Publicado'
       };
-      this.eventosService.agregarEvento(nuevoEvento);
+      this.eventosService.agregarEvento(nuevoEvento).subscribe(() => {
+        this.eventosService.obtenerEventos().subscribe((data: any[]) => {
+          this.eventos = Array.isArray(data) ? data : [];
+        });
+        this.cerrarModalNuevo();
+      });
+      return;
     }
 
     this.eventosService.obtenerEventos().subscribe((data: any[]) => {
