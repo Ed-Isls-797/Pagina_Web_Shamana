@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MessagesService } from '../../../services/messages.service';
@@ -123,13 +123,14 @@ import { AuthService } from '../../../services/auth.service';
     .chat-body::-webkit-scrollbar-thumb:hover { background: #0dcaf0; }
   `]
 })
-export class Messages implements OnInit {
+export class Messages implements OnInit, OnDestroy {
   mensajes: any[] = [];
   nuevoMensaje = '';
   private messagesService = inject(MessagesService);
   private authService = inject(AuthService);
   private cdr = inject(ChangeDetectorRef);
   usuarioId = '';
+  private pollingInterval: any;
 
   ngOnInit() {
     const session = this.authService.getSession();
@@ -137,9 +138,15 @@ export class Messages implements OnInit {
     if (this.usuarioId) {
       this.cargarMensajes();
       // Polling cada 3 segundos
-      setInterval(() => {
+      this.pollingInterval = setInterval(() => {
         this.cargarMensajes();
       }, 3000);
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.pollingInterval) {
+      clearInterval(this.pollingInterval);
     }
   }
 
