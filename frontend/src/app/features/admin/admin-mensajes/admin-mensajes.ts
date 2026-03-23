@@ -53,15 +53,14 @@ export class AdminMensajes implements OnInit, OnDestroy {
         
         const nuevasSolicitudes = Object.keys(this.chatsPorUsuario).map(usuario_id => {
           const user = this.usuarios.find(u => u._id === usuario_id) || {};
-          const conversacion = this.chatsPorUsuario[usuario_id].map((m: any) => ({
-            emisor: m.sender,
+          const conversacion = (this.chatsPorUsuario[usuario_id] || []).map((m: any) => ({
+            emisor: m.sender || 'client',
             texto: m.contenido,
             tiempo: new Date(m.fecha).toLocaleString()
           }));
           
-          // Mantener estado si ya existe
-          const solExistente = this.solicitudes.find(s => s.id === usuario_id);
-          const estado = solExistente ? solExistente.estado : 'Pendiente'; // Default Pendiente
+          // Usar estado_chat del usuario, por defecto 'Pendiente'
+          const estado = user.estado_chat || 'Pendiente';
 
           return {
             id: usuario_id,
@@ -76,11 +75,12 @@ export class AdminMensajes implements OnInit, OnDestroy {
         // Actualizar lista de solicitudes
         this.solicitudes = nuevasSolicitudes;
 
-        // Si hay uno seleccionado, actualizar su conversación
+        // Si hay uno seleccionado, actualizar su conversación y estado
         if (this.mensajeSeleccionado) {
           const actualizado = this.solicitudes.find(s => s.id === this.mensajeSeleccionado.id);
           if (actualizado) {
             this.mensajeSeleccionado.conversacion = actualizado.conversacion;
+            this.mensajeSeleccionado.estado = actualizado.estado;
           }
         } else if (!silent && this.solicitudes.length > 0) {
            this.mensajeSeleccionado = this.solicitudes[0];
@@ -112,12 +112,14 @@ export class AdminMensajes implements OnInit, OnDestroy {
   aceptarSolicitud() {
     if (this.mensajeSeleccionado) {
       this.mensajeSeleccionado.estado = 'Aceptado';
+      this.userService.updateUsuario(this.mensajeSeleccionado.id, { estado_chat: 'Aceptado' }).subscribe();
     }
   }
 
   rechazarSolicitud() {
     if (this.mensajeSeleccionado) {
       this.mensajeSeleccionado.estado = 'Rechazado';
+      this.userService.updateUsuario(this.mensajeSeleccionado.id, { estado_chat: 'Rechazado' }).subscribe();
     }
   }
 }
