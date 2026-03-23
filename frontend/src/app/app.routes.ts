@@ -16,6 +16,7 @@ import { AdminNotificaciones } from './features/admin/admin-notificaciones/admin
 import { AdminContenido } from './features/admin/admin-contenido/admin-contenido';
 import { AdminConfiguracion } from './features/admin/admin-configuracion/admin-configuracion';
 import { Productos } from './features/client/productos/productos';
+import { authGuard, roleGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
 
@@ -34,6 +35,7 @@ export const routes: Routes = [
   {
   path: 'client',
   component: LayoutClient,
+  canActivate: [authGuard],
   children: [
     { path: 'dashboard', component: ClientDashboard },
     { path: 'reservations', component: Reservations },
@@ -59,6 +61,7 @@ export const routes: Routes = [
   {
     path: 'admin',
     component: LayoutAdmin,
+    canActivate: [roleGuard('admin')],
     children: [
       { path: 'dashboard', component: AdminDashboard },
       { path: 'reservations', component: AdminReservaciones },

@@ -72,6 +72,13 @@ class Galeria:
         self.imagen_url = imagen_url
         self.descripcion = descripcion
 
+# Configuración
+class Configuracion:
+    def __init__(self, direccion, mapa_url, horarios):
+        self.direccion = direccion
+        self.mapa_url = mapa_url
+        self.horarios = horarios
+
 # --- USUARIOS ---
 @app.route("/usuarios", methods=["GET"])
 def get_usuarios():
@@ -311,20 +318,9 @@ def get_mensajes():
 @app.route("/mensajes", methods=["POST"])
 def create_mensaje():
     data = request.json
-    usuario_id = data.get("usuario_id")
-    sender = data.get("sender")  # 'client' o 'admin'
-    contenido = data.get("contenido")
-    fecha = data.get("fecha") or datetime.utcnow().isoformat()
-    if not usuario_id or not sender or not contenido:
-        return jsonify({"msg": "Faltan datos obligatorios"}), 400
-    mensaje = {
-        "usuario_id": usuario_id,
-        "sender": sender,
-        "contenido": contenido,
-        "fecha": fecha
-    }
-    mongo.db.mensajes.insert_one(mensaje)
-    return jsonify({"msg": "Mensaje creado"}), 201
+    data["fecha"] = data.get("fecha", datetime.now().strftime("%Y-%m-%d %H:%M"))
+    mongo.db.mensajes.insert_one(data)
+    return jsonify({"msg": "Mensaje enviado"}), 201
 
 @app.route("/mensajes/<id>", methods=["GET"])
 def get_mensaje(id):
@@ -410,6 +406,37 @@ def update_galeria_item(id):
 def delete_galeria_item(id):
     mongo.db.galeria.delete_one({"_id": ObjectId(id)})
     return jsonify({"msg": "Imagen eliminada"})
+
+# --- CONFIGURACION ---
+@app.route("/configuracion", methods=["GET"])
+def get_configuracion():
+    config = mongo.db.configuracion.find_one()
+    if config:
+        config["_id"] = str(config["_id"])
+        return jsonify(config)
+    # Default config si no existe
+    default_config = {
+        "direccion": "Camino Real de La Plata 201, Zona Plateada, Pachuca de Soto, Hidalgo",
+        "mapa_url": "https://www.google.com/maps/search/Shamana+Pachuca",
+        "horarios": [
+            {"dia": "Lunes", "abierto": False, "apertura": "", "cierre": ""},
+            {"dia": "Martes", "abierto": False, "apertura": "", "cierre": ""},
+            {"dia": "Miércoles", "abierto": False, "apertura": "", "cierre": ""},
+            {"dia": "Jueves", "abierto": True, "apertura": "21:00", "cierre": "03:00"},
+            {"dia": "Viernes", "abierto": True, "apertura": "21:00", "cierre": "03:00"},
+            {"dia": "Sábado", "abierto": True, "apertura": "21:00", "cierre": "03:00"},
+            {"dia": "Domingo", "abierto": False, "apertura": "", "cierre": ""}
+        ]
+    }
+    mongo.db.configuracion.insert_one(default_config)
+    return jsonify(default_config)
+
+@app.route("/configuracion", methods=["PUT"])
+def update_configuracion():
+    data = request.json
+    # Upsert: actualiza si existe, crea si no
+    mongo.db.configuracion.update_one({}, {"$set": data}, upsert=True)
+    return jsonify({"msg": "Configuración actualizada"})
 
 # Ejemplo de conexión y prueba
 @app.route("/ping")

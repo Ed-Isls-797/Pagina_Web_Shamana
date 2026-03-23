@@ -1,76 +1,115 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common'; 
 import { EventosService } from '../../services/eventos';
+import { ConfigService } from '../../services/config.service';
+import { GaleriaService } from '../../services/galeria.service';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule],
+  imports: [RouterModule, CommonModule],
   templateUrl: './home.html',
-  styleUrl: './home.css' // 🔥 ESTA ES LA BUENA
+  styleUrls: ['./home.css']
 })
 export class Home implements OnInit {
 
-  // 🔹 EVENTOS
-  eventos: any[] = []
+  eventos: any[] = [];
+  eventosPublicados: any[] = [];
+  horarios: any[] = [];
+  ubicacion: any = null;
+  galeria: any[] = [];
 
-  // 🔹 GALERÍA
-  galeria: string[] = [
-    'https://images.unsplash.com/photo-1571266028243-d220c9c3b8a1',
-    'https://images.unsplash.com/photo-1506157786151-b8491531f063',
-    'https://images.unsplash.com/photo-1514525253161-7a46d19cd819',
-    'https://images.unsplash.com/photo-1492684223066-81342ee5ff30'
-  ]
+  // Static fallback gallery
+  private galeriaFallback = [
+    { imagen_url: 'assets/galeria/shamana1.jpg', descripcion: 'Shamana Night Club' },
+    { imagen_url: 'assets/galeria/shamana2.jpg', descripcion: 'Shamana Night Club' },
+    { imagen_url: 'assets/galeria/shamana1.jpg', descripcion: 'Shamana Night Club' },
+    { imagen_url: 'assets/galeria/shamana2.jpg', descripcion: 'Shamana Night Club' },
+  ];
+  
+  // Static Data for Drinks
+  drinks = [
+    { name: 'Neon Gin', desc: 'Ginebra con tónica UV', price: '$120' },
+    { name: 'Cyber Punk', desc: 'Vodka, Blue Curacao, Limón', price: '$140' },
+    { name: 'Shamana Special', desc: 'Mezcal, Frutos Rojos, Chile', price: '$150' }
+  ];
 
-  // 🔹 HORARIOS
-  horarios = [
-    { dia: 'Lunes', abierto: true, apertura: '10:00 PM', cierre: '02:00 AM' },
-    { dia: 'Martes', abierto: true, apertura: '10:00 PM', cierre: '02:00 AM' },
-    { dia: 'Miércoles', abierto: true, apertura: '10:00 PM', cierre: '02:00 AM' },
-    { dia: 'Jueves', abierto: true, apertura: '10:00 PM', cierre: '04:00 AM' },
-    { dia: 'Viernes', abierto: true, apertura: '10:00 PM', cierre: '04:00 AM' },
-    { dia: 'Sábado', abierto: true, apertura: '10:00 PM', cierre: '04:00 AM' },
-    { dia: 'Domingo', abierto: false, apertura: '', cierre: '' }
-  ]
-
-  // 🔥 UI STATES
-  loading: boolean = true
-  hoverIndex: number | null = null
+  // Static Data for VIP Services
+  vipServices = [
+    { icon: 'bi-shield-check', title: 'Seguridad Privada', desc: 'Protección exclusiva para tu mesa' },
+    { icon: 'bi-car-front-fill', title: 'Valet Parking', desc: 'Servicio preferencial al llegar' },
+    { icon: 'bi-star-fill', title: 'Atención Personalizada', desc: 'Meseros dedicados a tu zona' }
+  ];
 
   constructor(
+    private router: Router, 
     private eventosService: EventosService,
-    private router: Router
+    private configService: ConfigService,
+    private galeriaService: GaleriaService,
+    private cdr: ChangeDetectorRef
   ) {}
 
-  ngOnInit(): void {
-    this.cargarEventos()
+  ngOnInit() {
+    this.cargarEventos();
+    this.cargarConfiguracion();
+    this.cargarGaleria();
   }
 
-  cargarEventos(): void {
-    try {
-      this.eventos = this.eventosService.obtenerEventos()
-    } catch (error) {
-      console.error('Error cargando eventos', error)
-    } finally {
-      this.loading = false
+  cargarEventos() {
+    this.eventosService.obtenerEventos().subscribe({
+      next: (data: any[]) => {
+        this.eventos = data;
+        this.eventosPublicados = data.filter(e => e.estado === 'Publicado');
+        this.cdr.detectChanges();
+      },
+      error: (error: any) => {
+        console.error('Error al cargar eventos', error);
+      }
+    });
+  }
+
+  cargarGaleria() {
+    this.galeriaService.getGaleria().subscribe({
+      next: (data: any[]) => {
+        this.galeria = data.length > 0 ? data : this.galeriaFallback;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.galeria = this.galeriaFallback;
+      }
+    });
+  }
+
+  cargarConfiguracion() {
+    this.configService.getConfiguracion().subscribe({
+      next: (data: any) => {
+        if (data) {
+          this.horarios = data.horarios ? data.horarios : [];
+          this.ubicacion = {
+            direccion: data.direccion,
+            latitud: data.latitud,
+            longitud: data.longitud
+          };
+          this.cdr.detectChanges();
+        }
+      },
+      error: (err: any) => console.error('Error loading config', err)
+    });
+  }
+
+  getGoogleMapsUrl(): string {
+    if (this.ubicacion?.latitud && this.ubicacion?.longitud) {
+      return `https://www.google.com/maps?q=${this.ubicacion.latitud},${this.ubicacion.longitud}`;
     }
+    if (this.ubicacion?.direccion) {
+      return `https://www.google.com/maps/search/${encodeURIComponent(this.ubicacion.direccion)}`;
+    }
+    return 'https://www.google.com/maps/search/Shamana+Pachuca';
   }
 
-  irLogin(): void {
+  irLogin() {
     this.router.navigate(['/login']);
   }
 
-  irReservaciones(): void {
-    console.log('Navegando a reservaciones');
-    this.router.navigate(['/login']);
-  }
-
-  irRegistro(): void {
-    this.router.navigate(['/register']);
-  }
-
-  trackByEvento(index: number, item: any): number {
-    return index
-  }
 }
