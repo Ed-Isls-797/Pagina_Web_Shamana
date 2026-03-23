@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { MessagesService } from '../../../services/messages.service';
+import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'admin-mensajes',
@@ -8,42 +10,102 @@ import { FormsModule } from '@angular/forms';
   imports: [CommonModule, FormsModule],
   templateUrl: './admin-mensajes.html'
 })
-export class AdminMensajes {
+export class AdminMensajes implements OnInit, OnDestroy {
 
-  solicitudes = [
-    {
-      id: 1, cliente: 'Juan Pérez', email: 'juan@email.com', estado: 'Pendiente', asunto: 'Consulta sobre botella VIP',
-      conversacion: [
-        { emisor: 'cliente', texto: 'Hola, me gustaría saber el precio de una botella de Hennessy para mi reservación del viernes...', tiempo: 'hace 5 min' }
-      ]
-    },
-    {
-      id: 2, cliente: 'María García', email: 'maria@email.com', estado: 'Aceptado', asunto: 'Cambio de mesa',
-      conversacion: [
-        { emisor: 'cliente', texto: 'Quisiera cambiar mi reservación a una mesa más cercana al escenario si es posible...', tiempo: 'hace 30 min' },
-        { emisor: 'admin', texto: '¡Hola María! Claro que sí, déjame revisar el mapa de mesas y te confirmo en un momento.', tiempo: 'hace 10 min' }
-      ]
-    },
-    {
-      id: 3, cliente: 'Carlos López', email: 'carlos@email.com', estado: 'Aceptado', asunto: 'Confirmación de pago',
-      conversacion: [
-        { emisor: 'cliente', texto: 'Ya realicé el pago de la reservación, adjunto el comprobante por correo.', tiempo: 'hace 1 hora' }
-      ]
-    },
-    {
-      id: 4, cliente: 'Ana Martínez', email: 'ana@email.com', estado: 'Pendiente', asunto: 'Pregunta sobre dress code',
-      conversacion: [
-        { emisor: 'cliente', texto: '¿Cuál es el dress code para el evento de este sábado?', tiempo: 'hace 2 horas' }
-      ]
-    }
-  ];
-
-
-  mensajeSeleccionado: any = this.solicitudes[1];
+  solicitudes: any[] = [];
+  mensajeSeleccionado: any = null;
   respuestaAdmin: string = '';
+  
+  private messagesService = inject(MessagesService);
+  private userService = inject(UserService);
+  private cdr = inject(ChangeDetectorRef);
+
+  chatsPorUsuario: any = {};
+  usuarios: any[] = [];
+  intervalId: any;
+
+  ngOnInit() {
+    this.cargarDatos();
+    // Polling cada 5 segundos
+    this.intervalId = setInterval(() => {
+      this.cargarDatos(true); // true para indicar que es actualización silenciosa
+    }, 5000);
+  }
+
+  ngOnDestroy() {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
+  }
+
+  cargarDatos(silent: boolean = false) {
+    this.messagesService.getMensajes().subscribe((mensajes: any[]) => {
+      // Agrupar mensajes por usuario_id
+      this.chatsPorUsuario = {};
+      mensajes.forEach(msg => {
+        if (!this.chatsPorUsuario[msg.usuario_id]) this.chatsPorUsuario[msg.usuario_id] = [];
+        this.chatsPorUsuario[msg.usuario_id].push(msg);
+      });
+      
+      // Obtener usuarios para mostrar nombre/email
+      this.userService.getUsuarios().subscribe(users => {
+        this.usuarios = users;
+        
+        const nuevasSolicitudes = Object.keys(this.chatsPorUsuario).map(usuario_id => {
+          const user = this.usuarios.find(u => u._id === usuario_id) || {};
+          const conversacion = this.chatsPorUsuario[usuario_id].map((m: any) => ({
+            emisor: m.sender,
+            texto: m.contenido,
+            tiempo: new Date(m.fecha).toLocaleString()
+          }));
+          
+          // Mantener estado si ya existe
+          const solExistente = this.solicitudes.find(s => s.id === usuario_id);
+          const estado = solExistente ? solExistente.estado : 'Pendiente'; // Default Pendiente
+
+          return {
+            id: usuario_id,
+            cliente: user.nombre_completo || 'Usuario',
+            email: user.email || '',
+            estado: estado,
+            asunto: 'Chat General',
+            conversacion
+          };
+        });
+
+        // Actualizar lista de solicitudes
+        this.solicitudes = nuevasSolicitudes;
+
+        // Si hay uno seleccionado, actualizar su conversación
+        if (this.mensajeSeleccionado) {
+          const actualizado = this.solicitudes.find(s => s.id === this.mensajeSeleccionado.id);
+          if (actualizado) {
+            this.mensajeSeleccionado.conversacion = actualizado.conversacion;
+          }
+        } else if (!silent && this.solicitudes.length > 0) {
+           this.mensajeSeleccionado = this.solicitudes[0];
+        }
+        this.cdr.detectChanges();
+      });
+    });
+  }
 
   seleccionarMensaje(solicitud: any) {
     this.mensajeSeleccionado = solicitud;
+    this.respuestaAdmin = '';
+  }
+
+  enviarRespuesta() {
+    if (this.respuestaAdmin.trim() === '' || !this.mensajeSeleccionado) return;
+    const mensaje = {
+      usuario_id: this.mensajeSeleccionado.id,
+      sender: 'admin',
+      contenido: this.respuestaAdmin,
+      fecha: new Date().toISOString()
+    };
+    this.messagesService.createMensaje(mensaje).subscribe(() => {
+      this.cargarDatos(true); 
+    });
     this.respuestaAdmin = '';
   }
 
@@ -57,17 +119,5 @@ export class AdminMensajes {
     if (this.mensajeSeleccionado) {
       this.mensajeSeleccionado.estado = 'Rechazado';
     }
-  }
-
-  enviarRespuesta() {
-    if (this.respuestaAdmin.trim() === '') return;
-
-    this.mensajeSeleccionado.conversacion.push({
-      emisor: 'admin',
-      texto: this.respuestaAdmin,
-      tiempo: 'Ahora'
-    });
-
-    this.respuestaAdmin = '';
   }
 }
