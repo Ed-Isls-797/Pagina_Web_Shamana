@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { ReservationService } from '../../../services/reservation.service';
+import { AuthService } from '../../../services/auth.service';
 import { CommonModule } from '@angular/common'; // <-- IMPORTANTE para los colores dinámicos
 
 @Component({
@@ -15,12 +16,22 @@ export class Reservations implements OnInit {
 
   constructor(
     private router: Router,
-    private reservationService: ReservationService
+    private reservationService: ReservationService,
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
-    // Le agregamos .reverse() para que el ticket más nuevo salga primero
-    this.reservations = this.reservationService.getReservations().reverse();
+    const session = this.authService.getSession();
+    if (session?._id) {
+      this.reservationService.getReservaciones().subscribe(data => {
+        // Filtrar solo las reservaciones del usuario actual y ordenar más nuevas primero
+        this.reservations = data
+          .filter(r => r.usuario_id === session._id)
+          .reverse();
+        this.cdr.detectChanges();
+      });
+    }
   }
 
   irNuevaReserva() {

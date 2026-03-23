@@ -1,31 +1,52 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class ReservationService {
+  private apiUrl = 'http://127.0.0.1:5000';
 
-  constructor() { }
+  constructor(private http: HttpClient) {}
 
-  getReservations() {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      const data = localStorage.getItem('reservations');
-      return data ? JSON.parse(data) : [];
-    }
-    return []; 
+  // --- SLOTS ---
+  getSlots(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/slots`);
   }
 
-  addReservation(reserva: any) {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      const reservaciones = this.getReservations();
-      reservaciones.push(reserva);
-      localStorage.setItem('reservations', JSON.stringify(reservaciones));
-    }
+  getSlotsDisponibles(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/slots?estado=disponible`);
   }
 
-  saveReservations(reservations: any[]) {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      localStorage.setItem('reservations', JSON.stringify(reservations));
-    }
+  createSlot(slot: { fecha: string; hora: string; zona: string }): Observable<any> {
+    return this.http.post(`${this.apiUrl}/slots`, slot);
+  }
+
+  updateSlot(id: string, data: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/slots/${id}`, data);
+  }
+
+  deleteSlot(id: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/slots/${id}`);
+  }
+
+  // --- RESERVACIONES DE CLIENTES ---
+  getReservaciones(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/reservaciones`);
+  }
+
+  createReservacion(reservacion: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/reservaciones`, reservacion);
+  }
+
+  updateReservacion(id: string, data: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/reservaciones/${id}`, data);
+  }
+
+  deleteReservacion(id: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/reservaciones/${id}`);
+  }
+
+  rechazarReservacion(id: string): Observable<any> {
+    return this.http.put(`${this.apiUrl}/reservaciones/${id}/rechazar`, {});
   }
 }

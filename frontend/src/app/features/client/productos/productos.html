@@ -74,7 +74,7 @@
     </div>
 
     <!-- 🪑 MESAS -->
-    <h4 class="text-info mb-3">🪑 Mesas Disponibles</h4>
+    <h4 class="text-info mb-3"> Zonas Disponibles</h4>
 
     <div class="mapa-bar mb-5">
 
@@ -88,23 +88,13 @@
              }"
              (click)="seleccionarMesa(mesa)">
 
-            M{{mesa.id}}
+            {{mesa.zona}}
 
         </div>
 
     </div>
 
-    <!-- INFO MESA -->
-    <div class="text-center mb-5" *ngIf="mesaSeleccionada">
-
-        <p class="text-secondary">
-            Mesa seleccionada:
-            <span class="text-info fw-bold">
-                #{{mesaSeleccionada.id}} ({{mesaSeleccionada.zona}})
-            </span>
-        </p>
-
-    </div>
+    
 
     <!-- 🆓 SERVICIOS -->
     <h4 class="text-info mb-3">🆓 Servicios</h4>
@@ -171,11 +161,7 @@
   box-shadow: 0 0 10px #bc13fe;
 }
 
-/* SELECCIONADA */
-.seleccionada {
-  transform: scale(1.2);
-  box-shadow: 0 0 20px #0dcaf0;
-}
+
 
 /* HOVER PRO */
 .mesa:hover {

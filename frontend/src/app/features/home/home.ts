@@ -63,7 +63,7 @@ export class Home implements OnInit {
 
   irReservaciones(): void {
     console.log('Navegando a reservaciones');
-    this.router.navigate(['client', 'reservations']);
+    this.router.navigate(['/login']);
   }
 
   irRegistro(): void {

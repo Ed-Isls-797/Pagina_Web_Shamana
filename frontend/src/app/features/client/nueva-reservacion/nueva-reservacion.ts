@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ReservationService } from '../../../services/reservation.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-nueva-reservacion',
@@ -77,74 +78,67 @@ import { ReservationService } from '../../../services/reservation.service';
     }
   `]
 })
-export class NuevaReservacion {
+export class NuevaReservacion implements OnInit {
 
-  // 🔥 FECHAS
-  fechasDisponibles: string[] = [
-    'viernes, 23 de octubre de 2026, 9:00 PM',
-    'sábado, 24 de octubre de 2026, 10:00 PM',
-    'viernes, 30 de octubre de 2026, 8:00 PM',
-    'viernes, 6 de noviembre de 2026, 11:00 PM'
-  ];
+  slotsDisponibles: any[] = [];
+  slotSeleccionado: any = null;
 
-  // 🔥 FORMULARIO
   form = {
     nombre: '',
-    fecha: '',
-    personas: 1,
-    comprobante: '',
-    zona: ''
+    slotId: '',
+    personas: 1
   };
 
   constructor(
     private reservationService: ReservationService,
-    private router: Router
+    private authService: AuthService,
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
-  // 🔥 GUARDAR RESERVA
-  guardarReserva() {
+  ngOnInit() {
+    // Cargar slots disponibles desde MongoDB
+    this.reservationService.getSlotsDisponibles().subscribe(data => {
+      this.slotsDisponibles = data;
+      this.cdr.detectChanges();
+    });
 
-    // VALIDACIONES
-    if (!this.form.nombre || !this.form.fecha) {
+    // Pre-rellenar nombre del usuario logueado
+    const session = this.authService.getSession();
+    if (session) {
+      this.form.nombre = session.nombre_completo || '';
+    }
+  }
+
+  onSlotChange() {
+    this.slotSeleccionado = this.slotsDisponibles.find(s => s._id === this.form.slotId) || null;
+  }
+
+  guardarReserva() {
+    if (!this.form.nombre || !this.form.slotId || !this.slotSeleccionado) {
       alert('Completa todos los campos');
       return;
     }
 
-    if (!this.form.zona) {
-      alert('Selecciona una zona');
-      return;
-    }
+    const session = this.authService.getSession();
 
-    // 🔥 VIP → IR A PAGOS
-    if (this.form.zona === 'VIP') {
-
-      localStorage.setItem('reservaVIP', JSON.stringify(this.form));
-
-      this.router.navigate(['client', 'payments']);
-      return;
-    }
-
-    // 🔥 GUARDAR NORMAL
-    this.reservationService.addReservation({
-      ...this.form,
-      estado: 'pendiente'
-    });
-
-    alert('Reservación creada');
-
-    // LIMPIAR FORM
-    this.form = {
-      nombre: '',
-      fecha: '',
-      personas: 1,
-      comprobante: '',
-      zona: ''
+    const reservacion = {
+      nombre: this.form.nombre,
+      usuario_id: session?._id || '',
+      slot_id: this.slotSeleccionado._id,
+      fecha: this.slotSeleccionado.fecha,
+      hora: this.slotSeleccionado.hora,
+      zona: this.slotSeleccionado.zona,
+      personas: this.form.personas,
+      status: 'Pendiente'
     };
 
-    this.router.navigate(['client', 'dashboard']);
+    this.reservationService.createReservacion(reservacion).subscribe(() => {
+      alert('Reservación creada exitosamente');
+      this.router.navigate(['client', 'reservations']);
+    });
   }
 
-  // 🔥 CANCELAR
   cancelar() {
     this.router.navigate(['client', 'dashboard']);
   }

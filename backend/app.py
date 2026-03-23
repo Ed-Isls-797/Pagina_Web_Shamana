@@ -185,6 +185,54 @@ def delete_evento(id):
     mongo.db.eventos.delete_one({"_id": ObjectId(id)})
     return jsonify({"msg": "Evento eliminado"})
 
+# --- SLOTS DISPONIBLES ---
+@app.route("/slots", methods=["GET"])
+def get_slots():
+    estado = request.args.get("estado")
+    if estado:
+        slots = list(mongo.db['slots-disponibles'].find({"estado": estado}))
+    else:
+        slots = list(mongo.db['slots-disponibles'].find())
+    for s in slots:
+        s["_id"] = str(s["_id"])
+    return jsonify(slots)
+
+@app.route("/slots", methods=["POST"])
+def create_slot():
+    data = request.json
+    fecha = data.get("fecha")
+    hora = data.get("hora")
+    zona = data.get("zona")
+    if not fecha or not hora or not zona:
+        return jsonify({"msg": "Faltan datos obligatorios (fecha, hora, zona)"}), 400
+    slot = {
+        "fecha": fecha,
+        "hora": hora,
+        "zona": zona,
+        "estado": "disponible"
+    }
+    result = mongo.db['slots-disponibles'].insert_one(slot)
+    return jsonify({"msg": "Slot creado", "_id": str(result.inserted_id)}), 201
+
+@app.route("/slots/<id>", methods=["GET"])
+def get_slot(id):
+    slot = mongo.db['slots-disponibles'].find_one({"_id": ObjectId(id)})
+    if slot:
+        slot["_id"] = str(slot["_id"])
+        return jsonify(slot)
+    return jsonify({"msg": "Slot no encontrado"}), 404
+
+@app.route("/slots/<id>", methods=["PUT"])
+def update_slot(id):
+    data = request.json
+    mongo.db['slots-disponibles'].update_one({"_id": ObjectId(id)}, {"$set": data})
+    return jsonify({"msg": "Slot actualizado"})
+
+@app.route("/slots/<id>", methods=["DELETE"])
+def delete_slot(id):
+    mongo.db['slots-disponibles'].delete_one({"_id": ObjectId(id)})
+    return jsonify({"msg": "Slot eliminado"})
+
 # --- RESERVACIONES ---
 @app.route("/reservaciones", methods=["GET"])
 def get_reservaciones():
@@ -196,6 +244,13 @@ def get_reservaciones():
 @app.route("/reservaciones", methods=["POST"])
 def create_reservacion():
     data = request.json
+    slot_id = data.get("slot_id")
+    # Marcar slot como ocupado
+    if slot_id:
+        mongo.db['slots-disponibles'].update_one(
+            {"_id": ObjectId(slot_id)},
+            {"$set": {"estado": "ocupado"}}
+        )
     mongo.db.reservaciones.insert_one(data)
     return jsonify({"msg": "Reservación creada"}), 201
 
@@ -217,6 +272,25 @@ def update_reservacion(id):
 def delete_reservacion(id):
     mongo.db.reservaciones.delete_one({"_id": ObjectId(id)})
     return jsonify({"msg": "Reservación eliminada"})
+
+@app.route("/reservaciones/<id>/rechazar", methods=["PUT"])
+def rechazar_reservacion(id):
+    reservacion = mongo.db.reservaciones.find_one({"_id": ObjectId(id)})
+    if not reservacion:
+        return jsonify({"msg": "Reservación no encontrada"}), 404
+    # Liberar el slot
+    slot_id = reservacion.get("slot_id")
+    if slot_id:
+        mongo.db['slots-disponibles'].update_one(
+            {"_id": ObjectId(slot_id)},
+            {"$set": {"estado": "disponible"}}
+        )
+    # Actualizar estado de reservación
+    mongo.db.reservaciones.update_one(
+        {"_id": ObjectId(id)},
+        {"$set": {"status": "Rechazado"}}
+    )
+    return jsonify({"msg": "Reservación rechazada y slot liberado"})
 
 # --- MENSAJES ---
 @app.route("/mensajes", methods=["GET"])

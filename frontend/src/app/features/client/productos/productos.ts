@@ -72,9 +72,8 @@ export class Productos {
   // 🪑 MESAS
   mesas = [
     { id: 1, zona: 'General', estado: 'disponible' },
-    { id: 2, zona: 'VIP', estado: 'ocupado' },
-    { id: 3, zona: 'VIP', estado: 'disponible' },
-    { id: 4, zona: 'Terraza', estado: 'disponible' }
+    { id: 2, zona: 'VIP', estado: 'disponible' },
+    { id: 3, zona: 'Terraza', estado: 'disponible' }
   ];
 
   mesaSeleccionada: any = null;
