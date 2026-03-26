@@ -15,6 +15,8 @@ import { AdminMensajes } from './features/admin/admin-mensajes/admin-mensajes';
 import { AdminNotificaciones } from './features/admin/admin-notificaciones/admin-notificaciones';
 import { AdminContenido } from './features/admin/admin-contenido/admin-contenido';
 import { AdminConfiguracion } from './features/admin/admin-configuracion/admin-configuracion';
+import { Productos } from './features/client/productos/productos';
+import { authGuard, roleGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
 
@@ -26,17 +28,23 @@ export const routes: Routes = [
       { path: '', component: Home },
       { path: 'login', component: Login },
       { path: 'register', component: Register },
+      
     ],
   },
 
   {
   path: 'client',
   component: LayoutClient,
+  canActivate: [authGuard],
   children: [
     { path: 'dashboard', component: ClientDashboard },
     { path: 'reservations', component: Reservations },
     { path: 'messages', component: Messages },
     { path: 'payments', component: Payments },
+    { path: 'productos', component: Productos },
+    
+    
+    
 
     // ✅ CORRECTO
     { 
@@ -53,6 +61,7 @@ export const routes: Routes = [
   {
     path: 'admin',
     component: LayoutAdmin,
+    canActivate: [roleGuard('admin')],
     children: [
       { path: 'dashboard', component: AdminDashboard },
       { path: 'reservations', component: AdminReservaciones },
@@ -61,6 +70,7 @@ export const routes: Routes = [
       { path: 'contenido', component: AdminContenido },
       { path: 'configuracion', component: AdminConfiguracion },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      
     ],
   },
 

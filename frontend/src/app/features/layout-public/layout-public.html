@@ -1,8 +1,4 @@
 <style>
-  .text-vip-nav {
-    color: #bc13fe !important;
-  }
-
   .btn-vip-nav {
     background-color: transparent;
     color: #bc13fe;
@@ -22,36 +18,44 @@
   }
 </style>
 
-<div class="d-flex flex-column min-vh-100 bg-dark text-light">
+<div class="d-flex flex-column min-vh-100 bg-black text-light">
 
+  <!-- Banner above the navbar, not fixed -->
   <app-banner-notificacion tipoDestino="General"></app-banner-notificacion>
 
-  <nav class="navbar navbar-expand-lg navbar-dark bg-black border-bottom border-vip">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-black sticky-top" style="border-bottom: 1px solid rgba(188, 19, 254, 0.3); backdrop-filter: blur(10px); background: rgba(0,0,0,0.9) !important; z-index: 1040;">
     <div class="container">
 
-      <a class="navbar-brand fw-bold text-vip-nav d-flex align-items-center" routerLink="/"
-        style="letter-spacing: 1px;">     
+      <a class="navbar-brand fw-bold d-flex align-items-center" routerLink="/"
+        style="letter-spacing: 2px; font-family: 'Montserrat', sans-serif; color: #fff; text-shadow: 0 0 10px #bc13fe;">     
         SHAMANA
       </a>
 
-      <button class="navbar-toggler border-vip text-vip-nav" type="button" data-bs-toggle="collapse"
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
         data-bs-target="#navbarNav">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#bc13fe" viewBox="0 0 16 16">
-          <path fill-rule="evenodd"
-            d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z" />
-        </svg>
+        <span class="navbar-toggler-icon"></span>
       </button>
 
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto align-items-lg-center">
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-4">
           <li class="nav-item">
-            <a class="nav-link text-light" routerLink="/">Inicio</a>
+            <a class="nav-link text-uppercase fw-bold text-light" style="font-size: 0.9rem; letter-spacing: 1px;" routerLink="/">Inicio</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-light" routerLink="/login">Login</a>
+            <a class="nav-link text-uppercase fw-bold text-light" style="font-size: 0.9rem; letter-spacing: 1px; cursor: pointer;" (click)="scrollTo('eventos')">Eventos</a>
           </li>
-          <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
-            <a class="btn btn-vip-nav btn-sm px-4 py-2 rounded-3 fw-bold w-100" routerLink="/register">Registrarse</a>
+           <li class="nav-item">
+            <a class="nav-link text-uppercase fw-bold text-light" style="font-size: 0.9rem; letter-spacing: 1px; cursor: pointer;" (click)="scrollTo('galeria')">Galería</a>
+          </li>
+           <li class="nav-item">
+            <a class="nav-link text-uppercase fw-bold text-light" style="font-size: 0.9rem; letter-spacing: 1px;" routerLink="/login">Login</a>
+          </li>
+          <li class="nav-item ms-lg-2">
+            <a class="btn btn-outline-light rounded-pill px-4 py-2 fw-bold text-uppercase" 
+               style="border: 2px solid #bc13fe; color: #fff; box-shadow: 0 0 10px rgba(188, 19, 254, 0.3);"
+               routerLink="/register">
+               Register
+            </a>
           </li>
         </ul>
       </div>
@@ -59,12 +63,12 @@
     </div>
   </nav>
 
-  <main class="flex-fill" style="background-color: #030303;">
+  <div>
     <router-outlet></router-outlet>
-  </main>
-
-  <footer class="bg-black text-center text-secondary py-4 mt-auto border-top border-vip">
-    <small>© 2026 Shamana Night Club | Todos los derechos reservados</small>
-  </footer>
-
+  </div>
+  
 </div>
+
+<footer class="bg-black text-center text-secondary py-4 mt-auto border-top border-vip">
+  <small>© 2026 Shamana Night Club | Todos los derechos reservados</small>
+</footer>

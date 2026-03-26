@@ -1,5 +1,5 @@
 // Archivo: src/app/dashboard/dashboard.component.ts (o donde tengas tu componente)
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core'; 
 import { DatePipe, NgClass } from '@angular/common';
 
 import { ReservationService } from '../../../services/reservation.service';
@@ -19,6 +19,7 @@ export interface ActivityRecord {
 export class Dashboard implements OnInit {
 
   private reservationService = inject(ReservationService);
+  private cdr = inject(ChangeDetectorRef);
 
   activeReservations = 0;
   pendingMessages = 1; 
@@ -31,20 +32,21 @@ export class Dashboard implements OnInit {
   }
 
   cargarDatos() {
-    const reservations: any[] = this.reservationService.getReservations();
-
-    const activas = reservations.filter(res => res.status === 'Activa' || res.status === 'Pendiente');
-    this.activeReservations = activas.length;
-
-    const ultimasReservaciones = reservations.slice(-4).reverse();
-
-    this.recentActivity = ultimasReservaciones.map((res: any, index: number) => {
-      return {
-        id: res.id || index, 
-        message: `Reservación creada/actualizada: ${res.status || 'Sin estado'}`, 
-        date: res.fecha || new Date(), 
-        type: this.obtenerColorPorEstado(res.status)
-      };
+    this.reservationService.getReservaciones().subscribe(reservations => {
+      const activas = reservations.filter(res => res.status === 'Activa' || res.status === 'Pendiente');
+      this.activeReservations = activas.length;
+  
+      const ultimasReservaciones = reservations.slice(-4).reverse();
+  
+      this.recentActivity = ultimasReservaciones.map((res: any, index: number) => {
+        return {
+          id: res.id || index,
+          message: `Reservación creada/actualizada: ${res.status || 'Sin estado'}`,
+          date: res.fecha || new Date(),
+          type: this.obtenerColorPorEstado(res.status)
+        } as ActivityRecord;
+      });
+      this.cdr.detectChanges();
     });
   }
 

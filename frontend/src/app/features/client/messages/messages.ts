@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { MessagesService } from '../../../services/messages.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-client-messages',
@@ -121,36 +123,53 @@ import { FormsModule } from '@angular/forms';
     .chat-body::-webkit-scrollbar-thumb:hover { background: #0dcaf0; }
   `]
 })
-export class Messages { 
-
+export class Messages implements OnInit, OnDestroy {
+  mensajes: any[] = [];
   nuevoMensaje = '';
+  private messagesService = inject(MessagesService);
+  private authService = inject(AuthService);
+  private cdr = inject(ChangeDetectorRef);
+  usuarioId = '';
+  private pollingInterval: any;
 
-  mensajes = [
-    { sender: 'admin', text: 'Hola Alex, tu reservación para el 24 de octubre ha sido confirmada.', time: '10:30 AM' },
-    { sender: 'client', text: 'Perfecto, muchas gracias. ¿Hay algún dress code para el evento?', time: '10:45 AM' },
-    { sender: 'admin', text: 'Sí, el dress code es elegante-casual. No se permiten tenis deportivos ni ropa de playa.', time: '11:00 AM' },
-    { sender: 'client', text: 'Entendido, nos vemos el viernes.', time: '11:05 AM' }
-  ];
-
-  enviarMensaje() {
-    if (this.nuevoMensaje.trim() !== '') {
-      this.mensajes.push({
-        sender: 'client',
-        text: this.nuevoMensaje,
-        time: this.obtenerHoraActual()
-      });
-      this.nuevoMensaje = '';
+  ngOnInit() {
+    const session = this.authService.getSession();
+    this.usuarioId = session?._id;
+    if (this.usuarioId) {
+      this.cargarMensajes();
+      // Polling cada 3 segundos
+      this.pollingInterval = setInterval(() => {
+        this.cargarMensajes();
+      }, 3000);
     }
   }
 
-  obtenerHoraActual() {
-    const ahora = new Date();
-    let horas = ahora.getHours();
-    let minutos: any = ahora.getMinutes();
-    const ampm = horas >= 12 ? 'PM' : 'AM';
-    horas = horas % 12;
-    horas = horas ? horas : 12; 
-    minutos = minutos < 10 ? '0' + minutos : minutos;
-    return horas + ':' + minutos + ' ' + ampm;
+  ngOnDestroy() {
+    if (this.pollingInterval) {
+      clearInterval(this.pollingInterval);
+    }
+  }
+
+  cargarMensajes() {
+    if (!this.usuarioId) return;
+    this.messagesService.getMensajesByUsuario(this.usuarioId).subscribe((data: any) => {
+      this.mensajes = Array.isArray(data) ? data : [];
+      this.cdr.detectChanges();
+    });
+  }
+
+  enviarMensaje() {
+    if (this.nuevoMensaje.trim() !== '' && this.usuarioId) {
+      const mensaje = {
+        usuario_id: this.usuarioId,
+        sender: 'client',
+        contenido: this.nuevoMensaje,
+        fecha: new Date().toISOString()
+      };
+      this.messagesService.createMensaje(mensaje).subscribe(() => {
+        this.cargarMensajes();
+      });
+      this.nuevoMensaje = '';
+    }
   }
 }

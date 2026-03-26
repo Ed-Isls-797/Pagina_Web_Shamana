@@ -1,274 +1,174 @@
-<style>
-    .texto-neon {
-        color: #ffffff;
-        text-shadow:
-            0 0 5px hsl(0, 0%, 100%),
-            0 0 10px #fff,
-            0 0 20px #bc13fe,
-            0 0 40px #bc13fe,
-            0 0 80px #bc13fe,
-            0 0 90px #bc13fe,
-            0 0 100px #bc13fe,
-            0 0 150px #bc13fe;
-        animation: parpadeo-neon 2s infinite alternate;
-    }
+<div class="bg-black text-white">
 
-    @keyframes parpadeo-neon {
-
-        0%,
-        18%,
-        22%,
-        25%,
-        53%,
-        57%,
-        100% {
-            text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px #bc13fe, 0 0 40px #bc13fe, 0 0 80px #bc13fe;
-        }
-
-        20%,
-        24%,
-        55% {
-            text-shadow: none;
-            color: rgba(255, 255, 255, 0.4);
-        }
-    }
-
-    .text-vip {
-        color: #bc13fe !important;
-    }
-
-    .card-vip {
-        background-color: #050505;
-        border: 1px solid rgba(188, 19, 254, 0.3);
-        border-radius: 16px;
-        box-shadow: 0 0 30px rgba(188, 19, 254, 0.08);
-        transition: all 0.3s ease;
-    }
-
-    .card-vip:hover {
-        box-shadow: 0 0 50px rgba(188, 19, 254, 0.15);
-    }
-
-    .btn-vip-solid {
-        background-color: #bc13fe;
-        color: #fff;
-        border: none;
-        box-shadow: 0 0 15px rgba(188, 19, 254, 0.5);
-        transition: all 0.3s ease;
-    }
-
-    .btn-vip-solid:hover {
-        background-color: #d03cf5;
-        color: #fff;
-        box-shadow: 0 0 25px rgba(188, 19, 254, 0.8);
-        transform: translateY(-2px);
-    }
-
-    .btn-vip-outline {
-        background-color: transparent;
-        color: #bc13fe;
-        border: 1px solid rgba(188, 19, 254, 0.5);
-        transition: all 0.3s ease;
-    }
-
-    .btn-vip-outline:hover {
-        background-color: rgba(188, 19, 254, 0.1);
-        color: #d03cf5;
-        border-color: #d03cf5;
-    }
-
-    .linea-neon {
-        height: 1px;
-        width: 100%;
-        background: linear-gradient(90deg, transparent, rgba(188, 19, 254, 0.8), transparent);
-        box-shadow: 0 0 15px rgba(188, 19, 254, 0.6);
-        margin: 0;
-        border: none;
-    }
-</style>
-
-<section class="vh-100 d-flex align-items-center text-center text-white position-relative" style="
-background-image:url('https://www.neonmonki.com/cdn/shop/files/NEONMONKI_-_Express_Neonlampe.jpg?v=1691390186&width=3000');
-background-size:cover;
-background-position:center;
-">
-    <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-75"></div>
-    <div class="container position-relative">
-        <p class="display-1 fw-bold">Shamana</p>
-        <h1 class="display-1 fw-bold texto-neon">VIVE LA NOCHE</h1>
-        <p class="lead">Donde el sonido y la energía colisionan</p>
-    </div>
-</section>
-
-<div class="linea-neon"></div>
-
-<section class="bg-black text-white py-5" style="background-color: #030303 !important;">
-    <div class="container py-4">
-
-        <div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-3">
-            <div>
-                <small class="text-vip fw-bold tracking-widest text-uppercase"
-                    style="letter-spacing: 2px;">Agenda</small>
-                <h2 class="display-6 fw-bold mb-1">Próximos <span class="text-vip">Eventos</span></h2>
-                <p class="text-secondary m-0">No te pierdas las mejores noches del mes.</p>
-            </div>
+    <!-- HERO SECTION -->
+    <section class="hero-bg position-relative d-flex align-items-center justify-content-center vh-100 overflow-hidden">
+        <video autoplay muted loop class="position-absolute w-100 h-100 object-fit-cover opacity-50">
+            <source src="assets/videos/background-video.mp4" type="video/mp4">
+        </video>
+        <div class="hero-overlay z-1"></div>
+        
+        <div class="container text-center position-relative z-2 hero-content" data-aos="fade-up">
+            <h1 class="shamana-title-neon display-1 fw-bold text-uppercase mb-2">SHAMANA</h1>
+            <p class="neon-subtitle fs-3 letter-spacing-5 text-info text-uppercase">Vive la Noche</p>
+            <a routerLink="/login" class="btn btn-outline-light btn-lg mt-4 px-5 rounded-pill border-2 fw-bold neon-hover">RESERVAR</a>
         </div>
+    </section>
 
-        <div class="row g-4">
-            <div class="col-md-4" *ngFor="let evento of eventos">
-
-                <div class="card border-0 text-white rounded-4 overflow-hidden h-100"
-                    style="background-color: #0d0d0d;">
-
-                    <div class="position-relative">
-                        <img [src]="evento.imagen" class="card-img-top" style="height:220px; object-fit:cover;">
-                    </div>
-
-                    <div class="card-body p-4 d-flex flex-column">
-                        <p class="small text-secondary mb-2 d-flex align-items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="#bc13fe" class="me-2"
-                                viewBox="0 0 16 16">
-                                <path
-                                    d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z" />
-                            </svg>
-                            {{evento.fecha}}
-                        </p>
-
-                        <h4 class="fw-bold mb-1">{{evento.titulo}}</h4>
-
-                        <p class="small text-secondary mb-4 d-flex align-items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="#bc13fe" class="me-2"
-                                viewBox="0 0 16 16">
-                                <path d="M9 13c0 1.105-1.12 2-2.5 2S4 14.105 4 13s1.12-2 2.5-2 2.5.895 2.5 2z" />
-                                <path fill-rule="evenodd" d="M9 3v10H8V3h1z" />
-                                <path d="M8 2.82a1 1 0 0 1 .804-.98l3-.6A1 1 0 0 1 13 2.22V4L8 5V2.82z" />
-                            </svg>
-                            {{evento.artista}}
-                        </p>
-
-                        <button class="btn btn-vip-solid w-100 mt-auto py-2 fw-bold rounded-3"
-                            (click)="irReservaciones()">
-                            Comprar Entradas
-                        </button>
-                    </div>
-
+    <!-- SOBRE NOSOTROS -->
+    <section class="py-5 bg-gradient-dark">
+        <div class="container py-5">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-6" data-aos="fade-right">
+                    <img src="https://images.unsplash.com/photo-1566737236500-c8ac43014a67?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" 
+                         alt="Club Atmosphere" class="img-fluid rounded-4 shadow-lg border border-secondary">
                 </div>
-
-            </div>
-        </div>
-    </div>
-</section>
-
-<div class="linea-neon"></div>
-
-<section class="bg-black text-white py-5">
-    <div class="container py-5">
-
-        <div class="card-vip p-4 p-md-5 text-center mx-auto" style="max-width: 800px;">
-
-            <div class="mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="#bc13fe" viewBox="0 0 16 16">
-                    <path
-                        d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z" />
-                </svg>
-            </div>
-
-            <h2 class="display-6 fw-bold mb-3">
-                Experiencia <span class="text-vip">VIP</span>
-            </h2>
-
-            <p class="text-secondary mb-5 mx-auto" style="max-width: 600px; font-size: 1.1rem;">
-                Acceso exclusivo, mesas reservadas, servicio personalizado y los mejores DJs del mundo. Únete al club
-                más exclusivo de la ciudad.
-            </p>
-
-            <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
-                <a href="/register" class="btn btn-vip-solid px-5 py-3 fw-bold rounded-3 text-decoration-none">
-                    Únete Ahora
-                </a>
-                <a href="/login" class="btn btn-vip-outline px-5 py-3 fw-bold rounded-3 text-decoration-none">
-                    Ya soy miembro
-                </a>
-            </div>
-
-        </div>
-
-    </div>
-</section>
-
-<div class="linea-neon"></div>
-
-<section class="text-white py-5" style="background-color: #050505;">
-    <div class="container py-4">
-        <div class="row g-5 justify-content-center text-center">
-
-            <div class="col-12 col-md-6 d-flex flex-column align-items-center">
-                <h4 class="text-vip fw-bold mb-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="me-2"
-                        viewBox="0 0 16 16">
-                        <path
-                            d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
-                    </svg>
-                    Ubicación
-                </h4>
-                <p class="text-secondary mb-4">
-                    Shamana Pachuca <br>
-                    Camino Real de La Plata 201 <br>
-                    Zona Plateada, Pachuca de Soto, Hidalgo
-                </p>
-                <a href="https://www.google.com/maps/search/Shamana+Pachuca+Camino+Real+de+la+Plata+201" target="_blank"
-                    class="btn btn-vip-outline px-4 py-2 rounded-3">
-                    Ver en Google Maps
-                </a>
-            </div>
-
-            <div class="col-12 col-md-6 d-flex flex-column align-items-center">
-                <h4 class="text-vip fw-bold mb-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="me-2"
-                        viewBox="0 0 16 16">
-                        <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z" />
-                        <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z" />
-                    </svg>
-                    Horarios
-                </h4>
-                <p class="text-secondary mb-4">
-                    Jueves a Sábado <br>
-                    9:00 PM – 3:00 AM
-                </p>
-                <button class="btn btn-vip-outline px-4 py-2 rounded-3" data-bs-toggle="modal"
-                    data-bs-target="#modalHorarios">
-                    Ver horarios completos
-                </button>
-            </div>
-
-        </div>
-    </div>
-
-    <div class="modal fade" id="modalHorarios" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content text-white border-0"
-                style="background-color: #0d0d0d; box-shadow: 0 0 30px rgba(188, 19, 254, 0.2);">
-                <div class="modal-header border-secondary border-opacity-25">
-                    <h5 class="modal-title text-vip fw-bold">Horarios de Operación</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                        aria-label="Close"></button>
+                <div class="col-lg-6" data-aos="fade-left">
+                    <h2 class="section-title mb-4">Experiencia <span class="text-primary-neon">Inolvidable</span></h2>
+                    <p class="lead text-light opacity-75">
+                        Shamana no es solo un club, es un ritual. Fusionamos la mejor música electrónica con un ambiente 
+                        sofisticado y vibrante. Cada noche es una historia nueva donde tú eres el protagonista.
+                    </p>
+                    <ul class="list-unstyled mt-4 text-secondary">
+                        <li class="mb-3 d-flex align-items-center"><i class="bi bi-soundwave fs-4 me-3 text-info"></i> Sonido de Alta Fidelidad</li>
+                        <li class="mb-3 d-flex align-items-center"><i class="bi bi-stars fs-4 me-3 text-info"></i> Ambientes Exclusivos</li>
+                        <li class="d-flex align-items-center"><i class="bi bi-people-fill fs-4 me-3 text-info"></i> DJs Internacionales</li>
+                    </ul>
                 </div>
-                <div class="modal-body">
-                    <div *ngFor="let h of horarios"
-                        class="d-flex justify-content-between py-2 border-bottom border-secondary border-opacity-25">
-                        <span [class.text-secondary]="!h.abierto">{{ h.dia }}</span>
-                        <span *ngIf="h.abierto" class="badge text-white" style="background-color: #bc13fe;">
-                            {{ h.apertura }} - {{ h.cierre }}
-                        </span>
-                        <span *ngIf="!h.abierto" class="badge bg-dark text-secondary border border-secondary">
-                            Cerrado
-                        </span>
+            </div>
+        </div>
+    </section>
+
+    <!-- GALERIA (Static Images) -->
+    <section id="galeria" class="py-5 overflow-hidden bg-black position-relative">
+        <div class="container-fluid p-0">
+            <h2 class="text-center section-title mb-5">Galería</h2>
+            
+            <div class="gallery-track-container w-100 overflow-hidden d-flex">
+                <div class="gallery-track d-flex">
+                    <div class="gallery-item position-relative flex-shrink-0 mx-2" *ngFor="let item of galeria" style="width: 300px; height: 400px;">
+                        <img [src]="item.imagen_url || item.imagen" [alt]="item.descripcion" class="w-100 h-100 object-fit-cover rounded-3 border border-dark">
+                    </div>
+                     <div class="gallery-item position-relative flex-shrink-0 mx-2" *ngFor="let item of galeria" style="width: 300px; height: 400px;">
+                        <img [src]="item.imagen_url || item.imagen" [alt]="item.descripcion" class="w-100 h-100 object-fit-cover rounded-3 border border-dark">
                     </div>
                 </div>
-                <div class="modal-footer border-0">
-                    <button type="button" class="btn btn-vip-outline w-100" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROXIMOS EVENTOS -->
+    <section id="eventos" class="py-5 bg-dark position-relative">
+        <div class="container py-5">
+            <div class="text-center mb-5">
+                <h2 class="section-title">Próximos <span class="text-primary-neon">Eventos</span></h2>
+                <p class="text-secondary">Reserva tu mesa con anticipación</p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-4" *ngFor="let evento of eventosPublicados">
+                    <div class="evento-card card text-white border-0 h-100 rounded-4 overflow-hidden">
+                        <div class="position-relative evento-card-img">
+                            <img [src]="evento.imagen_url || evento.imagen" class="card-img-top object-fit-cover" style="height: 260px;" alt="{{evento.titulo}}">
+                            <div class="evento-card-img-overlay"></div>
+                        </div>
+                        <div class="card-body p-4">
+                            <h4 class="card-title fw-bold mb-3">{{evento.titulo}}</h4>
+                            <div class="d-flex align-items-center mb-2" *ngIf="evento.dj || evento.artista">
+                                <span class="evento-icon-badge me-2">
+                                    <i class="bi bi-mic-fill"></i>
+                                </span>
+                                <span class="text-info fw-semibold">{{evento.dj || evento.artista}}</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <span class="evento-icon-badge me-2">
+                                    <i class="bi bi-calendar-event"></i>
+                                </span>
+                                <span class="text-secondary">{{evento.fecha}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center py-5 text-secondary" *ngIf="eventosPublicados.length === 0">
+                <h4>No hay eventos próximos por el momento.</h4>
+            </div>
+        </div>
+    </section>
+
+    <!-- LA BARRA / DRINKS -->
+    <section class="py-5 bg-black">
+        <div class="container py-5">
+            <h2 class="text-center section-title mb-5">Signature <span class="text-info">Drinks</span></h2>
+            <div class="row justify-content-center g-4">
+                <div class="col-md-4 col-lg-3" *ngFor="let drink of drinks">
+                    <div class="drink-card p-4 rounded-4 text-center h-100 border border-secondary bg-dark bg-opacity-25">
+                        <div class="drink-icon mb-3 text-primary-neon fst-italic display-4">
+                            <i class="bi bi-cup-straw"></i>
+                        </div>
+                        <h4 class="text-white fw-bold mb-2">{{drink.name}}</h4>
+                        <p class="text-secondary small mb-3">{{drink.desc}}</p>
+                        <div class="text-info fw-bold fs-5">{{drink.price}}</div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
+
+    <!-- SERVICIOS VIP -->
+    <section class="py-5 bg-dark">
+        <div class="container py-5">
+            <div class="row g-4">
+                <div class="col-md-4" *ngFor="let service of vipServices">
+                    <div class="p-4 bg-black bg-opacity-25 border border-secondary rounded-4 h-100 shadow-sm transition-transform">
+                        <i [class]="'bi ' + service.icon + ' display-3 text-primary-neon mb-4 d-block'"></i>
+                        <h4 class="text-white fw-bold mb-2">{{service.title}}</h4>
+                        <p class="text-secondary">{{service.desc}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER / UBICACION -->
+    <footer class="bg-black text-white pt-5 border-top border-secondary">
+        <div class="container pb-5">
+            <div class="row g-5">
+                <div class="col-lg-4">
+                    <h3 class="fw-bold mb-4 text-uppercase">Shamana</h3>
+                    <p class="text-secondary mb-4">La experiencia nocturna definitiva. Únete al ritual cada fin de semana.</p>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="btn btn-dark rounded-circle"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="btn btn-dark rounded-circle"><i class="bi bi-facebook"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <h5 class="text-info mb-4">Horarios</h5>
+                    <ul class="list-unstyled text-secondary" *ngIf="horarios.length > 0; else noHorarios">
+                        <li class="mb-2" *ngFor="let h of horarios">
+                             <div class="d-flex justify-content-between border-bottom border-dark pb-1 mb-1">
+                                <span class="text-white">{{h.dia}}:</span>
+                                <span *ngIf="h.abierto" class="text-secondary">{{h.apertura}} - {{h.cierre}}</span>
+                                <span *ngIf="!h.abierto" class="text-danger small fst-italic">Cerrado</span>
+                            </div>
+                        </li>
+                    </ul>
+                    <ng-template #noHorarios>
+                        <p class="text-secondary">Viernes & Sábado: 10:00 PM - 5:00 AM</p>
+                    </ng-template>
+                </div>
+
+                <div class="col-lg-4">
+                    <h5 class="text-info mb-4">Ubicación</h5>
+                    <p class="text-secondary mb-3"><i class="bi bi-geo-alt me-2"></i> {{ubicacion?.direccion || 'Camino Real de La Plata 201, Zona Plateada, Pachuca de Soto, Hidalgo'}}</p>
+                    <a [href]="getGoogleMapsUrl()" target="_blank" rel="noopener noreferrer"
+                       class="btn btn-outline-info btn-sm rounded-pill px-3 mt-2">
+                        <i class="bi bi-map me-2"></i>Ver en Google Maps
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</div>

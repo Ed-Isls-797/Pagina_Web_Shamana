@@ -1,0 +1,321 @@
+.mapa-real {
+  position: relative;
+  width: 100%;
+  height: 500px;
+  background: #0a0a0a;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid #222;
+}
+
+/* ZONAS */
+.zona {
+  position: absolute;
+  padding: 10px 15px;
+  border-radius: 10px;
+  font-size: 12px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid #444;
+}
+
+.barra {
+  top: 80%;
+  left: 40%;
+}
+
+.dj {
+  top: 5%;
+  left: 45%;
+  background: #111;
+  border: 1px solid #bc13fe;
+  box-shadow: 0 0 10px #bc13fe;
+}
+
+/* MESAS */
+.mesa {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+/* GENERAL */
+.general {
+  background: #198754;
+  box-shadow: 0 0 10px #198754;
+}
+
+/* VIP */
+.vip {
+  background: #111;
+  border: 2px solid #bc13fe;
+  box-shadow: 0 0 15px #bc13fe;
+}
+
+/* TERRAZA */
+.terraza {
+  background: #ffc107;
+  color: black;
+}
+
+/* HOVER */
+.mesa:hover {
+  transform: scale(1.1);
+}
+
+.hero-bg {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  background-image: url('https://www.neonmonki.com/cdn/shop/files/NEONMONKI_-_Express_Neonlampe.jpg?v=1691390186&width=3000');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 1;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+
+.shamana-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 8rem;
+  font-weight: 900;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 10px;
+  text-shadow: 0 0 20px #bc13fe, 0 0 40px #bc13fe;
+}
+
+/* Neon flickering title */
+.shamana-title-neon {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 8rem;
+  font-weight: 900;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 10px;
+  text-shadow: 
+    0 0 7px #fff,
+    0 0 10px #fff,
+    0 0 21px #fff,
+    0 0 42px #bc13fe,
+    0 0 82px #bc13fe,
+    0 0 92px #bc13fe,
+    0 0 102px #bc13fe,
+    0 0 151px #bc13fe;
+  animation: neon-flicker 1.5s infinite alternate;
+}
+
+@keyframes neon-flicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+    text-shadow: 
+      0 0 7px #fff,
+      0 0 10px #fff,
+      0 0 21px #fff,
+      0 0 42px #bc13fe,
+      0 0 82px #bc13fe,
+      0 0 92px #bc13fe,
+      0 0 102px #bc13fe,
+      0 0 151px #bc13fe;
+  }
+  20%, 24%, 55% {
+    text-shadow: none;
+  }
+}
+
+.neon-subtitle {
+  font-family: 'Raleway', sans-serif;
+  font-size: 2rem;
+  color: #0dcaf0; /* Cyan */
+  text-transform: uppercase;
+  letter-spacing: 5px;
+  margin-top: -20px;
+  text-shadow: 0 0 10px #0dcaf0;
+}
+
+.section-title {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #fff;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    position: relative;
+    display: inline-block;
+}
+
+.section-title::after {
+    content: '';
+    display: block;
+    width: 60%;
+    height: 4px;
+    background: #bc13fe; /* Purple Neon */
+    margin: 10px auto 0;
+    box-shadow: 0 0 10px #bc13fe;
+}
+
+/* Gallery Marquee */
+.gallery-container {
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative;
+    padding: 50px 0;
+    background: #000;
+}
+
+.gallery-track {
+    display: flex;
+    animation: scroll 40s linear infinite;
+    width: max-content;
+}
+
+.gallery-item {
+    min-width: 300px;
+    height: 400px;
+    margin: 0 15px;
+    border-radius: 15px;
+    overflow: hidden;
+    position: relative;
+    border: 2px solid #333;
+    transition: transform 0.3s;
+}
+
+.gallery-item:hover {
+    transform: scale(1.05);
+    border-color: #bc13fe;
+    box-shadow: 0 0 20px rgba(188, 19, 254, 0.5);
+    z-index: 10;
+}
+
+.gallery-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+@keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); } /* Ensure you duplicate items for infinite loop illusion */
+}
+
+/* Pause on hover */
+.gallery-track:hover {
+    animation-play-state: paused;
+}
+
+/* Drink Cards */
+.drink-card {
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    transition: 0.3s;
+}
+
+.drink-card:hover {
+    border-color: #0dcaf0;
+    box-shadow: 0 0 15px rgba(13, 202, 240, 0.3);
+}
+
+.drink-title {
+    color: #bc13fe;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.drink-price {
+    color: #fff;
+    font-size: 1.2rem;
+    margin-top: 10px;
+}
+
+/* VIP Services */
+.vip-icon {
+    font-size: 3rem;
+    color: #bc13fe;
+    margin-bottom: 15px;
+    text-shadow: 0 0 10px #bc13fe;
+}
+
+/* Footer Map */
+.map-container iframe {
+    width: 100%;
+    height: 300px;
+    border-radius: 15px;
+    border: 2px solid #333;
+}
+
+/* Event Cards */
+.evento-card {
+    background: linear-gradient(145deg, #0d0d0d, #1a1a2e);
+    border: 1px solid rgba(188, 19, 254, 0.15) !important;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.evento-card:hover {
+    transform: translateY(-8px);
+    border-color: rgba(188, 19, 254, 0.5) !important;
+    box-shadow: 
+        0 8px 30px rgba(0, 0, 0, 0.6),
+        0 0 20px rgba(188, 19, 254, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.evento-card-img {
+    overflow: hidden;
+}
+
+.evento-card-img img {
+    transition: transform 0.5s ease;
+}
+
+.evento-card:hover .evento-card-img img {
+    transform: scale(1.08);
+}
+
+.evento-card-img-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60%;
+    background: linear-gradient(to top, #0d0d0d 0%, transparent 100%);
+    pointer-events: none;
+}
+
+.evento-icon-badge {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: rgba(188, 19, 254, 0.12);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    color: #bc13fe;
+    flex-shrink: 0;
+}

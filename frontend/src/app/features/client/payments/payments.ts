@@ -64,7 +64,9 @@ export class Payments implements OnInit {
   constructor(private reservationService: ReservationService) {}
 
   ngOnInit() {
-    this.reservaciones = this.reservationService.getReservations();
+    this.reservationService.getReservaciones().subscribe(reservaciones => {
+      this.reservaciones = reservaciones;
+    });
   }
 
   onFileSelected(event: Event) {

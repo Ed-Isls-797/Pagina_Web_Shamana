@@ -1,0 +1,171 @@
+<section class="bg-black text-white py-5">
+
+<div class="container">
+
+    <!-- TITULO -->
+    <h2 class="fw-bold text-center mb-5">
+        Experiencia <span class="text-info">Shamana</span>
+    </h2>
+
+    <!-- 🍾 CARTA PRINCIPAL -->
+    <h4 class="text-info mb-3">🍾 Carta</h4>
+
+    <div *ngFor="let categoria of menuShamana" class="mb-5">
+
+        <h5 class="text-light border-bottom pb-2">
+            {{categoria.nombre}}
+        </h5>
+
+        <div class="row g-3 mt-2">
+
+            <div class="col-md-4" *ngFor="let item of categoria.items">
+
+                <div class="p-3 bg-dark rounded-4 border border-secondary border-opacity-25 h-100">
+
+                    <h6 class="fw-bold mb-2">{{item.nombre}}</h6>
+
+                    <p class="small text-secondary mb-1"
+                       *ngIf="item.botella">
+                        Botella: {{item.botella.ml}}ml -
+                        <span class="text-info">$ {{item.botella.precio}}</span>
+                    </p>
+
+                    <p class="small text-secondary"
+                       *ngIf="item.copeo">
+                        Copeo:
+                        <span class="text-info">$ {{item.copeo}}</span>
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- 🍹 COCTELERÍA -->
+    <h4 class="text-info mb-3 mt-5">🍹 Coctelería & Shots</h4>
+
+    <div *ngFor="let categoria of extrasMenu" class="mb-5">
+
+        <h5 class="text-light mb-3">
+            {{categoria.nombre}}
+        </h5>
+
+        <div class="row g-3">
+
+            <div class="col-md-3 col-6" *ngFor="let item of categoria.items">
+
+                <div class="p-3 bg-dark rounded-4 text-center border border-secondary border-opacity-25 h-100">
+
+                    <p class="mb-1 small">{{item.nombre}}</p>
+
+                    <span class="text-info fw-bold">
+                        $ {{item.precio}}
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- 🪑 MESAS -->
+    <h4 class="text-info mb-3"> Zonas Disponibles</h4>
+
+    <div class="mapa-bar mb-5">
+
+        <div class="mesa"
+             *ngFor="let mesa of mesas"
+             [ngClass]="{
+               'disponible': mesa.estado === 'disponible',
+               'ocupado': mesa.estado === 'ocupado',
+               'vip': mesa.zona === 'VIP',
+               'seleccionada': mesaSeleccionada?.id === mesa.id
+             }"
+             (click)="seleccionarMesa(mesa)">
+
+            {{mesa.zona}}
+
+        </div>
+
+    </div>
+
+    
+
+    <!-- 🆓 SERVICIOS -->
+    <h4 class="text-info mb-3">🆓 Servicios</h4>
+
+    <div class="row g-4 text-center">
+
+        <div class="col-md-4" *ngFor="let s of servicios">
+
+            <div class="p-4 bg-dark rounded-4 border border-secondary border-opacity-25 h-100">
+
+                <h2>{{s.icono}}</h2>
+
+                <p class="mt-2 text-light">
+                    {{s.nombre}}
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+</section>
+
+<!-- 🎨 ESTILOS -->
+<style>
+
+.mapa-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  justify-items: center;
+}
+
+.mesa {
+  width: 70px;
+  height: 70px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+/* DISPONIBLE */
+.disponible {
+  background: #198754;
+  box-shadow: 0 0 10px #198754;
+}
+
+/* OCUPADO */
+.ocupado {
+  background: #dc3545;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* VIP */
+.vip {
+  border: 2px solid #bc13fe;
+  box-shadow: 0 0 10px #bc13fe;
+}
+
+
+
+/* HOVER PRO */
+.mesa:hover {
+  transform: scale(1.1);
+}
+
+</style>

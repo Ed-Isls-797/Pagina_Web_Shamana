@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { EventosService } from '../../../services/eventos';
+import { GaleriaService } from '../../../services/galeria.service';
 
 @Component({
   selector: 'admin-contenido',
@@ -12,6 +13,7 @@ import { EventosService } from '../../../services/eventos';
 })
 export class AdminContenido implements OnInit {
 
+  // --- Eventos ---
   titulo = '';
   dj = '';
   fecha = '';
@@ -21,19 +23,39 @@ export class AdminContenido implements OnInit {
   showModalNuevo = false;
   modoEdicion = false;
   eventoEnEdicion: any = null;
-
   eventoAEliminar: any = null;
   eventos: any[] = [];
 
-  constructor(private eventosService: EventosService, private route: ActivatedRoute) {
-    this.eventos = this.eventosService.obtenerEventos();
-  }
+  // --- Galería ---
+  galeriaItems: any[] = [];
+  galeriaImagen = '';
+  galeriaDescripcion = '';
+  showModalGaleria = false;
+  galeriaAEliminar: any = null;
+
+  constructor(
+    private eventosService: EventosService,
+    private galeriaService: GaleriaService,
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
+    this.cargarEventos();
+    this.cargarGaleria();
     this.route.queryParams.subscribe(params => {
       if (params['accion'] === 'nuevo') {
         this.abrirModalNuevo();
       }
+    });
+  }
+
+  // ==================== EVENTOS ====================
+
+  cargarEventos() {
+    this.eventosService.obtenerEventos().subscribe(data => {
+      this.eventos = data;
+      this.cdr.detectChanges();
     });
   }
 
@@ -89,23 +111,30 @@ export class AdminContenido implements OnInit {
     if (!comoBorrador && !this.formularioCompleto) return;
 
     if (this.modoEdicion && this.eventoEnEdicion) {
-      this.eventoEnEdicion.titulo = this.titulo;
-      this.eventoEnEdicion.dj = this.dj;
-      this.eventoEnEdicion.fecha = `${this.fecha} - ${this.hora}`;
-      if (this.imagen) this.eventoEnEdicion.imagen = this.imagen;
+      const updated: any = {
+        titulo: this.titulo,
+        dj: this.dj,
+        fecha: `${this.fecha} - ${this.hora}`,
+      };
+      if (this.imagen) updated.imagen = this.imagen;
+
+      this.eventosService.actualizarEvento(this.eventoEnEdicion._id, updated).subscribe(() => {
+        this.cargarEventos();
+      });
     } else {
       const nuevoEvento = {
-        id: Date.now(),
         titulo: this.titulo || 'Sin Título',
         dj: this.dj || 'Por confirmar',
         fecha: `${this.fecha} - ${this.hora}`,
         imagen: this.imagen || 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&q=80&w=800',
         estado: comoBorrador ? 'Borrador' : 'Publicado'
       };
-      this.eventosService.agregarEvento(nuevoEvento);
+      
+      this.eventosService.agregarEvento(nuevoEvento).subscribe(() => {
+        this.cargarEventos();
+      });
     }
 
-    this.eventos = this.eventosService.obtenerEventos();
     this.cerrarModalNuevo();
   }
 
@@ -118,7 +147,10 @@ export class AdminContenido implements OnInit {
   }
 
   togglePublicacion(evento: any) {
-    evento.estado = evento.estado === 'Publicado' ? 'Borrador' : 'Publicado';
+    const nuevoEstado = evento.estado === 'Publicado' ? 'Borrador' : 'Publicado';
+    this.eventosService.actualizarEvento(evento._id, { estado: nuevoEstado }).subscribe(() => {
+      this.cargarEventos();
+    });
   }
 
   abrirModalEliminar(evento: any) {
@@ -131,8 +163,75 @@ export class AdminContenido implements OnInit {
 
   confirmarEliminar() {
     if (this.eventoAEliminar) {
-      this.eventos = this.eventos.filter(e => e !== this.eventoAEliminar);
-      this.cerrarModalEliminar();
+      this.eventosService.eliminarEvento(this.eventoAEliminar._id).subscribe(() => {
+        this.cargarEventos();
+        this.cerrarModalEliminar();
+      });
+    }
+  }
+
+  // ==================== GALERÍA ====================
+
+  cargarGaleria() {
+    this.galeriaService.getGaleria().subscribe({
+      next: (data) => {
+        this.galeriaItems = data;
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Error loading gallery', err)
+    });
+  }
+
+  abrirModalGaleria() {
+    this.galeriaImagen = '';
+    this.galeriaDescripcion = '';
+    this.showModalGaleria = true;
+  }
+
+  cerrarModalGaleria() {
+    this.showModalGaleria = false;
+    this.galeriaImagen = '';
+    this.galeriaDescripcion = '';
+  }
+
+  onGaleriaFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.galeriaImagen = e.target.result;
+        this.cdr.detectChanges();
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  subirImagenGaleria() {
+    if (!this.galeriaImagen) return;
+    const item = {
+      imagen_url: this.galeriaImagen,
+      descripcion: this.galeriaDescripcion || 'Shamana Night Club'
+    };
+    this.galeriaService.createGaleria(item).subscribe(() => {
+      this.cargarGaleria();
+      this.cerrarModalGaleria();
+    });
+  }
+
+  abrirModalEliminarGaleria(item: any) {
+    this.galeriaAEliminar = item;
+  }
+
+  cerrarModalEliminarGaleria() {
+    this.galeriaAEliminar = null;
+  }
+
+  confirmarEliminarGaleria() {
+    if (this.galeriaAEliminar) {
+      this.galeriaService.deleteGaleriaItem(this.galeriaAEliminar._id).subscribe(() => {
+        this.cargarGaleria();
+        this.cerrarModalEliminarGaleria();
+      });
     }
   }
 
