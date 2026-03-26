@@ -80,6 +80,48 @@
     </div>
 </div>
 
+<!-- ==================== GALERÍA ==================== -->
+<div class="p-4 bg-black text-light">
+
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <div>
+            <h2 class="fw-bold mb-1">Galería</h2>
+            <p class="text-secondary m-0">Administra las fotos del carrusel del Home</p>
+        </div>
+        <button class="btn btn-info fw-bold d-flex align-items-center px-4 rounded-3 text-dark" (click)="abrirModalGaleria()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="me-2"
+                viewBox="0 0 16 16">
+                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+            </svg>
+            Subir Imagen
+        </button>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-12 text-center py-4 text-secondary" *ngIf="galeriaItems.length === 0">
+            <h5>No hay imágenes en la galería.</h5>
+            <p>Sube fotos para que aparezcan en el carrusel del Home.</p>
+        </div>
+
+        <div class="col-6 col-md-4 col-xl-3" *ngFor="let item of galeriaItems">
+            <div class="position-relative rounded-3 overflow-hidden border border-secondary" style="height: 180px;">
+                <img [src]="item.imagen_url" class="w-100 h-100 object-fit-cover" [alt]="item.descripcion || 'Galería'">
+                <div class="position-absolute bottom-0 start-0 w-100 p-2 d-flex justify-content-between align-items-end"
+                     style="background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);">
+                    <small class="text-light text-truncate" style="max-width: 70%;">{{item.descripcion || ''}}</small>
+                    <button class="btn btn-sm btn-outline-danger rounded-circle flex-shrink-0"
+                            (click)="abrirModalEliminarGaleria(item)" title="Eliminar">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== MODALES EVENTOS ==================== -->
 <div class="modal fade show" tabindex="-1"
     style="display: block; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);" *ngIf="showModalNuevo">
     <div class="modal-dialog modal-dialog-centered">
@@ -201,6 +243,87 @@
                 <button type="button" class="btn btn-outline-secondary"
                     (click)="cerrarModalEliminar()">Cancelar</button>
                 <button type="button" class="btn btn-danger fw-bold" (click)="confirmarEliminar()">Sí, eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== MODAL SUBIR IMAGEN GALERÍA ==================== -->
+<div class="modal fade show" tabindex="-1"
+    style="display: block; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);" *ngIf="showModalGaleria">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-light border border-secondary"
+            style="background-color: #0d0d0d; border-radius: 16px;">
+
+            <div class="modal-header border-0 pb-0 mt-2 mx-2">
+                <h4 class="modal-title fw-bold">Subir Imagen a Galería</h4>
+                <button type="button" class="btn-close btn-close-white" (click)="cerrarModalGaleria()"></button>
+            </div>
+
+            <div class="modal-body p-4">
+                <div class="mb-3">
+                    <label class="form-label text-secondary small mb-1">Descripción (opcional)</label>
+                    <input type="text" class="form-control bg-transparent text-light border-secondary"
+                        placeholder="Ej: Noche de inauguración" [(ngModel)]="galeriaDescripcion">
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label text-secondary small mb-1">Imagen</label>
+                    <div class="position-relative border border-secondary rounded-3 p-3 text-center"
+                        style="border-style: dashed !important; background-color: rgba(255,255,255,0.02); cursor: pointer;"
+                        [ngClass]="{'border-info': galeriaImagen}">
+
+                        <input type="file" accept="image/*" class="position-absolute top-0 start-0 w-100 h-100"
+                            style="opacity: 0; cursor: pointer; z-index: 2;" (change)="onGaleriaFileSelected($event)">
+
+                        <div *ngIf="!galeriaImagen" class="text-secondary py-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
+                                class="mb-2" viewBox="0 0 16 16">
+                                <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
+                                <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z" />
+                            </svg>
+                            <p class="mb-0 small fw-bold text-light">Haz clic para subir imagen</p>
+                            <small style="font-size: 0.7rem;">Soporta JPG, PNG desde PC o Celular</small>
+                        </div>
+
+                        <div *ngIf="galeriaImagen" class="position-relative" style="z-index: 1;">
+                            <img [src]="galeriaImagen" class="img-fluid rounded-3 shadow-sm"
+                                style="max-height: 200px; object-fit: cover; width: 100%;">
+                            <p class="text-info small mb-0 mt-2 fw-bold">Imagen lista (Clic para cambiar)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-outline-secondary w-50"
+                        (click)="cerrarModalGaleria()">Cancelar</button>
+                    <button type="button" class="btn btn-info w-50 fw-bold text-dark"
+                        (click)="subirImagenGaleria()" [disabled]="!galeriaImagen">
+                        Subir Imagen
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== MODAL ELIMINAR IMAGEN GALERÍA ==================== -->
+<div class="modal fade show" tabindex="-1" style="display: block; background: rgba(0,0,0,0.7);" *ngIf="galeriaAEliminar">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark text-light border border-danger">
+            <div class="modal-header border-0">
+                <h5 class="modal-title text-danger fw-bold">Eliminar Imagen</h5>
+                <button type="button" class="btn-close btn-close-white" (click)="cerrarModalEliminarGaleria()"></button>
+            </div>
+            <div class="modal-body">
+                <p>¿Estás seguro que deseas eliminar esta imagen de la galería?</p>
+                <img *ngIf="galeriaAEliminar.imagen_url" [src]="galeriaAEliminar.imagen_url"
+                     class="img-fluid rounded-3 mt-2" style="max-height: 150px; object-fit: cover; width: 100%;">
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-outline-secondary"
+                    (click)="cerrarModalEliminarGaleria()">Cancelar</button>
+                <button type="button" class="btn btn-danger fw-bold" (click)="confirmarEliminarGaleria()">Sí, eliminar</button>
             </div>
         </div>
     </div>

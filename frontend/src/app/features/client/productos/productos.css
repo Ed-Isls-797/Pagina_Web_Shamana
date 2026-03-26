@@ -46,3 +46,42 @@
     box-shadow: 0 0 15px rgba(188, 19, 254, 0.1);
     transform: translateY(-2px);
 }
+.mapa-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  justify-items: center;
+}
+
+.mesa {
+  width: 70px;
+  height: 70px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+/* estados */
+.disponible {
+  background: #198754;
+  box-shadow: 0 0 10px #198754;
+}
+
+.ocupado {
+  background: #dc3545;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.vip {
+  border: 2px solid #bc13fe;
+}
+
+.seleccionada {
+  transform: scale(1.2);
+  box-shadow: 0 0 20px #0dcaf0;
+}

@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -99,6 +100,8 @@ export class Login {
   toastMensaje = '';
   toastTimeout: any;
 
+  private authService = inject(AuthService);
+
   constructor(private router: Router) { }
 
   setRol(rol: 'cliente' | 'admin') {
@@ -136,11 +139,28 @@ export class Login {
       return;
     }
 
-    if (this.rolSeleccionado === 'cliente') {
-      this.router.navigate(['/client/dashboard']);
-    } else {
-      this.router.navigate(['/admin/dashboard']);
-    }
+    this.authService.login({ email: this.correo, password: this.password }).subscribe({
+      next: (res) => {
+        // Guardar la sesión o token aquí si es necesario
+        // En este caso, el authService ya guarda en localStorage
+        
+        // Redirigir según el rol devuelto por el backend
+        if (res.usuario.rol === 'admin') {
+          this.router.navigate(['/admin/dashboard']);
+        } else {
+          this.router.navigate(['/client/dashboard']);
+        }
+      },
+      error: (err) => {
+        if (err.status === 401) {
+          this.mostrarError("Contraseña incorrecta. Inténtalo de nuevo.");
+        } else if (err.status === 404) {
+          this.mostrarError("El usuario no existe. Regístrate primero.");
+        } else {
+          this.mostrarError("Ocurrió un error al intentar iniciar sesión.");
+        }
+      }
+    });
   }
 
   irARegistro() {

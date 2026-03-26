@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ReservationService } from '../../../services/reservation.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-nueva-reservacion',
@@ -77,8 +78,9 @@ import { ReservationService } from '../../../services/reservation.service';
     }
   `]
 })
-export class NuevaReservacion {
+export class NuevaReservacion implements OnInit {
 
+<<<<<<< HEAD
   // 🔥 FECHAS
   fechasDisponibles: string[] = [
     'viernes, 23 de octubre de 2026, 9:00 PM',
@@ -94,6 +96,15 @@ export class NuevaReservacion {
     personas: 1,
     comprobante: '',
     zona: ''
+=======
+  slotsDisponibles: any[] = [];
+  slotSeleccionado: any = null;
+
+  form = {
+    nombre: '',
+    slotId: '',
+    personas: 1
+>>>>>>> 3a2c4475e7c210e8782ed635e0e45886f4de92b5
   };
 
   // 🔥 VARIABLES DEL TOAST (Por si las ocupas en tu HTML)
@@ -102,9 +113,12 @@ export class NuevaReservacion {
 
   constructor(
     private reservationService: ReservationService,
-    private router: Router
+    private authService: AuthService,
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
+<<<<<<< HEAD
   // 🔥 GUARDAR RESERVA
   guardarReserva() {
 
@@ -151,10 +165,57 @@ export class NuevaReservacion {
     // 5. REDIRECCIÓN
     // Lo mando a 'reservations' para que el cliente vea que sí se guardó, pero si prefieres 'dashboard', cámbialo.
     this.router.navigate(['client', 'reservations']);
+=======
+  ngOnInit() {
+    // Cargar slots disponibles desde MongoDB
+    this.reservationService.getSlotsDisponibles().subscribe(data => {
+      this.slotsDisponibles = data;
+      this.cdr.detectChanges();
+    });
+
+    // Pre-rellenar nombre del usuario logueado
+    const session = this.authService.getSession();
+    if (session) {
+      this.form.nombre = session.nombre_completo || '';
+    }
+  }
+
+  onSlotChange() {
+    this.slotSeleccionado = this.slotsDisponibles.find(s => s._id === this.form.slotId) || null;
+  }
+
+  guardarReserva() {
+    if (!this.form.nombre || !this.form.slotId || !this.slotSeleccionado) {
+      alert('Completa todos los campos');
+      return;
+    }
+
+    const session = this.authService.getSession();
+
+    const reservacion = {
+      nombre: this.form.nombre,
+      usuario_id: session?._id || '',
+      slot_id: this.slotSeleccionado._id,
+      fecha: this.slotSeleccionado.fecha,
+      hora: this.slotSeleccionado.hora,
+      zona: this.slotSeleccionado.zona,
+      personas: this.form.personas,
+      status: 'Pendiente'
+    };
+
+    this.reservationService.createReservacion(reservacion).subscribe(() => {
+      alert('Reservación creada exitosamente');
+      this.router.navigate(['client', 'reservations']);
+    });
+>>>>>>> 3a2c4475e7c210e8782ed635e0e45886f4de92b5
   }
 
   // 🔥 CANCELAR
   cancelar() {
+<<<<<<< HEAD
     this.router.navigate(['client', 'reservations']);
+=======
+    this.router.navigate(['client', 'dashboard']);
+>>>>>>> 3a2c4475e7c210e8782ed635e0e45886f4de92b5
   }
 }

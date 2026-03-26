@@ -112,15 +112,12 @@ import { NotificationService } from '../../../services/notification';
 export class Payments {
   toastVisible = false;
   toastMensaje = '';
-  
-  // Te puse un par de datos falsos para que veas el diseño como en tu foto.
-  // Cuando subas uno nuevo con el botón, se va a poner arriba.
-  historial: any[] = [
-    { nombre: 'recibo_oct_12.jpg', descripcion: 'Neon Dreams - Mesa VIP', fecha: new Date('2026-10-12'), size: '1.2 MB', estado: 'Aprobado' },
-    { nombre: 'recibo_nov_01.pdf', descripcion: 'Techno Bunker - Mesa VIP', fecha: new Date('2026-11-01'), size: '0.8 MB', estado: 'Pendiente' }
-  ];
 
-  constructor(private notificationService: NotificationService) {}
+  constructor(private reservationService: ReservationService) {}
+
+  ngOnInit() {
+    this.reservaciones = this.reservationService.getReservations();
+  }
 
   onFileSelected(event: any) {
     const file = event.target.files[0];

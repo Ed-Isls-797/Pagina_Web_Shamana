@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ConfigService } from '../../../services/config.service';
 
 @Component({
   selector: 'admin-configuracion',
@@ -30,25 +31,25 @@ import { FormsModule } from '@angular/forms';
     }
   `]
 })
-export class AdminConfiguracion {
+export class AdminConfiguracion implements OnInit {
 
   toastVisible = false;
   toastMensaje = '';
   toastTimeout: any;
 
   ubicacion = {
-    direccion: 'Zona Plateada, 42084 Pachuca de Soto, Hgo.',
-    latitud: '20.096944035139188',
-    longitud: '-98.77238250900248',
+    direccion: 'Avenida Paseo de la Reforma 505, México City, CDMX 06500',
+    latitud: '25.6866',
+    longitud: '-100.3161',
   };
 
   horarios = [
-    { dia: 'Lunes', abierto: false, apertura: '', cierre: '' },
-    { dia: 'Martes', abierto: false, apertura: '', cierre: '' },
-    { dia: 'Miércoles', abierto: false, apertura: '', cierre: '' },
-    { dia: 'Jueves', abierto: true, apertura: '21:00', cierre: '03:00' },
-    { dia: 'Viernes', abierto: true, apertura: '21:00', cierre: '03:00' },
-    { dia: 'Sábado', abierto: true, apertura: '21:00', cierre: '03:00' },
+    { dia: 'Lunes', abierto: true, apertura: '10:00', cierre: '02:00' },
+    { dia: 'Martes', abierto: true, apertura: '10:00', cierre: '02:00' },
+    { dia: 'Miércoles', abierto: true, apertura: '10:00', cierre: '02:00' },
+    { dia: 'Jueves', abierto: true, apertura: '10:00', cierre: '04:00' },
+    { dia: 'Viernes', abierto: true, apertura: '10:00', cierre: '04:00' },
+    { dia: 'Sábado', abierto: true, apertura: '10:00', cierre: '04:00' },
     { dia: 'Domingo', abierto: false, apertura: '', cierre: '' } 
   ];
 
@@ -68,11 +69,23 @@ export class AdminConfiguracion {
   }
 
   guardarUbicacion() {
-    this.mostrarToast('Ubicación actualizada correctamente.');
+    this.configService.updateConfiguracion({
+      direccion: this.ubicacion.direccion,
+      latitud: this.ubicacion.latitud,
+      longitud: this.ubicacion.longitud
+    }).subscribe({
+      next: () => this.mostrarToast('Ubicación actualizada correctamente.'),
+      error: () => this.mostrarToast('Error al guardar la ubicación.')
+    });
   }
 
   guardarHorarios() {
-    this.mostrarToast('Horarios de operación actualizados.');
+    this.configService.updateConfiguracion({
+      horarios: this.horarios
+    }).subscribe({
+      next: () => this.mostrarToast('Horarios de operación actualizados.'),
+      error: () => this.mostrarToast('Error al guardar los horarios.')
+    });
   }
 
 }

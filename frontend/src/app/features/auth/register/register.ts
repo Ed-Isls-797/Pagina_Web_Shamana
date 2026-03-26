@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-register',
@@ -85,6 +86,8 @@ export class Register {
   toastMensaje = '';
   toastTimeout: any;
 
+  private userService = inject(UserService);
+
   constructor(private router: Router) {}
 
   togglePassword() {
@@ -116,7 +119,25 @@ export class Register {
       return;
     }
 
-    this.router.navigate(['/login']); 
+    const nuevoUsuario = {
+      nombre_completo: this.nombre,
+      email: this.correo,
+      password: this.password,
+      rol: 'cliente' // Por defecto se registra como cliente
+    };
+
+    this.userService.createUsuario(nuevoUsuario).subscribe({
+      next: () => {
+        this.router.navigate(['/login']); 
+      },
+      error: (err) => {
+        if (err.status === 409) {
+          this.mostrarError("Este correo ya está registrado.");
+        } else {
+          this.mostrarError("Error al crear la cuenta. Intenta más tarde.");
+        }
+      }
+    });
   }
 
   irALogin() {

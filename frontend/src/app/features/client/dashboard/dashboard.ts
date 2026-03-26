@@ -1,5 +1,7 @@
+// Archivo: src/app/dashboard/dashboard.component.ts (o donde tengas tu componente)
 import { Component, OnInit, inject } from '@angular/core';
-import { DatePipe, NgClass, CommonModule } from '@angular/common'; // Agregamos CommonModule por si acaso
+import { DatePipe, NgClass } from '@angular/common';
+
 import { ReservationService } from '../../../services/reservation.service';
 
 // Definimos la interfaz para que no haya errores de tipo
@@ -20,6 +22,7 @@ export interface ActivityRecord {
 export class Dashboard implements OnInit {
 
   private reservationService = inject(ReservationService);
+  private cdr = inject(ChangeDetectorRef);
 
   // Estas variables deben existir para que el HTML no marque error
   activeReservations = 0;
@@ -33,21 +36,21 @@ export class Dashboard implements OnInit {
   }
 
   cargarDatos() {
-    // Obtenemos las reservaciones del servicio
-    const reservations: any[] = this.reservationService.getReservations() || [];
+    const reservations: any[] = this.reservationService.getReservations();
 
-    // Contamos las activas
-    this.activeReservations = reservations.filter(
-      res => res.status === 'Confirmada' || res.status === 'Pendiente'
-    ).length;
+    const activas = reservations.filter(res => res.status === 'Activa' || res.status === 'Pendiente');
+    this.activeReservations = activas.length;
 
-    // Mapeamos las últimas 4 reservaciones a la lista de actividad reciente
-    this.recentActivity = reservations.slice(-4).reverse().map((res: any, index: number) => ({
-      id: res.id || index,
-      message: `Reserva para el ${res.date || 'Fecha no definida'}`,
-      date: res.date || new Date(),
-      type: this.obtenerColorPorEstado(res.status)
-    }));
+    const ultimasReservaciones = reservations.slice(-4).reverse();
+
+    this.recentActivity = ultimasReservaciones.map((res: any, index: number) => {
+      return {
+        id: res.id || index, 
+        message: `Reservación creada/actualizada: ${res.status || 'Sin estado'}`, 
+        date: res.fecha || new Date(), 
+        type: this.obtenerColorPorEstado(res.status)
+      };
+    });
   }
 
   obtenerColorPorEstado(status: string): 'success' | 'info' | 'warning' {

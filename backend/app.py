@@ -1,0 +1,447 @@
+from flask import Flask, request, jsonify
+from flask_pymongo import PyMongo
+from bson.objectid import ObjectId
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_cors import CORS
+from datetime import datetime
+app = Flask(__name__)
+CORS(app, origins=["http://localhost:4200"])
+app.config["MONGO_URI"] = "mongodb://localhost:27017/Shamana"
+mongo = PyMongo(app)
+
+# MODELOS (referencia, MongoDB es NoSQL, pero se documentan los esquemas)
+
+# Usuarios
+class Usuario:
+    def __init__(self, nombre_completo, email, password_hash, rol="cliente", membresia=None, puntos_rewards=0):
+        self.nombre_completo = nombre_completo
+        self.email = email
+        self.password_hash = password_hash
+        self.rol = rol
+        self.membresia = membresia or {}
+        self.puntos_rewards = puntos_rewards
+        self.eventos_asistidos = []
+        self.reservaciones = []
+        self.mensajes = []
+        self.comprobantes = []
+
+# Eventos
+class Evento:
+    def __init__(self, titulo, fecha, artista, descripcion, imagen_url, ubicacion, horario, entradas_disponibles, precio):
+        self.titulo = titulo
+        self.fecha = fecha
+        self.artista = artista
+        self.descripcion = descripcion
+        self.imagen_url = imagen_url
+        self.ubicacion = ubicacion
+        self.horario = horario
+        self.entradas_disponibles = entradas_disponibles
+        self.precio = precio
+
+# Reservaciones
+class Reservacion:
+    def __init__(self, usuario_id, evento_id, tipo_reserva, personas, hora, estado, fecha_reserva):
+        self.usuario_id = usuario_id
+        self.evento_id = evento_id
+        self.tipo_reserva = tipo_reserva
+        self.personas = personas
+        self.hora = hora
+        self.estado = estado
+        self.fecha_reserva = fecha_reserva
+
+# Mensajes
+class Mensaje:
+    def __init__(self, usuario_id, contenido, fecha, leido=False):
+        self.usuario_id = usuario_id
+        self.contenido = contenido
+        self.fecha = fecha
+        self.leido = leido
+
+# Comprobantes
+class Comprobante:
+    def __init__(self, usuario_id, archivo_url, estado, fecha_subida):
+        self.usuario_id = usuario_id
+        self.archivo_url = archivo_url
+        self.estado = estado
+        self.fecha_subida = fecha_subida
+
+# Galería
+class Galeria:
+    def __init__(self, evento_id, imagen_url, descripcion):
+        self.evento_id = evento_id
+        self.imagen_url = imagen_url
+        self.descripcion = descripcion
+
+# Configuración
+class Configuracion:
+    def __init__(self, direccion, mapa_url, horarios):
+        self.direccion = direccion
+        self.mapa_url = mapa_url
+        self.horarios = horarios
+
+# --- USUARIOS ---
+@app.route("/usuarios", methods=["GET"])
+def get_usuarios():
+    usuarios = list(mongo.db.usuarios.find())
+    for u in usuarios:
+        u["_id"] = str(u["_id"])
+    return jsonify(usuarios)
+
+# @app.route("/usuarios", methods=["POST"])
+# def create_usuario():
+#     data = request.json
+#     mongo.db.usuarios.insert_one(data)
+#     return jsonify({"msg": "Usuario creado"}), 201
+
+@app.route("/usuarios/<id>", methods=["GET"])
+def get_usuario(id):
+    usuario = mongo.db.usuarios.find_one({"_id": ObjectId(id)})
+    if usuario:
+        usuario["_id"] = str(usuario["_id"])
+        return jsonify(usuario)
+    return jsonify({"msg": "Usuario no encontrado"}), 404
+
+@app.route("/usuarios/<id>", methods=["PUT"])
+def update_usuario(id):
+    data = request.json
+    mongo.db.usuarios.update_one({"_id": ObjectId(id)}, {"$set": data})
+    return jsonify({"msg": "Usuario actualizado"})
+
+@app.route("/usuarios/<id>", methods=["DELETE"])
+def delete_usuario(id):
+    mongo.db.usuarios.delete_one({"_id": ObjectId(id)})
+    return jsonify({"msg": "Usuario eliminado"})
+
+@app.route("/register", methods=["POST"])
+def register():
+    data = request.json
+    email = data.get("email")
+    password = data.get("password")
+    nombre_completo = data.get("nombre_completo")
+    rol = data.get("rol", "cliente")
+    if not email or not password or not nombre_completo:
+        return jsonify({"msg": "Faltan datos obligatorios"}), 400
+    if mongo.db.usuarios.find_one({"email": email}):
+        return jsonify({"msg": "El usuario ya existe"}), 409
+    password_hash = generate_password_hash(password)
+    usuario = {
+        "nombre_completo": nombre_completo,
+        "email": email,
+        "password_hash": password_hash,
+        "rol": rol,
+        "membresia": {},
+        "puntos_rewards": 0,
+        "eventos_asistidos": [],
+        "reservaciones": [],
+        "mensajes": [],
+        "comprobantes": []
+    }
+    mongo.db.usuarios.insert_one(usuario)
+    return jsonify({"msg": "Usuario registrado correctamente"}), 201
+
+@app.route("/login", methods=["POST"])
+def login():
+    data = request.json
+    email = data.get("email")
+    password = data.get("password")
+    usuario = mongo.db.usuarios.find_one({"email": email})
+    if not usuario:
+        return jsonify({"msg": "Usuario no existe"}), 404
+    if not check_password_hash(usuario["password_hash"], password):
+        return jsonify({"msg": "Contraseña incorrecta"}), 401
+    return jsonify({
+        "msg": "Login exitoso",
+        "usuario": {
+            "_id": str(usuario["_id"]),
+            "nombre_completo": usuario["nombre_completo"],
+            "email": usuario["email"],
+            "rol": usuario["rol"]
+        }
+    })
+
+# --- EVENTOS ---
+@app.route("/eventos", methods=["GET"])
+def get_eventos():
+    eventos = list(mongo.db.eventos.find())
+    for e in eventos:
+        e["_id"] = str(e["_id"])
+    return jsonify(eventos)
+
+@app.route("/eventos", methods=["POST"])
+def create_evento():
+    data = request.json
+    mongo.db.eventos.insert_one(data)
+    return jsonify({"msg": "Evento creado"}), 201
+
+@app.route("/eventos/<id>", methods=["GET"])
+def get_evento(id):
+    evento = mongo.db.eventos.find_one({"_id": ObjectId(id)})
+    if evento:
+        evento["_id"] = str(evento["_id"])
+        return jsonify(evento)
+    return jsonify({"msg": "Evento no encontrado"}), 404
+
+@app.route("/eventos/<id>", methods=["PUT"])
+def update_evento(id):
+    data = request.json
+    mongo.db.eventos.update_one({"_id": ObjectId(id)}, {"$set": data})
+    return jsonify({"msg": "Evento actualizado"})
+
+@app.route("/eventos/<id>", methods=["DELETE"])
+def delete_evento(id):
+    mongo.db.eventos.delete_one({"_id": ObjectId(id)})
+    return jsonify({"msg": "Evento eliminado"})
+
+# --- SLOTS DISPONIBLES ---
+@app.route("/slots", methods=["GET"])
+def get_slots():
+    estado = request.args.get("estado")
+    if estado:
+        slots = list(mongo.db['slots-disponibles'].find({"estado": estado}))
+    else:
+        slots = list(mongo.db['slots-disponibles'].find())
+    for s in slots:
+        s["_id"] = str(s["_id"])
+    return jsonify(slots)
+
+@app.route("/slots", methods=["POST"])
+def create_slot():
+    data = request.json
+    fecha = data.get("fecha")
+    hora = data.get("hora")
+    zona = data.get("zona")
+    if not fecha or not hora or not zona:
+        return jsonify({"msg": "Faltan datos obligatorios (fecha, hora, zona)"}), 400
+    slot = {
+        "fecha": fecha,
+        "hora": hora,
+        "zona": zona,
+        "estado": "disponible"
+    }
+    result = mongo.db['slots-disponibles'].insert_one(slot)
+    return jsonify({"msg": "Slot creado", "_id": str(result.inserted_id)}), 201
+
+@app.route("/slots/<id>", methods=["GET"])
+def get_slot(id):
+    slot = mongo.db['slots-disponibles'].find_one({"_id": ObjectId(id)})
+    if slot:
+        slot["_id"] = str(slot["_id"])
+        return jsonify(slot)
+    return jsonify({"msg": "Slot no encontrado"}), 404
+
+@app.route("/slots/<id>", methods=["PUT"])
+def update_slot(id):
+    data = request.json
+    mongo.db['slots-disponibles'].update_one({"_id": ObjectId(id)}, {"$set": data})
+    return jsonify({"msg": "Slot actualizado"})
+
+@app.route("/slots/<id>", methods=["DELETE"])
+def delete_slot(id):
+    mongo.db['slots-disponibles'].delete_one({"_id": ObjectId(id)})
+    return jsonify({"msg": "Slot eliminado"})
+
+# --- RESERVACIONES ---
+@app.route("/reservaciones", methods=["GET"])
+def get_reservaciones():
+    reservaciones = list(mongo.db.reservaciones.find())
+    for r in reservaciones:
+        r["_id"] = str(r["_id"])
+    return jsonify(reservaciones)
+
+@app.route("/reservaciones", methods=["POST"])
+def create_reservacion():
+    data = request.json
+    slot_id = data.get("slot_id")
+    # Marcar slot como ocupado
+    if slot_id:
+        mongo.db['slots-disponibles'].update_one(
+            {"_id": ObjectId(slot_id)},
+            {"$set": {"estado": "ocupado"}}
+        )
+    mongo.db.reservaciones.insert_one(data)
+    return jsonify({"msg": "Reservación creada"}), 201
+
+@app.route("/reservaciones/<id>", methods=["GET"])
+def get_reservacion(id):
+    reservacion = mongo.db.reservaciones.find_one({"_id": ObjectId(id)})
+    if reservacion:
+        reservacion["_id"] = str(reservacion["_id"])
+        return jsonify(reservacion)
+    return jsonify({"msg": "Reservación no encontrada"}), 404
+
+@app.route("/reservaciones/<id>", methods=["PUT"])
+def update_reservacion(id):
+    data = request.json
+    mongo.db.reservaciones.update_one({"_id": ObjectId(id)}, {"$set": data})
+    return jsonify({"msg": "Reservación actualizada"})
+
+@app.route("/reservaciones/<id>", methods=["DELETE"])
+def delete_reservacion(id):
+    mongo.db.reservaciones.delete_one({"_id": ObjectId(id)})
+    return jsonify({"msg": "Reservación eliminada"})
+
+@app.route("/reservaciones/<id>/rechazar", methods=["PUT"])
+def rechazar_reservacion(id):
+    reservacion = mongo.db.reservaciones.find_one({"_id": ObjectId(id)})
+    if not reservacion:
+        return jsonify({"msg": "Reservación no encontrada"}), 404
+    # Liberar el slot
+    slot_id = reservacion.get("slot_id")
+    if slot_id:
+        mongo.db['slots-disponibles'].update_one(
+            {"_id": ObjectId(slot_id)},
+            {"$set": {"estado": "disponible"}}
+        )
+    # Actualizar estado de reservación
+    mongo.db.reservaciones.update_one(
+        {"_id": ObjectId(id)},
+        {"$set": {"status": "Rechazado"}}
+    )
+    return jsonify({"msg": "Reservación rechazada y slot liberado"})
+
+# --- MENSAJES ---
+@app.route("/mensajes", methods=["GET"])
+def get_mensajes():
+    usuario_id = request.args.get("usuario_id")
+    if usuario_id:
+        mensajes = list(mongo.db.mensajes.find({"usuario_id": usuario_id}))
+    else:
+        mensajes = list(mongo.db.mensajes.find())
+    
+    # Sort messages by date to ensure proper conversation order
+    mensajes.sort(key=lambda x: x['fecha'])
+
+    for m in mensajes:
+        m["_id"] = str(m["_id"])
+    return jsonify(mensajes)
+
+@app.route("/mensajes", methods=["POST"])
+def create_mensaje():
+    data = request.json
+    data["fecha"] = data.get("fecha", datetime.now().strftime("%Y-%m-%d %H:%M"))
+    mongo.db.mensajes.insert_one(data)
+    return jsonify({"msg": "Mensaje enviado"}), 201
+
+@app.route("/mensajes/<id>", methods=["GET"])
+def get_mensaje(id):
+    mensaje = mongo.db.mensajes.find_one({"_id": ObjectId(id)})
+    if mensaje:
+        mensaje["_id"] = str(mensaje["_id"])
+        return jsonify(mensaje)
+    return jsonify({"msg": "Mensaje no encontrado"}), 404
+
+@app.route("/mensajes/<id>", methods=["PUT"])
+def update_mensaje(id):
+    data = request.json
+    mongo.db.mensajes.update_one({"_id": ObjectId(id)}, {"$set": data})
+    return jsonify({"msg": "Mensaje actualizado"})
+
+@app.route("/mensajes/<id>", methods=["DELETE"])
+def delete_mensaje(id):
+    mongo.db.mensajes.delete_one({"_id": ObjectId(id)})
+    return jsonify({"msg": "Mensaje eliminado"})
+
+# --- COMPROBANTES ---
+@app.route("/comprobantes", methods=["GET"])
+def get_comprobantes():
+    comprobantes = list(mongo.db.comprobantes.find())
+    for c in comprobantes:
+        c["_id"] = str(c["_id"])
+    return jsonify(comprobantes)
+
+@app.route("/comprobantes", methods=["POST"])
+def create_comprobante():
+    data = request.json
+    mongo.db.comprobantes.insert_one(data)
+    return jsonify({"msg": "Comprobante creado"}), 201
+
+@app.route("/comprobantes/<id>", methods=["GET"])
+def get_comprobante(id):
+    comprobante = mongo.db.comprobantes.find_one({"_id": ObjectId(id)})
+    if comprobante:
+        comprobante["_id"] = str(comprobante["_id"])
+        return jsonify(comprobante)
+    return jsonify({"msg": "Comprobante no encontrado"}), 404
+
+@app.route("/comprobantes/<id>", methods=["PUT"])
+def update_comprobante(id):
+    data = request.json
+    mongo.db.comprobantes.update_one({"_id": ObjectId(id)}, {"$set": data})
+    return jsonify({"msg": "Comprobante actualizado"})
+
+@app.route("/comprobantes/<id>", methods=["DELETE"])
+def delete_comprobante(id):
+    mongo.db.comprobantes.delete_one({"_id": ObjectId(id)})
+    return jsonify({"msg": "Comprobante eliminado"})
+
+# --- GALERÍA ---
+@app.route("/galeria", methods=["GET"])
+def get_galeria():
+    galeria = list(mongo.db.galeria.find())
+    for g in galeria:
+        g["_id"] = str(g["_id"])
+    return jsonify(galeria)
+
+@app.route("/galeria", methods=["POST"])
+def create_galeria():
+    data = request.json
+    mongo.db.galeria.insert_one(data)
+    return jsonify({"msg": "Imagen agregada a galería"}), 201
+
+@app.route("/galeria/<id>", methods=["GET"])
+def get_galeria_item(id):
+    galeria_item = mongo.db.galeria.find_one({"_id": ObjectId(id)})
+    if galeria_item:
+        galeria_item["_id"] = str(galeria_item["_id"])
+        return jsonify(galeria_item)
+    return jsonify({"msg": "Imagen no encontrada"}), 404
+
+@app.route("/galeria/<id>", methods=["PUT"])
+def update_galeria_item(id):
+    data = request.json
+    mongo.db.galeria.update_one({"_id": ObjectId(id)}, {"$set": data})
+    return jsonify({"msg": "Imagen actualizada"})
+
+@app.route("/galeria/<id>", methods=["DELETE"])
+def delete_galeria_item(id):
+    mongo.db.galeria.delete_one({"_id": ObjectId(id)})
+    return jsonify({"msg": "Imagen eliminada"})
+
+# --- CONFIGURACION ---
+@app.route("/configuracion", methods=["GET"])
+def get_configuracion():
+    config = mongo.db.configuracion.find_one()
+    if config:
+        config["_id"] = str(config["_id"])
+        return jsonify(config)
+    # Default config si no existe
+    default_config = {
+        "direccion": "Camino Real de La Plata 201, Zona Plateada, Pachuca de Soto, Hidalgo",
+        "mapa_url": "https://www.google.com/maps/search/Shamana+Pachuca",
+        "horarios": [
+            {"dia": "Lunes", "abierto": False, "apertura": "", "cierre": ""},
+            {"dia": "Martes", "abierto": False, "apertura": "", "cierre": ""},
+            {"dia": "Miércoles", "abierto": False, "apertura": "", "cierre": ""},
+            {"dia": "Jueves", "abierto": True, "apertura": "21:00", "cierre": "03:00"},
+            {"dia": "Viernes", "abierto": True, "apertura": "21:00", "cierre": "03:00"},
+            {"dia": "Sábado", "abierto": True, "apertura": "21:00", "cierre": "03:00"},
+            {"dia": "Domingo", "abierto": False, "apertura": "", "cierre": ""}
+        ]
+    }
+    mongo.db.configuracion.insert_one(default_config)
+    return jsonify(default_config)
+
+@app.route("/configuracion", methods=["PUT"])
+def update_configuracion():
+    data = request.json
+    # Upsert: actualiza si existe, crea si no
+    mongo.db.configuracion.update_one({}, {"$set": data}, upsert=True)
+    return jsonify({"msg": "Configuración actualizada"})
+
+# Ejemplo de conexión y prueba
+@app.route("/ping")
+def ping():
+    return {"msg": "Conexión exitosa a MongoDB Shamana"}
+
+if __name__ == "__main__":
+    app.run(debug=True)

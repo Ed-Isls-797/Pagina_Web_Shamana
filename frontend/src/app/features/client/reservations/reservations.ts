@@ -1,7 +1,7 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { ReservationService } from '../../../services/reservation.service';
-import { CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common'; // <-- IMPORTANTE para los colores dinámicos
 
 @Component({
   selector: 'app-reservations',
@@ -11,17 +11,15 @@ import { CommonModule } from '@angular/common';
 })
 export class Reservations implements OnInit {
   reservations: any[] = [];
-  
-  // 🔥 Esta es la variable que faltaba para el modal 🔥
-  modalCancelarIndex: number | null = null;
 
-  constructor(private router: Router, private resService: ReservationService) {}
+  constructor(
+    private router: Router,
+    private reservationService: ReservationService
+  ) {}
 
-  ngOnInit() { this.cargar(); }
-
-  @HostListener('window:storage')
-  cargar() { 
-    this.reservations = this.resService.getReservations().slice().reverse(); 
+  ngOnInit() {
+    // Le agregamos .reverse() para que el ticket más nuevo salga primero
+    this.reservations = this.reservationService.getReservations().reverse();
   }
 
   irNuevaReserva() { 

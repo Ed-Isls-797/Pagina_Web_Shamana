@@ -1,12 +1,13 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ReservationService } from '../../../services/reservation.service';
 import { NotificationService } from '../../../services/notification';
 
 @Component({
   selector: 'admin-reservaciones',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './admin-reservaciones.html',
   styles: [`
     /* --- ESTRUCTURA GENERAL Y TABLA --- */
@@ -90,44 +91,74 @@ import { NotificationService } from '../../../services/notification';
   `]
 })
 export class AdminReservaciones implements OnInit {
+
   reservaciones: any[] = [];
-  toastVisible = false; toastMensaje = '';
+  reservaSeleccionada: any = null;
+  showModal = false;
 
-  constructor(private resService: ReservationService, private notiService: NotificationService) {}
+  toastVisible = false;
+  toastMensaje = '';
+  toastTipo = 'success'; 
+  toastTimeout: any;
 
-  ngOnInit() { this.cargar(); }
+  constructor(private reservationService: ReservationService) {}
 
-  @HostListener('window:storage')
-  cargar() { this.reservaciones = this.resService.getReservations().slice().reverse(); }
-
-  aceptarReserva(r: any) {
-    this.resService.updateStatus(r.id, 'Aceptado');
-    this.cargar();
-    this.mostrarToast('Reserva Aceptada');
+  ngOnInit() {
+    this.reservaciones = this.reservationService.getReservations();
   }
 
-  rechazarReserva(r: any) {
-    this.resService.updateStatus(r.id, 'Rechazado');
-    this.cargar();
-    this.mostrarToast('Reserva Rechazada');
+  aceptarReserva(reserva: any) {
+    reserva.status = 'Aceptado'; 
+    this.guardarCambios();
+    this.mostrarToast('Lugar aprobado. Ya puedes solicitar el comprobante de pago.', 'success');
   }
 
-  solicitarPago(r: any) {
-    this.resService.updateStatus(r.id, 'Esperando Pago');
-    this.cargar();
-    this.notiService.publicarNotificacion('💳 Pago Requerido', 'Tu reserva ha sido aprobada. Por favor, sube tu comprobante.', 'Cliente');
-    this.mostrarToast('Se solicitó el comprobante al cliente');
+  rechazarReserva(reserva: any) {
+    reserva.status = 'Rechazado'; 
+    this.guardarCambios();
+    this.mostrarToast('Reservación rechazada por falta de espacio.', 'danger');
   }
 
-  verPago(r: any, accion: string) {
-    const estado = accion === 'Aprobar' ? 'Confirmado' : 'Rechazado';
-    this.resService.updateStatus(r.id, estado);
-    this.cargar();
-    this.mostrarToast(`Pago ${accion.toLowerCase()}ado`);
+  solicitarPago(reserva: any) {
+    this.mostrarToast('Se ha enviado la solicitud de pago al cliente.', 'success');
+  }
+
+  abrirModal(reserva: any) {
+    this.reservaSeleccionada = reserva;
+    this.showModal = true;
+  }
+
+  cerrarModal() {
+    this.showModal = false;
+    setTimeout(() => this.reservaSeleccionada = null, 300);
+  }
+
+  aprobarPago() {
+    if (this.reservaSeleccionada) {
+      this.reservaSeleccionada.status = 'Confirmado'; 
+      this.guardarCambios();
+      this.mostrarToast('Pago aprobado. Reservación 100% confirmada.', 'success');
+      this.cerrarModal();
+    }
+  }
+
+  rechazarPago() {
+    if (this.reservaSeleccionada) {
+      this.reservaSeleccionada.status = 'Rechazado'; 
+      this.guardarCambios();
+      this.mostrarToast('Comprobante rechazado. Se canceló la reserva.', 'danger');
+      this.cerrarModal();
+    }
+  }
+
+  guardarCambios() {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      localStorage.setItem('reservations', JSON.stringify(this.reservaciones));
+    }
   }
 
   mostrarToast(m: string) {
     this.toastMensaje = m; this.toastVisible = true;
     setTimeout(() => { this.toastVisible = false; }, 3000);
   }
-}
+} 
