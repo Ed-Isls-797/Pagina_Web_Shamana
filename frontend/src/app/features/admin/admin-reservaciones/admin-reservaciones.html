@@ -1,5 +1,4 @@
 <div class="admin-container">
-
     <div class="d-flex justify-content-between align-items-center mb-5 flex-wrap gap-3">
         <div>
             <h2 class="fw-bold mb-1">Reservaciones</h2>
@@ -22,64 +21,52 @@
 
                 <tbody>
                     <tr *ngFor="let res of reservaciones">
-
-                    <td>
-                        <div class="details-primary">{{ r.personas || 1 }} personas</div>
-                        <div class="details-secondary">{{ r.fecha || 'Por definir' }}</div>
-                    </td>
+                        
+                        <td class="px-4">
+                            <div class="client-name">{{ res.nombre || 'Cliente Web' }}</div>
+                        </td>
 
                         <td class="py-3">
-                            <div class="d-flex flex-column">
-                                <span class="text-light">{{res.people}} personas</span>
-                                <small class="text-secondary">{{res.date}}</small>
-                            </div>
+                            <div class="details-primary">{{ res.personas || res.people || 1 }} personas</div>
+                            <div class="details-secondary">{{ res.fecha || res.date || 'Por definir' }}</div>
                         </td>
 
                         <td class="py-3 text-warning fw-medium">
-                            {{res.monto || 'Sin definir'}}
+                            {{ res.monto || 'Sin definir' }}
                         </td>
 
-                    <td class="text-end" style="padding-right: 2rem;">
-
-                        <ng-container *ngIf="r.estado === 'Pendiente' || !r.estado">
-                            <button class="btn-action btn-green" (click)="aceptarReserva(r)">Aceptar</button>
-                            <button class="btn-action btn-red" (click)="rechazarReserva(r)">Rechazar</button>
-                        </ng-container>
+                        <td class="py-3">
+                            <span class="badge" 
+                                  [ngClass]="{
+                                    'b-pendiente': res.status === 'Pendiente' || !res.status,
+                                    'b-aceptado': res.status === 'Aceptado',
+                                    'b-confirmado': res.status === 'Confirmado',
+                                    'b-rechazado': res.status === 'Rechazado'
+                                  }">
+                                {{ res.status || 'Pendiente' }}
+                            </span>
+                        </td>
 
                         <td class="py-3 text-end px-4">
 
-                            <div *ngIf="res.status === 'Pendiente'" class="d-flex justify-content-end gap-2">
-                                <button class="btn btn-outline-success border-0 btn-accion"
-                                    (click)="aceptarReserva(res)" title="Aceptar Lugar">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                                        viewBox="0 0 16 16">
-                                        <path
-                                            d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
-                                    </svg>
+                            <div *ngIf="res.status === 'Pendiente' || !res.status" class="d-flex justify-content-end gap-2">
+                                <button class="btn btn-outline-success border-0 btn-accion" (click)="aceptarReserva(res)" title="Aceptar Lugar">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" /></svg>
                                 </button>
-                                <button class="btn btn-outline-danger border-0 btn-accion"
-                                    (click)="rechazarReserva(res)" title="Rechazar Lugar">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                                        viewBox="0 0 16 16">
-                                        <path
-                                            d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z" />
-                                    </svg>
+                                <button class="btn btn-outline-danger border-0 btn-accion" (click)="rechazarReserva(res)" title="Rechazar Lugar">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z" /></svg>
                                 </button>
                             </div>
 
-                            <button class="btn btn-sm btn-outline-info me-2 rounded-3 fw-bold"
-                                *ngIf="res.status === 'Aceptado' && !res.comprobante" (click)="solicitarPago(res)">
+                            <button class="btn btn-sm btn-outline-info rounded-3 fw-bold" *ngIf="res.status === 'Aceptado' && !res.comprobante" (click)="solicitarPago(res)">
                                 Solicitar Pago
                             </button>
 
-                            <button class="btn btn-sm btn-outline-warning me-2 rounded-3 fw-bold"
-                                *ngIf="res.comprobante" (click)="abrirModal(res)">
+                            <button class="btn btn-sm btn-outline-warning rounded-3 fw-bold" *ngIf="res.comprobante" (click)="abrirModal(res)">
                                 Ver Pago
-                            </button>
-                        </ng-container>
+                            </button>                  
 
                         </td>
-
                     </tr>
                 </tbody>
             </table>
@@ -87,65 +74,37 @@
     </div>
 </div>
 
-<div class="modal fade show" style="display: block; background: rgba(0,0,0,0.85);"
-    *ngIf="showModal && reservaSeleccionada">
-
+<div class="modal fade show" style="display: block; background: rgba(0,0,0,0.85);" *ngIf="showModal && reservaSeleccionada">
     <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content text-light border border-secondary"
-            style="background-color: #0d0d0d; border-radius: 16px;">
-
+        <div class="modal-content text-light border border-secondary" style="background-color: #0d0d0d; border-radius: 16px;">
+            
             <div class="modal-header border-secondary">
                 <div>
                     <h4 class="fw-bold text-warning mb-1">Verificación de Pago</h4>
-                    <p class="text-secondary m-0">
-                        Cliente: <strong>{{reservaSeleccionada.nombre}}</strong>
-                    </p>
+                    <p class="text-secondary m-0">Cliente: <strong>{{reservaSeleccionada.nombre || 'Desconocido'}}</strong></p>
                 </div>
-
                 <button class="btn-close btn-close-white" (click)="cerrarModal()"></button>
             </div>
 
             <div class="modal-body text-center">
-                <img [src]="reservaSeleccionada.comprobante" class="img-fluid rounded-3 comprobante-img"
-                    style="max-height: 50vh;">
+                <img [src]="reservaSeleccionada.comprobante" class="img-fluid rounded-3 comprobante-img" style="max-height: 50vh;">
             </div>
 
-            <div class="modal-footer justify-content-center"
-                *ngIf="reservaSeleccionada.status !== 'Confirmado' && reservaSeleccionada.status !== 'Rechazado'">
-
-                <button class="btn btn-outline-danger fw-bold" (click)="rechazarPago()">
-                    Rechazar Pago
-                </button>
-
-                <button class="btn btn-success fw-bold px-4" (click)="aprobarPago()">
-                    Aprobar y Confirmar Reserva
-                </button>
-
+            <div class="modal-footer justify-content-center" *ngIf="reservaSeleccionada.status !== 'Confirmado' && reservaSeleccionada.status !== 'Rechazado'">
+                <button class="btn btn-outline-danger fw-bold" (click)="rechazarPago()">Rechazar Pago</button>
+                <button class="btn btn-success fw-bold px-4" (click)="aprobarPago()">Aprobar y Confirmar Reserva</button>
             </div>
 
-            <div class="modal-footer justify-content-center"
-                *ngIf="reservaSeleccionada.status === 'Confirmado' || reservaSeleccionada.status === 'Rechazado'">
-
-                <span>
-                    Estado de Reserva:
-                    <strong [ngClass]="reservaSeleccionada.status === 'Confirmado' ? 'text-success' : 'text-danger'">
-                        {{reservaSeleccionada.status}}
-                    </strong>
-                </span>
-
+            <div class="modal-footer justify-content-center" *ngIf="reservaSeleccionada.status === 'Confirmado' || reservaSeleccionada.status === 'Rechazado'">
+                <span>Estado de Reserva: <strong [ngClass]="reservaSeleccionada.status === 'Confirmado' ? 'text-success' : 'text-danger'">{{reservaSeleccionada.status}}</strong></span>
             </div>
 
         </div>
     </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast-neutron" [ngClass]="{'show-toast': toastVisible}">
-    <div class="bg-black border px-3 py-2" [ngClass]="toastTipo === 'success' ? 'border-success' : 'border-danger'"
-        style="border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
-
-        <span class="text-white fw-bold">
-            {{toastMensaje}}
-        </span>
+    <div class="bg-black border px-3 py-2" [ngClass]="toastTipo === 'success' ? 'border-success' : 'border-danger'" style="border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+        <span class="text-white fw-bold">{{toastMensaje}}</span>
     </div>
 </div>

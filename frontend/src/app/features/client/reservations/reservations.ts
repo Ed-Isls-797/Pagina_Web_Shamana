@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { ReservationService } from '../../../services/reservation.service';
-import { CommonModule } from '@angular/common'; // <-- IMPORTANTE para los colores dinámicos
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-reservations',
@@ -11,6 +11,7 @@ import { CommonModule } from '@angular/common'; // <-- IMPORTANTE para los color
 })
 export class Reservations implements OnInit {
   reservations: any[] = [];
+  modalCancelarIndex: number | null = null;
 
   constructor(
     private router: Router,
@@ -18,7 +19,10 @@ export class Reservations implements OnInit {
   ) {}
 
   ngOnInit() {
-    // Le agregamos .reverse() para que el ticket más nuevo salga primero
+    this.cargar();
+  }
+
+  cargar() { 
     this.reservations = this.reservationService.getReservations().reverse();
   }
 
@@ -26,7 +30,6 @@ export class Reservations implements OnInit {
     this.router.navigate(['/client/nueva-reservacion']); 
   }
 
-  // --- FUNCIONES QUE GIT TE BORRÓ ---
   isFechaValida(fecha: any): boolean {
     return fecha !== null && fecha !== undefined && fecha !== '';
   }
@@ -36,10 +39,9 @@ export class Reservations implements OnInit {
   }
 
   getHoraParte(fecha: any): string {
-    return '22:00 PM'; // Hora por defecto
+    return '22:00 PM'; 
   }
 
-  // --- LÓGICA DEL MODAL DE CANCELACIÓN ---
   abrirModalCancelar(index: number) {
     this.modalCancelarIndex = index;
   }
@@ -50,8 +52,20 @@ export class Reservations implements OnInit {
 
   confirmarCancelar() {
     if (this.modalCancelarIndex !== null) {
+      // 1. Obtenemos la reserva
       const reserva = this.reservations[this.modalCancelarIndex];
-      this.resService.updateStatus(reserva.id, 'Rechazado');
+      
+      // 2. Le cambiamos el estado a Cancelado (o Rechazado, como prefieras)
+      reserva.status = 'Cancelado'; 
+
+      // 3. Guardamos los cambios en el LocalStorage (igual que en el admin)
+      if (typeof window !== 'undefined' && window.localStorage) {
+          // Nota: Invertimos el reverse() para guardar el orden original
+          const ordenOriginal = [...this.reservations].reverse();
+          localStorage.setItem('reservations', JSON.stringify(ordenOriginal));
+      }
+
+      // 4. Recargamos la lista
       this.cargar();
     }
     this.cerrarModal();

@@ -1,6 +1,6 @@
 // Archivo: src/app/dashboard/dashboard.component.ts (o donde tengas tu componente)
-import { Component, OnInit, inject } from '@angular/core';
-import { DatePipe, NgClass } from '@angular/common';
+import { Component, ChangeDetectorRef, inject, OnInit } from '@angular/core';
+import { CommonModule, DatePipe, NgClass } from '@angular/common';
 
 import { ReservationService } from '../../../services/reservation.service';
 

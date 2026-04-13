@@ -1,7 +1,7 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ConfigService } from '../../../services/config.service';
+import { ConfigService } from '../../../services/config.service'; 
 
 @Component({
   selector: 'admin-configuracion',
@@ -9,26 +9,9 @@ import { ConfigService } from '../../../services/config.service';
   imports: [CommonModule, FormsModule],
   templateUrl: './admin-configuracion.html',
   styles: [`
-    .toast-neutron {
-      position: fixed;
-      top: 30px; 
-      right: 30px;
-      z-index: 9999999;
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(-20px);
-      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-    .toast-neutron.show-toast {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
-    }
-    
-    .input-apagado {
-        opacity: 0.3 !important;
-        transition: all 0.3s ease;
-    }
+    .toast-neutron { position: fixed; top: 30px; right: 30px; z-index: 9999999; opacity: 0; visibility: hidden; transform: translateY(-20px); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .toast-neutron.show-toast { opacity: 1; visibility: visible; transform: translateY(0); }
+    .input-apagado { opacity: 0.3 !important; transition: all 0.3s ease; }
   `]
 })
 export class AdminConfiguracion implements OnInit {
@@ -52,6 +35,11 @@ export class AdminConfiguracion implements OnInit {
     { dia: 'Sábado', abierto: true, apertura: '10:00', cierre: '04:00' },
     { dia: 'Domingo', abierto: false, apertura: '', cierre: '' } 
   ];
+
+  constructor(private configService: ConfigService) {}
+
+  ngOnInit(): void {
+  }
 
   mostrarToast(mensaje: string) {
     this.toastMensaje = mensaje;
@@ -87,5 +75,4 @@ export class AdminConfiguracion implements OnInit {
       error: () => this.mostrarToast('Error al guardar los horarios.')
     });
   }
-
 }

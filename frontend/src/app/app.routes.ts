@@ -16,8 +16,17 @@ import { AdminNotificaciones } from './features/admin/admin-notificaciones/admin
 import { AdminContenido } from './features/admin/admin-contenido/admin-contenido';
 import { AdminConfiguracion } from './features/admin/admin-configuracion/admin-configuracion';
 
-export const routes: Routes = [
+// 👇 AQUÍ ESTÁ LA MAGIA CORREGIDA BASADA EN TU FOTO 👇
+import { authGuard } from './guards/auth.guard'; 
 
+// OJO: Asumo que roleGuard también está en esa carpeta de guards. 
+// Si no lo tienes creado, esto te va a marcar error.
+import { roleGuard } from './guards/role.guard'; 
+
+// Asumo que tu componente Productos está dentro de features/client.
+import { Productos } from './features/client/productos/productos'; 
+
+export const routes: Routes = [
   // 🌐 PÚBLICO
   {
     path: '',
@@ -26,40 +35,34 @@ export const routes: Routes = [
       { path: '', component: Home },
       { path: 'login', component: Login },
       { path: 'register', component: Register },
-      
     ],
   },
 
+  // 👤 CLIENTE
   {
-  path: 'client',
-  component: LayoutClient,
-  canActivate: [authGuard],
-  children: [
-    { path: 'dashboard', component: ClientDashboard },
-    { path: 'reservations', component: Reservations },
-    { path: 'messages', component: Messages },
-    { path: 'payments', component: Payments },
-    { path: 'productos', component: Productos },
-    
-    
-    
-
-    // ✅ CORRECTO
-    { 
-      path: 'nueva-reservacion',
-      loadComponent: () => import('./features/client/nueva-reservacion/nueva-reservacion')
-        .then(m => m.NuevaReservacion)
-    },
-
-    { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-  ],
-},
+    path: 'client',
+    component: LayoutClient,
+    canActivate: [authGuard], // <-- Ya va a encontrar este guard
+    children: [
+      { path: 'dashboard', component: ClientDashboard },
+      { path: 'reservations', component: Reservations },
+      { path: 'messages', component: Messages },
+      { path: 'payments', component: Payments },
+      { path: 'productos', component: Productos },
+      { 
+        path: 'nueva-reservacion',
+        loadComponent: () => import('./features/client/nueva-reservacion/nueva-reservacion')
+          .then(m => m.NuevaReservacion)
+      },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+    ],
+  },
 
   // 🔐 ADMIN
   {
     path: 'admin',
     component: LayoutAdmin,
-    canActivate: [roleGuard('admin')],
+    canActivate: [roleGuard('admin')], // <-- Y este también
     children: [
       { path: 'dashboard', component: AdminDashboard },
       { path: 'reservations', component: AdminReservaciones },
@@ -68,11 +71,9 @@ export const routes: Routes = [
       { path: 'contenido', component: AdminContenido },
       { path: 'configuracion', component: AdminConfiguracion },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-      
     ],
   },
 
   // ⚠️ RUTA POR DEFECTO
   { path: '**', redirectTo: '' },
-
 ];
