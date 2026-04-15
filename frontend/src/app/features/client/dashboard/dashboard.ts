@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgClass, NgFor, NgIf } from '@angular/common';
 import { Router } from '@angular/router';
 import { ReservationService } from '../../../services/reservation.service';
 import { ComprobantesService } from '../../../services/comprobantes.service';
@@ -9,7 +9,7 @@ import { AuthService } from '../../../services/auth.service';
 @Component({
   selector: 'app-client-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, NgClass, NgFor, NgIf],
   templateUrl: './dashboard.html'
 })
 export class Dashboard implements OnInit {
