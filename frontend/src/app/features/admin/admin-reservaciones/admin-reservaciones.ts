@@ -2,6 +2,8 @@ import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ReservationService } from '../../../services/reservation.service';
+import { ComprobantesService } from '../../../services/comprobantes.service';
+import { NotificacionesService } from '../../../services/notificaciones.service';
 
 @Component({
   selector: 'admin-reservaciones',
@@ -23,6 +25,7 @@ export class AdminReservaciones implements OnInit, OnDestroy {
   reservaciones: any[] = [];
   reservaSeleccionada: any = null;
   showModalPago = false;
+  comprobantesMap: { [reservacionId: string]: any } = {};
 
   // --- Slots (Nueva Reservación) ---
   showModalSlot = false;
@@ -42,12 +45,15 @@ export class AdminReservaciones implements OnInit, OnDestroy {
 
   // --- Loading State ---
   isSubmitting = false;
+  procesando = false;
 
   // --- Polling ---
   private intervalId: any;
 
   constructor(
     private reservationService: ReservationService,
+    private comprobantesService: ComprobantesService,
+    private notificacionesService: NotificacionesService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -69,6 +75,21 @@ export class AdminReservaciones implements OnInit, OnDestroy {
       this.slots = data;
       this.cdr.detectChanges();
     });
+    this.comprobantesService.getComprobantes().subscribe(data => {
+      this.comprobantesMap = {};
+      data.forEach(c => {
+        this.comprobantesMap[c.reservacion_id] = c;
+      });
+      this.cdr.detectChanges();
+    });
+  }
+
+  tieneComprobante(reservacionId: string): boolean {
+    return !!this.comprobantesMap[reservacionId];
+  }
+
+  getComprobante(reservacionId: string): any {
+    return this.comprobantesMap[reservacionId] || null;
   }
 
   // ===== SLOTS (Admin crea fechas disponibles) =====
@@ -148,25 +169,61 @@ export class AdminReservaciones implements OnInit, OnDestroy {
   // ===== RESERVACIONES DE CLIENTES =====
 
   aceptarReserva(reserva: any) {
+    if (this.procesando) return;
+    this.procesando = true;
     this.reservationService.updateReservacion(reserva._id, { status: 'Aceptado' }).subscribe(() => {
       reserva.status = 'Aceptado';
       this.mostrarToast('Lugar aprobado. Ya puedes solicitar el comprobante de pago.', 'success');
-    });
+      this.notificacionesService.createNotificacion({
+        destinatario: reserva.usuario_id,
+        tipo: 'reserva',
+        titulo: 'Reservación aceptada',
+        mensaje: `Tu reservación del ${reserva.fecha} a las ${reserva.hora} ha sido aceptada. Realiza tu pago.`,
+        leida: false
+      }).subscribe();
+      this.procesando = false;
+    }, () => { this.procesando = false; });
   }
 
   rechazarReserva(reserva: any) {
+    if (this.procesando) return;
+    this.procesando = true;
     this.reservationService.rechazarReservacion(reserva._id).subscribe(() => {
       reserva.status = 'Rechazado';
-      this.cargarDatos(); // Recargar slots para ver que se liberó
+      this.cargarDatos();
       this.mostrarToast('Reservación rechazada. El slot ha sido liberado.', 'danger');
-    });
+      this.notificacionesService.createNotificacion({
+        destinatario: reserva.usuario_id,
+        tipo: 'reserva',
+        titulo: 'Reservación rechazada',
+        mensaje: `Tu reservación del ${reserva.fecha} a las ${reserva.hora} ha sido rechazada.`,
+        leida: false
+      }).subscribe();
+      this.procesando = false;
+    }, () => { this.procesando = false; });
   }
 
   solicitarPago(reserva: any) {
-    this.mostrarToast('Se ha enviado la solicitud de pago al cliente.', 'success');
+    if (this.procesando) return;
+    this.procesando = true;
+    this.notificacionesService.createNotificacion({
+      destinatario: reserva.usuario_id,
+      tipo: 'pago',
+      titulo: 'Pago solicitado',
+      mensaje: `Se solicita tu comprobante de pago para la reservación del ${reserva.fecha} a las ${reserva.hora}.`,
+      leida: false
+    }).subscribe(() => {
+      this.mostrarToast('Se ha enviado la solicitud de pago al cliente.', 'success');
+      this.procesando = false;
+    }, () => { this.procesando = false; });
   }
 
   abrirModalPago(reserva: any) {
+    // Attach the comprobante data to the reserva for the modal
+    const comprobante = this.getComprobante(reserva._id);
+    if (comprobante) {
+      reserva.comprobante = comprobante.archivo_url;
+    }
     this.reservaSeleccionada = reserva;
     this.showModalPago = true;
   }
@@ -177,24 +234,40 @@ export class AdminReservaciones implements OnInit, OnDestroy {
   }
 
   aprobarPago() {
-    if (this.reservaSeleccionada) {
-      this.reservationService.updateReservacion(this.reservaSeleccionada._id, { status: 'Confirmado' }).subscribe(() => {
-        this.reservaSeleccionada.status = 'Confirmado';
-        this.mostrarToast('Pago aprobado. Reservación 100% confirmada.', 'success');
-        this.cerrarModalPago();
-      });
-    }
+    if (this.procesando || !this.reservaSeleccionada) return;
+    this.procesando = true;
+    this.reservationService.updateReservacion(this.reservaSeleccionada._id, { status: 'Confirmado' }).subscribe(() => {
+      this.reservaSeleccionada.status = 'Confirmado';
+      this.mostrarToast('Pago aprobado. Reservación 100% confirmada.', 'success');
+      this.notificacionesService.createNotificacion({
+        destinatario: this.reservaSeleccionada.usuario_id,
+        tipo: 'pago',
+        titulo: 'Pago aprobado',
+        mensaje: `Tu pago para la reservación del ${this.reservaSeleccionada.fecha} a las ${this.reservaSeleccionada.hora} ha sido aprobado. ¡Reservación confirmada!`,
+        leida: false
+      }).subscribe();
+      this.procesando = false;
+      this.cerrarModalPago();
+    }, () => { this.procesando = false; });
   }
 
   rechazarPago() {
-    if (this.reservaSeleccionada) {
-      this.reservationService.rechazarReservacion(this.reservaSeleccionada._id).subscribe(() => {
-        this.reservaSeleccionada.status = 'Rechazado';
-        this.cargarDatos();
-        this.mostrarToast('Comprobante rechazado. Slot liberado.', 'danger');
-        this.cerrarModalPago();
-      });
-    }
+    if (this.procesando || !this.reservaSeleccionada) return;
+    this.procesando = true;
+    this.reservationService.rechazarReservacion(this.reservaSeleccionada._id).subscribe(() => {
+      this.reservaSeleccionada.status = 'Rechazado';
+      this.cargarDatos();
+      this.mostrarToast('Comprobante rechazado. Slot liberado.', 'danger');
+      this.notificacionesService.createNotificacion({
+        destinatario: this.reservaSeleccionada.usuario_id,
+        tipo: 'pago',
+        titulo: 'Pago rechazado',
+        mensaje: `Tu comprobante de pago para la reservación del ${this.reservaSeleccionada.fecha} a las ${this.reservaSeleccionada.hora} fue rechazado.`,
+        leida: false
+      }).subscribe();
+      this.procesando = false;
+      this.cerrarModalPago();
+    }, () => { this.procesando = false; });
   }
 
   // ===== TOAST =====

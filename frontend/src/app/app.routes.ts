@@ -16,6 +16,7 @@ import { AdminNotificaciones } from './features/admin/admin-notificaciones/admin
 import { AdminContenido } from './features/admin/admin-contenido/admin-contenido';
 import { AdminConfiguracion } from './features/admin/admin-configuracion/admin-configuracion';
 import { Productos } from './features/client/productos/productos';
+import { ClientNotificaciones } from './features/client/client-notificaciones/client-notificaciones';
 import { authGuard, roleGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
@@ -42,6 +43,7 @@ export const routes: Routes = [
     { path: 'messages', component: Messages },
     { path: 'payments', component: Payments },
     { path: 'productos', component: Productos },
+    { path: 'notificaciones', component: ClientNotificaciones },
     
     
     

@@ -344,7 +344,12 @@ def delete_mensaje(id):
 # --- COMPROBANTES ---
 @app.route("/comprobantes", methods=["GET"])
 def get_comprobantes():
-    comprobantes = list(mongo.db.comprobantes.find())
+    filtro = {}
+    if request.args.get("reservacion_id"):
+        filtro["reservacion_id"] = request.args.get("reservacion_id")
+    if request.args.get("usuario_id"):
+        filtro["usuario_id"] = request.args.get("usuario_id")
+    comprobantes = list(mongo.db.comprobantes.find(filtro))
     for c in comprobantes:
         c["_id"] = str(c["_id"])
     return jsonify(comprobantes)
@@ -442,6 +447,47 @@ def update_configuracion():
 @app.route("/ping")
 def ping():
     return {"msg": "Conexión exitosa a MongoDB Shamana"}
+
+# --- NOTIFICACIONES ---
+@app.route("/notificaciones", methods=["GET"])
+def get_notificaciones():
+    filtro = {}
+    if request.args.get("destinatario"):
+        filtro["destinatario"] = request.args.get("destinatario")
+    notificaciones = list(mongo.db.notificaciones.find(filtro))
+    for n in notificaciones:
+        n["_id"] = str(n["_id"])
+    # Ordenar por fecha descendente
+    notificaciones.sort(key=lambda x: x.get("fecha", ""), reverse=True)
+    return jsonify(notificaciones)
+
+@app.route("/notificaciones", methods=["POST"])
+def create_notificacion():
+    data = request.json
+    data["fecha"] = data.get("fecha", datetime.now().isoformat())
+    data["leida"] = data.get("leida", False)
+    mongo.db.notificaciones.insert_one(data)
+    return jsonify({"msg": "Notificación creada"}), 201
+
+@app.route("/notificaciones/<id>", methods=["PUT"])
+def update_notificacion(id):
+    data = request.json
+    mongo.db.notificaciones.update_one({"_id": ObjectId(id)}, {"$set": data})
+    return jsonify({"msg": "Notificación actualizada"})
+
+@app.route("/notificaciones/<id>", methods=["DELETE"])
+def delete_notificacion(id):
+    mongo.db.notificaciones.delete_one({"_id": ObjectId(id)})
+    return jsonify({"msg": "Notificación eliminada"})
+
+@app.route("/notificaciones/marcar-leidas", methods=["PUT"])
+def marcar_notificaciones_leidas():
+    destinatario = request.args.get("destinatario")
+    filtro = {}
+    if destinatario:
+        filtro["destinatario"] = destinatario
+    mongo.db.notificaciones.update_many(filtro, {"$set": {"leida": True}})
+    return jsonify({"msg": "Notificaciones marcadas como leídas"})
 
 if __name__ == "__main__":
     app.run(debug=True)

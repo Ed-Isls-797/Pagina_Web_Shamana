@@ -12,6 +12,14 @@ export class ComprobantesService {
     return this.http.get<any[]>(this.apiUrl);
   }
 
+  getComprobantesByUsuario(usuarioId: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}?usuario_id=${usuarioId}`);
+  }
+
+  getComprobanteByReservacion(reservacionId: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}?reservacion_id=${reservacionId}`);
+  }
+
   createComprobante(comprobante: any): Observable<any> {
     return this.http.post(this.apiUrl, comprobante);
   }

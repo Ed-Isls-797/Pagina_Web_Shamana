@@ -1,85 +1,169 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, ChangeDetectorRef, Inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { ReservationService } from '../../../services/reservation.service';
+import { ComprobantesService } from '../../../services/comprobantes.service';
+import { AuthService } from '../../../services/auth.service';
+import { NotificacionesService } from '../../../services/notificaciones.service';
 
 @Component({
   selector: 'app-payments',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './payments.html',
-  styles: [`
-    .upload-box {
-      border: 2px dashed #333;
-      background-color: #0a0a0a;
-      transition: all 0.3s ease;
-      cursor: pointer;
-    }
-    .upload-box:hover {
-      border-color: #0dcaf0;
-      box-shadow: 0 0 20px rgba(13, 202, 240, 0.1) inset;
-      background-color: #111;
-    }
-    .icon-circle {
-      width: 65px; height: 65px;
-      border-radius: 50%;
-      background-color: rgba(13, 202, 240, 0.1);
-      color: #0dcaf0;
-      display: flex; align-items: center; justify-content: center;
-      transition: transform 0.3s ease;
-    }
-    .upload-box:hover .icon-circle {
-      transform: translateY(-5px);
-      background-color: rgba(13, 202, 240, 0.2);
-    }
-    .btn-cyan {
-      background-color: #0dcaf0; color: #000; font-weight: 700; border: none;
-      border-radius: 8px; padding: 0.6rem 1.5rem; transition: all 0.3s;
-    }
-    .btn-cyan:hover {
-      box-shadow: 0 0 15px rgba(13, 202, 240, 0.6); transform: translateY(-1px);
-    }
-    .icon-file-bg {
-      width: 45px; height: 45px;
-      background-color: rgba(13, 202, 240, 0.05);
-      color: #0dcaf0;
-      border: 1px solid rgba(13, 202, 240, 0.2);
-    }
-    .hover-bg { transition: background-color 0.2s; }
-    .hover-bg:hover { background-color: #1a1a1a !important; }
-    .toast-neutron {
-      position: fixed; top: 30px; right: 30px; z-index: 9999999;
-      opacity: 0; visibility: hidden; transform: translateY(-20px);
-      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-    .toast-neutron.show-toast { opacity: 1; visibility: visible; transform: translateY(0); }
-  `]
+  styleUrls: ['./payments.css']
 })
-export class Payments implements OnInit { 
+export class Payments implements OnInit {
 
-  reservaciones: any[] = [];
+  reservacionesAceptadas: any[] = [];
+  comprobantesMap: { [reservacionId: string]: any } = {};
+
+  // Modal ver comprobante
+  comprobanteActivo: any = null;
+  showModalVer = false;
+
+  // Toast
   toastVisible = false;
   toastMensaje = '';
+  toastTimeout: any;
 
-  constructor(private reservationService: ReservationService) {}
+  // Para highlight de reservacion desde query param
+  reservacionHighlight: string | null = null;
+
+  constructor(
+    private reservationService: ReservationService,
+    private comprobantesService: ComprobantesService,
+    private authService: AuthService,
+    private notificacionesService: NotificacionesService,
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {}
+
+  triggerFileInput(reservacionId: string) {
+    if (isPlatformBrowser(this.platformId)) {
+      const el = document.getElementById('file-' + reservacionId) as HTMLInputElement;
+      if (el) el.click();
+    }
+  }
 
   ngOnInit() {
-    this.reservationService.getReservaciones().subscribe(reservaciones => {
-      this.reservaciones = reservaciones;
+    this.route.queryParams.subscribe(params => {
+      this.reservacionHighlight = params['reservacion'] || null;
+    });
+    this.cargarDatos();
+  }
+
+  cargarDatos() {
+    const session = this.authService.getSession();
+    if (!session?._id) return;
+
+    this.reservationService.getReservaciones().subscribe(data => {
+      this.reservacionesAceptadas = data
+        .filter(r => r.usuario_id === session._id && r.status === 'Aceptado')
+        .reverse();
+      this.cdr.detectChanges();
+
+      // Load comprobantes for this user
+      this.comprobantesService.getComprobantesByUsuario(session._id).subscribe(comprobantes => {
+        this.comprobantesMap = {};
+        comprobantes.forEach(c => {
+          this.comprobantesMap[c.reservacion_id] = c;
+        });
+        this.cdr.detectChanges();
+      });
     });
   }
 
-  onFileSelected(event: Event) {
+  tieneComprobante(reservacionId: string): boolean {
+    return !!this.comprobantesMap[reservacionId];
+  }
+
+  getComprobante(reservacionId: string): any {
+    return this.comprobantesMap[reservacionId] || null;
+  }
+
+  onFileSelected(event: Event, reservacion: any) {
     const input = event.target as HTMLInputElement;
     if (!input.files || input.files.length === 0) return;
 
     const file = input.files[0];
-    this.mostrarToast(`¡Archivo "${file.name}" subido correctamente!`);
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      const base64 = e.target.result;
+      const session = this.authService.getSession();
+
+      const comprobante = {
+        reservacion_id: reservacion._id,
+        usuario_id: session._id,
+        archivo_url: base64,
+        nombre_archivo: file.name,
+        fecha_carga: new Date().toISOString()
+      };
+
+      this.comprobantesService.createComprobante(comprobante).subscribe(() => {
+        this.mostrarToast(`Comprobante "${file.name}" cargado correctamente`);
+        // Notificación al admin
+        this.notificacionesService.createNotificacion({
+          destinatario: 'admin',
+          tipo: 'pago',
+          titulo: 'Comprobante cargado',
+          mensaje: `${reservacion.nombre} ha subido un comprobante de pago para la reservación del ${reservacion.fecha} a las ${reservacion.hora}.`,
+          leida: false
+        }).subscribe();
+        this.cargarDatos();
+      });
+    };
+    reader.readAsDataURL(file);
+    input.value = '';
+  }
+
+  abrirModalVer(reservacionId: string) {
+    this.comprobanteActivo = this.getComprobante(reservacionId);
+    this.showModalVer = true;
+  }
+
+  cerrarModalVer() {
+    this.showModalVer = false;
+    this.comprobanteActivo = null;
+  }
+
+  reemplazarComprobante(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0 || !this.comprobanteActivo) return;
+
+    const file = input.files[0];
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      const base64 = e.target.result;
+      this.comprobantesService.updateComprobante(this.comprobanteActivo._id, {
+        archivo_url: base64,
+        nombre_archivo: file.name,
+        fecha_carga: new Date().toISOString()
+      }).subscribe(() => {
+        this.mostrarToast(`Comprobante reemplazado con "${file.name}"`);
+        this.cerrarModalVer();
+        this.cargarDatos();
+      });
+    };
+    reader.readAsDataURL(file);
+    input.value = '';
+  }
+
+  eliminarComprobante() {
+    if (!this.comprobanteActivo) return;
+    this.comprobantesService.deleteComprobante(this.comprobanteActivo._id).subscribe(() => {
+      this.mostrarToast('Comprobante eliminado');
+      this.cerrarModalVer();
+      this.cargarDatos();
+    });
   }
 
   mostrarToast(mensaje: string) {
     this.toastMensaje = mensaje;
     this.toastVisible = true;
-    setTimeout(() => { this.toastVisible = false; }, 3500);
+    if (this.toastTimeout) clearTimeout(this.toastTimeout);
+    this.toastTimeout = setTimeout(() => { this.toastVisible = false; }, 3500);
   }
 }

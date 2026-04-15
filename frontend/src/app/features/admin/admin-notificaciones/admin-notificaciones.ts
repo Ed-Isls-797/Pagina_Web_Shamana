@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { NotificationService } from '../../../services/notification'; 
+import { NotificationService } from '../../../services/notification';
+import { NotificacionesService } from '../../../services/notificaciones.service';
 
 @Component({
   selector: 'admin-notificaciones',
@@ -9,24 +10,49 @@ import { NotificationService } from '../../../services/notification';
   imports: [CommonModule, FormsModule],
   templateUrl: './admin-notificaciones.html'
 })
-export class AdminNotificaciones {
+export class AdminNotificaciones implements OnInit {
 
-  notificaciones = [
-    { id: 1, tipo: 'Pago', titulo: 'Nuevo pago recibido', mensaje: 'Sara L. realizó un pago de $1,200', tiempo: 'hace 5 minutos', leida: false },
-    { id: 2, tipo: 'Cliente', titulo: 'Nuevo cliente', mensaje: 'Pedro Martínez se registró.', tiempo: 'hace 12 minutos', leida: false }
-  ];
-
+  notificaciones: any[] = [];
   showModal = false;
   nuevoTitulo = '';
   nuevoMensaje = '';
-  
-  nuevoTipo: 'Cliente' | 'General' = 'General'; 
+  nuevoTipo: 'Cliente' | 'General' = 'General';
 
-  constructor(private notificationService: NotificationService) {}
+  constructor(
+    private notificationService: NotificationService,
+    private notificacionesService: NotificacionesService,
+    private cdr: ChangeDetectorRef
+  ) {}
+
+  ngOnInit() {
+    this.cargarNotificaciones();
+  }
+
+  cargarNotificaciones() {
+    this.notificacionesService.getNotificaciones('admin').subscribe({
+      next: (data) => {
+        this.notificaciones = data;
+        this.cdr.detectChanges();
+      },
+      error: () => { this.notificaciones = []; }
+    });
+  }
 
   get noLeidas() { return this.notificaciones.filter(n => !n.leida).length; }
 
-  marcarTodasComoLeidas() { this.notificaciones.forEach(n => n.leida = true); }
+  marcarTodasComoLeidas() {
+    this.notificacionesService.marcarTodasLeidas('admin').subscribe(() => {
+      this.notificaciones.forEach(n => n.leida = true);
+      this.cdr.detectChanges();
+    });
+  }
+
+  eliminarNotificacion(noti: any) {
+    this.notificacionesService.deleteNotificacion(noti._id).subscribe(() => {
+      this.notificaciones = this.notificaciones.filter(n => n._id !== noti._id);
+      this.cdr.detectChanges();
+    });
+  }
 
   abrirModal() { this.showModal = true; }
 
@@ -34,7 +60,7 @@ export class AdminNotificaciones {
     this.showModal = false;
     this.nuevoTitulo = '';
     this.nuevoMensaje = '';
-    this.nuevoTipo = 'General'; 
+    this.nuevoTipo = 'General';
   }
 
   get formularioCompleto(): boolean {
@@ -42,24 +68,37 @@ export class AdminNotificaciones {
   }
 
   crearNotificacion() {
-    if(!this.formularioCompleto) {
-      alert("Llena el título y el mensaje, jefe.");
-      return;
-    }
+    if (!this.formularioCompleto) return;
 
-    this.notificaciones.unshift({
-      id: Date.now(),
+    // Save to DB for the banner / client-facing notifications
+    const notificacionCliente: any = {
+      destinatario: this.nuevoTipo === 'Cliente' ? 'cliente' : 'general',
       tipo: this.nuevoTipo,
       titulo: this.nuevoTitulo,
       mensaje: this.nuevoMensaje,
-      tiempo: 'hace un momento',
       leida: false
-    });
+    };
+    this.notificacionesService.createNotificacion(notificacionCliente).subscribe();
 
-    console.log("Disparando banner:", this.nuevoTitulo, "Mensaje:", this.nuevoMensaje, "Para:", this.nuevoTipo);
-    
+    // Also trigger the banner
     this.notificationService.publicarNotificacion(this.nuevoTitulo, this.nuevoMensaje, this.nuevoTipo);
 
     this.cerrarModal();
+    // Small delay to let DB save
+    setTimeout(() => this.cargarNotificaciones(), 500);
+  }
+
+  getTimeAgo(fecha: string): string {
+    if (!fecha) return '';
+    const now = new Date();
+    const then = new Date(fecha);
+    const diffMs = now.getTime() - then.getTime();
+    const diffMin = Math.floor(diffMs / 60000);
+    if (diffMin < 1) return 'hace un momento';
+    if (diffMin < 60) return `hace ${diffMin} min`;
+    const diffH = Math.floor(diffMin / 60);
+    if (diffH < 24) return `hace ${diffH}h`;
+    const diffD = Math.floor(diffH / 24);
+    return `hace ${diffD}d`;
   }
 }

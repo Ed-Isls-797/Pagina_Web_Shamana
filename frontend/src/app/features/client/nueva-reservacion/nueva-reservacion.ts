@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ReservationService } from '../../../services/reservation.service';
 import { AuthService } from '../../../services/auth.service';
+import { NotificacionesService } from '../../../services/notificaciones.service';
 
 @Component({
   selector: 'app-nueva-reservacion',
@@ -92,6 +93,7 @@ export class NuevaReservacion implements OnInit {
   constructor(
     private reservationService: ReservationService,
     private authService: AuthService,
+    private notificacionesService: NotificacionesService,
     private router: Router,
     private cdr: ChangeDetectorRef
   ) {}
@@ -134,6 +136,14 @@ export class NuevaReservacion implements OnInit {
     };
 
     this.reservationService.createReservacion(reservacion).subscribe(() => {
+      // Notificación al admin
+      this.notificacionesService.createNotificacion({
+        destinatario: 'admin',
+        tipo: 'reserva',
+        titulo: 'Nueva reservación',
+        mensaje: `${this.form.nombre} ha solicitado una reservación para el ${this.slotSeleccionado.fecha} a las ${this.slotSeleccionado.hora} (${this.slotSeleccionado.zona}).`,
+        leida: false
+      }).subscribe();
       alert('Reservación creada exitosamente');
       this.router.navigate(['client', 'reservations']);
     });

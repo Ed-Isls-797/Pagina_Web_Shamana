@@ -23,10 +23,10 @@
           <div class="position-absolute top-0 start-0 w-100" style="height: 5px;" 
                [ngClass]="{
                  'bg-success': res.status === 'Confirmado',
-                 'bg-info': res.status === 'Aceptado',
                  'bg-warning': res.status === 'Pendiente',
                  'bg-danger': res.status === 'Rechazado'
-               }">
+               }"
+               [style.background-color]="res.status === 'Aceptado' ? '#20c997' : null">
           </div>
 
           <div class="card-body p-4">
@@ -34,11 +34,13 @@
             <div class="d-flex justify-content-between align-items-center mb-4">
               <span class="badge rounded-pill px-3 py-2 fw-bold"
                     [ngClass]="{
-                      'bg-success bg-opacity-10 text-success border border-success': res.status === 'Confirmado',
-                      'bg-info bg-opacity-10 text-info border border-info': res.status === 'Aceptado',
-                      'bg-warning bg-opacity-10 text-warning border border-warning': res.status === 'Pendiente',
+                      'bg-success text-white border border-success': res.status === 'Confirmado',
+                      'bg-warning text-dark border border-warning': res.status === 'Pendiente',
                       'bg-danger bg-opacity-10 text-danger border border-danger': res.status === 'Rechazado'
-                    }">
+                    }"
+                    [style.background-color]="res.status === 'Aceptado' ? '#20c997' : null"
+                    [style.color]="res.status === 'Aceptado' ? '#fff' : null"
+                    [style.border]="res.status === 'Aceptado' ? '1px solid #20c997' : null">
                 {{ res.status }}
               </span>
               <span class="text-secondary small fw-bold text-uppercase">#{{ $index + 1 }}</span>
@@ -50,11 +52,11 @@
             </div>
 
             <div class="row text-center border-top border-secondary border-opacity-25 pt-3 mt-2">
-              <div class="col-6 border-end border-secondary border-opacity-25">
+              <div class="col-4 border-end border-secondary border-opacity-25">
                 <small class="text-secondary d-block">Personas</small>
                 <span class="text-white fw-bold fs-5"><i class="bi bi-people-fill me-1"></i>{{ res.personas }}</span>
               </div>
-              <div class="col-6">
+              <div class="col-4 border-end border-secondary border-opacity-25">
                 <small class="text-secondary d-block">Zona</small>
                 <div [ngClass]="{
                   'bg-warning text-dark border-warning': res.zona === 'VIP',
@@ -63,6 +65,22 @@
                 }" class="badge rounded-pill px-3 py-1 fs-6 mt-1 border">
                   {{ res.zona || 'General' }}
                 </div>
+              </div>
+              <div class="col-4">
+                <small class="text-secondary d-block">Pago</small>
+                @if (tieneComprobante(res._id)) {
+                  <button class="btn btn-success btn-sm rounded-3 mt-1 px-3" 
+                          (click)="irComprobantes(res._id)" title="Comprobante cargado">
+                    <i class="bi bi-check-lg fw-bold"></i>
+                  </button>
+                } @else if (res.status === 'Aceptado') {
+                  <button class="btn btn-outline-info btn-sm rounded-3 mt-1 px-3" 
+                          (click)="irComprobantes(res._id)" title="Cargar comprobante">
+                    <i class="bi bi-upload"></i>
+                  </button>
+                } @else {
+                  <span class="text-secondary mt-1 d-inline-block">—</span>
+                }
               </div>
             </div>
 
