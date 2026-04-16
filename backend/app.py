@@ -6,7 +6,7 @@ from flask_cors import CORS
 from datetime import datetime
 app = Flask(__name__)
 CORS(app, origins=["http://localhost:4200"])
-app.config["MONGO_URI"] = "mongodb://localhost:27017/Shamana"
+app.config["MONGO_URI"] = "mongodb+srv://rodolfoubaldo01_db_user:<JEnyOr1tg8fAQuD>@cluster0.3dfbhg8.mongodb.net/Shamanax"
 mongo = PyMongo(app)
 
 # MODELOS (referencia, MongoDB es NoSQL, pero se documentan los esquemas)
@@ -489,5 +489,7 @@ def marcar_notificaciones_leidas():
     mongo.db.notificaciones.update_many(filtro, {"$set": {"leida": True}})
     return jsonify({"msg": "Notificaciones marcadas como leídas"})
 
+import os
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))

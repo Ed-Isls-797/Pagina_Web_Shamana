@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
-  apiUrl = 'http://127.0.0.1:5000/usuarios';
+private apiUrl = 'https://tu-backend.onrender.com';
 
   constructor(private http: HttpClient) {}
 
